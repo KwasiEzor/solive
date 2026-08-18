@@ -28,6 +28,7 @@ export default defineConfig({
       exclude: [
         "src/server/db/**",
         "src/server/actions/**",
+        "src/server/queries/**",
         "src/lib/supabase/**",
         "**/supabase-*.ts",
         "src/server/auth/guards.ts",

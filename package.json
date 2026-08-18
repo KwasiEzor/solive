@@ -15,7 +15,8 @@
     "test:coverage": "vitest run --coverage",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "seed:owner": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-owner.mjs"
+    "seed:owner": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-owner.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.1.0",
@@ -29,6 +30,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

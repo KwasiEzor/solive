@@ -40,10 +40,24 @@
   require`, `prepare: false`.
 - Argon2id via `@node-rs/argon2` (binaire prébuilt, pas de compilation).
 
-## Reste à faire (Phase 3)
+## Complété (2e passe)
 
-- Pages/flux : `/connexion` (email+mot de passe → MFA), enrôlement TOTP
-  (Supabase Auth), page d'enrôlement obligatoire (SLV-041), réinitialisation de
-  mot de passe (SLV-045), liste/révocation des sessions (SLV-046),
-  réauthentification opérations sensibles (SLV-047).
-- Les 5 tests de sécurité SLV-146 (e2e).
+- Flux connexion `/connexion` (2 étapes) + MFA TOTP + enrôlement obligatoire
+  `/mfa` (SLV-041).
+- Réinitialisation mot de passe : `/mot-de-passe-oublie` + `/reinitialiser` via
+  callback PKCE `/auth/callback`, politique 12+ & HIBP, révocation des autres
+  sessions (SLV-045).
+- Sessions : liste + révocation individuelle/globale dans `/admin/parametres`
+  (lecture directe de `auth.sessions`, SLV-046).
+- Réauthentification `reauthenticateAction` + garde `requireRecentReauth`
+  (cookie 5 min) pour les opérations sensibles (SLV-047).
+- E2E Playwright (`tests/e2e/security.spec.ts`) : garde /admin, garde /mfa,
+  en-têtes de sécurité, non-cache admin — 5 tests verts (SLV-146). Intégré à la
+  CI.
+
+## Dette / suivi
+
+- Next 16 déprécie le nom de fichier `middleware` au profit de `proxy` (le brief
+  impose `src/middleware.ts`) — migration à planifier.
+- MFA « dès la 2e connexion » pour `editor` et login par code de récupération :
+  non encore câblés (infra présente).

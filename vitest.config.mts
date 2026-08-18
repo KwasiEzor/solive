@@ -33,6 +33,7 @@ export default defineConfig({
         "src/server/auth/guards.ts",
         "src/server/services/audit.ts",
         "src/server/services/login-attempts.ts",
+        "src/server/services/sessions.ts",
         "**/*.types.ts",
       ],
       thresholds: {

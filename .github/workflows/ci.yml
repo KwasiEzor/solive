@@ -38,5 +38,11 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E security tests (SLV-146)
+        run: pnpm test:e2e
+
       - name: Audit (high/critical block deploy — SLV-058)
         run: pnpm audit --audit-level=high

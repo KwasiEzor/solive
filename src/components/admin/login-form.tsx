@@ -80,6 +80,12 @@ export function LoginForm() {
           >
             {pending ? "Connexion…" : "Se connecter"}
           </button>
+          <a
+            href="/mot-de-passe-oublie"
+            className="text-sm text-[var(--dim)] underline underline-offset-2 hover:text-acc"
+          >
+            Mot de passe oublié ?
+          </a>
         </form>
       ) : (
         <form onSubmit={onMfa} className="flex flex-col gap-4" noValidate>

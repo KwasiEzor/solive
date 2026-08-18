@@ -27,6 +27,8 @@ export const serverEnvSchema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string().min(1).optional(),
   CLOUDINARY_API_KEY: z.string().min(1).optional(),
   CLOUDINARY_API_SECRET: z.string().min(1).optional(),
+  // Phase 3 (auth/security): salt for IP/email hashing (SLV-125)
+  IP_HASH_SALT: z.string().min(16).optional(),
   // Phase 6 (form + email): Resend, Turnstile, Upstash
   RESEND_API_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),

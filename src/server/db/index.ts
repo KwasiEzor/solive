@@ -17,7 +17,7 @@ export function getDb(): PostgresJsDatabase<typeof schema> {
   if (!env.SUPABASE_DB_URL) {
     throw new Error("SUPABASE_DB_URL is required to reach the database.");
   }
-  const sql = postgres(env.SUPABASE_DB_URL, { prepare: false });
+  const sql = postgres(env.SUPABASE_DB_URL, { prepare: false, ssl: "require" });
   instance = drizzle(sql, { schema, casing: "snake_case" });
   return instance;
 }

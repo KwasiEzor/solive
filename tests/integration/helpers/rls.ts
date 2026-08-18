@@ -14,7 +14,7 @@ export type Role = "anon" | "editor" | "owner";
 const ROLLBACK = Symbol("rollback");
 
 export function makeSql() {
-  return postgres(DB_URL, { prepare: false, max: 1 });
+  return postgres(DB_URL, { prepare: false, max: 1, ssl: "require" });
 }
 
 /**

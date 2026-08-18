@@ -5,27 +5,41 @@ import { allowed, asRole, hasDb, makeSql } from "./helpers/rls";
  * RLS policy tests (SLV-035 → 039). Runs against a real Postgres; skipped when
  * SUPABASE_DB_URL is unset. A policy without a passing test here is treated as
  * absent (SLV-039).
+ *
+ * Test rows use locale 'nl' to isolate from the committed 'fr' dev seed, and
+ * everything runs in a rolled-back transaction. RLS denies SELECT/UPDATE by
+ * filtering rows (0 rows), and denies INSERT by raising — asserted accordingly.
  */
 const sql = hasDb ? makeSql() : null;
 
-const CONTENT_TABLES = [
-  "sections",
-  "services",
-  "process_steps",
-  "projects",
-  "pricing_plans",
-  "faq_items",
-] as const;
-
-// minimal required columns per content table to satisfy NOT NULLs
-const seedRow: Record<string, (status: string) => string> = {
-  sections: (s) => `(key, status) values ('faq', '${s}')`,
-  services: (s) => `(title, status) values ('t', '${s}')`,
-  process_steps: (s) => `(number, title, status) values ('01', 't', '${s}')`,
-  projects: (s) => `(slug, title, status) values ('p-${s}', 't', '${s}')`,
-  pricing_plans: (s) => `(name, status) values ('n', '${s}')`,
-  faq_items: (s) => `(question, status) values ('q', '${s}')`,
+// key/slug unique per (·, locale); published + draft use distinct keys/slugs.
+const seedRow: Record<string, { pub: string; draft: string }> = {
+  sections: {
+    pub: `(key, locale, status) values ('hero','nl','published')`,
+    draft: `(key, locale, status) values ('services','nl','draft')`,
+  },
+  services: {
+    pub: `(title, locale, status) values ('t','nl','published')`,
+    draft: `(title, locale, status) values ('t','nl','draft')`,
+  },
+  process_steps: {
+    pub: `(number, title, locale, status) values ('01','t','nl','published')`,
+    draft: `(number, title, locale, status) values ('02','t','nl','draft')`,
+  },
+  projects: {
+    pub: `(slug, title, locale, status) values ('a','t','nl','published')`,
+    draft: `(slug, title, locale, status) values ('b','t','nl','draft')`,
+  },
+  pricing_plans: {
+    pub: `(name, locale, status) values ('n','nl','published')`,
+    draft: `(name, locale, status) values ('n','nl','draft')`,
+  },
+  faq_items: {
+    pub: `(question, locale, status) values ('q','nl','published')`,
+    draft: `(question, locale, status) values ('q','nl','draft')`,
+  },
 };
+const CONTENT_TABLES = Object.keys(seedRow);
 
 describe.skipIf(!hasDb)("RLS", () => {
   describe("content: anon reads published, never drafts (SLV-035)", () => {
@@ -35,20 +49,16 @@ describe.skipIf(!hasDb)("RLS", () => {
         "anon",
         async (tx) => {
           const published = await tx.unsafe(
-            `select count(*)::int n from public.${table} where status='published'`,
+            `select count(*)::int n from public.${table} where status='published' and locale='nl'`,
           );
           const drafts = await tx.unsafe(
-            `select count(*)::int n from public.${table} where status='draft'`,
+            `select count(*)::int n from public.${table} where status='draft' and locale='nl'`,
           );
           return { published: published[0]!.n, drafts: drafts[0]!.n };
         },
         async (tx) => {
-          await tx.unsafe(
-            `insert into public.${table} ${seedRow[table]!("published")}`,
-          );
-          await tx.unsafe(
-            `insert into public.${table} ${seedRow[table]!("draft")}`,
-          );
+          await tx.unsafe(`insert into public.${table} ${seedRow[table]!.pub}`);
+          await tx.unsafe(`insert into public.${table} ${seedRow[table]!.draft}`);
         },
       );
       expect(res.published).toBe(1);
@@ -59,7 +69,10 @@ describe.skipIf(!hasDb)("RLS", () => {
   describe("content write authorization (SLV-036/038)", () => {
     it("anon cannot insert a section", async () => {
       const ok = await asRole(sql!, "anon", (tx) =>
-        allowed(() => tx`insert into public.sections (key) values ('hero')`),
+        allowed(
+          () =>
+            tx`insert into public.sections (key, locale) values ('hero','nl')`,
+        ),
       );
       expect(ok).toBe(false);
     });
@@ -70,7 +83,7 @@ describe.skipIf(!hasDb)("RLS", () => {
         const ok = await asRole(sql!, role, (tx) =>
           allowed(
             () =>
-              tx`insert into public.sections (key, status) values ('hero','published')`,
+              tx`insert into public.sections (key, locale, status) values ('hero','nl','published')`,
           ),
         );
         expect(ok).toBe(true);
@@ -142,19 +155,18 @@ describe.skipIf(!hasDb)("RLS", () => {
   });
 
   describe("privilege separation editor vs owner (SLV-038)", () => {
-    it("editor cannot write site_settings, owner can", async () => {
-      const editorOk = await asRole(sql!, "editor", (tx) =>
-        allowed(
-          () => tx`update public.site_settings set name='x' where singleton = true`,
-        ),
-      );
-      const ownerOk = await asRole(sql!, "owner", (tx) =>
-        allowed(
-          () => tx`update public.site_settings set name='x' where singleton = true`,
-        ),
-      );
-      expect(editorOk).toBe(false);
-      expect(ownerOk).toBe(true);
+    // RLS filters UPDATE rows rather than raising — assert on affected count.
+    it("editor cannot update site_settings, owner can", async () => {
+      const editorCount = await asRole(sql!, "editor", async (tx) => {
+        const r = await tx`update public.site_settings set name='x' where singleton = true`;
+        return r.count;
+      });
+      const ownerCount = await asRole(sql!, "owner", async (tx) => {
+        const r = await tx`update public.site_settings set name='x' where singleton = true`;
+        return r.count;
+      });
+      expect(editorCount).toBe(0);
+      expect(ownerCount).toBe(1);
     });
 
     it("editor cannot create invitations, owner can", async () => {

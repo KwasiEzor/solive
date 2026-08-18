@@ -148,6 +148,23 @@ export const auditLog = pgTable(
   ],
 );
 
+// SLV-042 — hashed single-use MFA recovery codes
+export const mfaRecoveryCodes = pgTable(
+  "mfa_recovery_codes",
+  {
+    ...pk,
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    codeHash: text("code_hash").notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("mfa_recovery_codes_user_idx").on(t.userId)],
+);
+
 // SLV-013 — purged at 30 days
 export const loginAttempts = pgTable(
   "login_attempts",

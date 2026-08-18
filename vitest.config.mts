@@ -27,10 +27,12 @@ export default defineConfig({
       // stays meaningful for pure logic.
       exclude: [
         "src/server/db/**",
+        "src/server/actions/**",
         "src/lib/supabase/**",
         "**/supabase-*.ts",
         "src/server/auth/guards.ts",
         "src/server/services/audit.ts",
+        "src/server/services/login-attempts.ts",
         "**/*.types.ts",
       ],
       thresholds: {

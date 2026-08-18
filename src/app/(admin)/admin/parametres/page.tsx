@@ -7,6 +7,8 @@ import {
 import { getCurrentAdmin } from "@/server/auth/guards";
 import { listUserSessions } from "@/server/services/sessions";
 
+export const instant = false;
+
 export const metadata: Metadata = {
   title: "Paramètres",
   robots: { index: false, follow: false },

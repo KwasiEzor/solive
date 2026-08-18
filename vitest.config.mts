@@ -11,7 +11,10 @@ export default defineConfig({
     environment: "node",
     globals: false,
     testTimeout: 30_000,
-    include: ["tests/unit/**/*.test.ts", "tests/integration/**/*.test.ts"],
+    include: [
+      "tests/unit/**/*.test.{ts,tsx}",
+      "tests/integration/**/*.test.{ts,tsx}",
+    ],
     // Eager env validation runs at import; give tests a valid baseline.
     env: {
       NODE_ENV: "test",

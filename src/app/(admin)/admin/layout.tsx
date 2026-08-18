@@ -5,6 +5,8 @@ import { signOutAction } from "@/server/actions/auth";
 import { getCurrentAdmin } from "@/server/auth/guards";
 import { createSupabaseServerClient } from "@/server/auth/supabase-server";
 
+export const instant = false;
+
 /**
  * Admin guard (SLV-050) — server-side, on every request. Never trusts client
  * state; Server Actions re-check independently. Enforces the MFA enrollment

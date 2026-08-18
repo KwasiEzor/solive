@@ -48,7 +48,11 @@ export class EnvValidationError extends Error {
 
 /** Pure, testable parse — used at load with process.env. */
 export function parseEnv(source: Record<string, string | undefined>): ServerEnv {
-  const result = serverEnvSchema.safeParse(source);
+  // Treat empty strings (blank .env placeholders) as unset.
+  const cleaned = Object.fromEntries(
+    Object.entries(source).map(([k, v]) => [k, v === "" ? undefined : v]),
+  );
+  const result = serverEnvSchema.safeParse(cleaned);
   if (!result.success) {
     const issues = result.error.issues.map(
       (i) => `  - ${i.path.join(".") || "(root)"}: ${i.message}`,

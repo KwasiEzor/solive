@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { updatePaletteAction } from "@/server/actions/settings";
 import {
   revokeOtherSessionsAction,
   revokeSessionAction,
 } from "@/server/actions/sessions";
 import { getCurrentAdmin } from "@/server/auth/guards";
+import { getSiteSettings } from "@/server/queries/content";
 import { listUserSessions } from "@/server/services/sessions";
+
+const PALETTES = [
+  ["chaux", "Chaux (clair)"],
+  ["ardoise", "Ardoise (sombre)"],
+  ["cobalt", "Cobalt (bleu)"],
+] as const;
 
 export const metadata: Metadata = {
   title: "Paramètres",
@@ -24,10 +32,44 @@ export default async function SettingsPage() {
   const admin = await getCurrentAdmin();
   if (!admin.ok) redirect("/connexion");
   const sessions = await listUserSessions(admin.value.userId);
+  const settings = await getSiteSettings();
+  const isOwner = admin.value.role === "owner";
 
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-extrabold tracking-tight">Paramètres</h1>
+
+      {isOwner && (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-bold">Palette du site</h2>
+          <p className="text-sm text-[var(--dim)]">
+            Appliquée à la vitrine sans redéploiement.
+          </p>
+          <form action={updatePaletteAction} className="flex items-end gap-2">
+            <label htmlFor="palette" className="sr-only">
+              Palette
+            </label>
+            <select
+              id="palette"
+              name="palette"
+              defaultValue={settings?.activePalette ?? "chaux"}
+              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2 text-sm"
+            >
+              {PALETTES.map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <button
+              type="submit"
+              className="rounded bg-acc px-3 py-2 text-sm font-semibold text-on-acc"
+            >
+              Appliquer
+            </button>
+          </form>
+        </section>
+      )}
 
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">

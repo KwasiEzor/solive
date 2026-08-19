@@ -2,8 +2,8 @@
 import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "@/server/auth/supabase-server";
 
-export const REAUTH_COOKIE = "solive_reauth";
-export const REAUTH_MAX_AGE_MS = 5 * 60 * 1000;
+const REAUTH_COOKIE = "solive_reauth";
+const REAUTH_MAX_AGE_MS = 5 * 60 * 1000;
 
 /**
  * Re-authenticate before sensitive operations (SLV-047): email change, MFA

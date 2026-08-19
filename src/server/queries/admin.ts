@@ -2,12 +2,35 @@ import "server-only";
 import { and, count, desc, eq } from "drizzle-orm";
 import { getDb } from "@/server/db";
 import {
+  adminUsers,
   auditLog,
   contentRevisions,
+  invitations,
   leadEvents,
   leads,
   sections,
 } from "../../../drizzle/schema";
+
+export async function getAdminUsers() {
+  const db = getDb();
+  return db.select().from(adminUsers).orderBy(desc(adminUsers.createdAt));
+}
+
+export async function getPendingInvitations() {
+  const db = getDb();
+  return db
+    .select({
+      id: invitations.id,
+      email: invitations.email,
+      role: invitations.role,
+      expiresAt: invitations.expiresAt,
+      acceptedAt: invitations.acceptedAt,
+      createdAt: invitations.createdAt,
+    })
+    .from(invitations)
+    .orderBy(desc(invitations.createdAt))
+    .limit(50);
+}
 
 type LeadStatus = "new" | "contacted" | "quoted" | "won" | "lost";
 

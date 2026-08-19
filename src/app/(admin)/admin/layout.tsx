@@ -35,6 +35,7 @@ export default async function AdminLayout({
     ["/admin/medias", "Médias"],
     ["/admin/demandes", "Demandes"],
     ["/admin/parametres", "Paramètres"],
+    ["/admin/utilisateurs", "Utilisateurs"],
     ["/admin/journal", "Journal"],
   ] as const;
 

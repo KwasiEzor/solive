@@ -32,6 +32,7 @@ export default defineConfig({
         "src/server/db/**",
         "src/server/actions/**",
         "src/server/queries/**",
+        "src/lib/offline/**",
         "src/lib/supabase/**",
         "**/supabase-*.ts",
         "src/server/auth/guards.ts",

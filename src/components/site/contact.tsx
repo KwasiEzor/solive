@@ -1,5 +1,7 @@
 "use client";
 import { type FormEvent, useEffect, useRef, useState } from "react";
+import { flushContactQueue } from "@/lib/offline/flush";
+import { submitContact } from "@/lib/offline/submit";
 import { PROJECT_TYPES } from "@/lib/schemas/contact";
 import { SecHead } from "./sections";
 
@@ -31,6 +33,7 @@ export function Contact({
   const [f, setF] = useState({ nom: "", email: "", societe: "", msg: "" });
   const [website, setWebsite] = useState(""); // honeypot
   const [sent, setSent] = useState(false);
+  const [queued, setQueued] = useState(false);
   const [err, setErr] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -43,6 +46,15 @@ export function Contact({
   useEffect(() => {
     clientId.current = crypto.randomUUID();
     mountedAt.current = Date.now();
+  }, []);
+
+  // Flush any queued offline submissions on load + when connectivity returns
+  // (fallback for browsers without Background Sync — SLV-083).
+  useEffect(() => {
+    void flushContactQueue();
+    const onOnline = () => void flushContactQueue();
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
   }, []);
 
   // Load + render the Turnstile widget when a site key is configured.
@@ -87,49 +99,32 @@ export function Contact({
 
     setErr("");
     setPending(true);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          name: f.nom,
-          email: f.email,
-          company: f.societe || undefined,
-          projectTypes: sel,
-          message: f.msg,
-          locale: "fr",
-          clientId: clientId.current,
-          clientSubmittedAt: new Date().toISOString(),
-          turnstileToken: turnstileToken.current || "dev",
-          website,
-          elapsedMs: Date.now() - mountedAt.current,
-        }),
-      });
-      setPending(false);
-      if (res.ok) {
-        setSent(true);
-        return;
-      }
-      const body = (await res.json().catch(() => ({}))) as {
-        error?: string;
-        retryAfterSec?: number;
-      };
-      if (res.status === 429)
-        setErr(
-          `Trop de demandes. Réessayez dans ${Math.ceil((body.retryAfterSec ?? 3600) / 60)} min.`,
-        );
-      else if (body.error === "too_fast")
-        setErr("Envoi trop rapide — réessayez.");
-      else if (body.error === "turnstile")
-        setErr("La vérification anti-spam a échoué. Réessayez.");
-      else setErr("Une erreur est survenue. Réessayez ou écrivez-nous.");
-    } catch {
-      // Offline: Phase 7 will queue this in IndexedDB + Background Sync.
-      setPending(false);
+    const payload = {
+      name: f.nom,
+      email: f.email,
+      company: f.societe || undefined,
+      projectTypes: sel,
+      message: f.msg,
+      locale: "fr" as const,
+      clientId: clientId.current,
+      clientSubmittedAt: new Date().toISOString(),
+      turnstileToken: turnstileToken.current || "dev",
+      website,
+      elapsedMs: Date.now() - mountedAt.current,
+    };
+    const r = await submitContact(clientId.current, payload);
+    setPending(false);
+    if (r.status === "sent") return setSent(true);
+    if (r.status === "queued") return setQueued(true);
+    if (r.code === "rate_limited")
       setErr(
-        "Vous semblez hors ligne. Réessayez dès que la connexion revient.",
+        `Trop de demandes. Réessayez dans ${Math.ceil((r.retryAfterSec ?? 3600) / 60)} min.`,
       );
-    }
+    else if (r.code === "too_fast") setErr("Envoi trop rapide — réessayez.");
+    else if (r.code === "turnstile")
+      setErr("La vérification anti-spam a échoué. Réessayez.");
+    else if (r.code === "invalid") setErr("Vérifiez les champs et réessayez.");
+    else setErr("Une erreur est survenue. Réessayez ou écrivez-nous.");
   }
 
   return (
@@ -141,19 +136,27 @@ export function Contact({
             titre={head?.heading ?? "Dites-moi ce que vous voulez construire."}
           />
         )}
-        {sent ? (
+        {sent || queued ? (
           <div className="sent">
-            <p className="mono tiny dim">DEMANDE ENREGISTRÉE</p>
-            <h3>Merci {f.nom.split(" ")[0]}. Réponse sous 24 h ouvrées.</h3>
+            <p className="mono tiny dim">
+              {queued ? "DEMANDE ENREGISTRÉE — HORS LIGNE" : "DEMANDE ENREGISTRÉE"}
+            </p>
+            <h3>
+              {queued
+                ? `Merci ${f.nom.split(" ")[0]}. Votre demande partira dès que la connexion revient.`
+                : `Merci ${f.nom.split(" ")[0]}. Réponse sous 24 h ouvrées.`}
+            </h3>
             <p>
-              Je reviens vers vous avec deux ou trois questions et une
-              proposition de créneau.
+              {queued
+                ? "Elle est enregistrée sur votre appareil et s’enverra automatiquement au retour du réseau. Vous pouvez fermer la page."
+                : "Je reviens vers vous avec deux ou trois questions et une proposition de créneau."}
             </p>
             <button
               type="button"
               className="btn ghost"
               onClick={() => {
                 setSent(false);
+                setQueued(false);
                 setF({ nom: "", email: "", societe: "", msg: "" });
                 setSel([]);
                 setWebsite("");

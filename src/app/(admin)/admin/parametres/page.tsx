@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { ClearCacheButton } from "@/components/admin/clear-cache";
 import { updatePaletteAction } from "@/server/actions/settings";
 import {
   revokeOtherSessionsAction,
@@ -38,6 +39,15 @@ export default async function SettingsPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-extrabold tracking-tight">Paramètres</h1>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-bold">Cache local (PWA)</h2>
+        <p className="text-sm text-[var(--dim)]">
+          Vide le cache hors-ligne, la file d’attente et le service worker sur
+          cet appareil.
+        </p>
+        <ClearCacheButton />
+      </section>
 
       {isOwner && (
         <section className="flex flex-col gap-3">

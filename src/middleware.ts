@@ -13,13 +13,21 @@ import { generateNonce, securityHeaders } from "@/lib/security-headers";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // CSRF: mutating /api routes must be same-origin (SLV-052).
+  // CSRF: mutating /api routes must be same-origin (SLV-052). The offline
+  // replay from the service worker lacks an Origin header, so it authenticates
+  // with a custom header instead — which a cross-origin attacker cannot set
+  // (CORS preflight blocks it).
   if (pathname.startsWith("/api")) {
-    const same = isSameOrigin({
-      method: request.method,
-      origin: request.headers.get("origin"),
-      host: request.headers.get("host"),
-    });
+    const isReplay =
+      pathname === "/api/contact" &&
+      request.headers.get("x-solive-replay") === "1";
+    const same =
+      isReplay ||
+      isSameOrigin({
+        method: request.method,
+        origin: request.headers.get("origin"),
+        host: request.headers.get("host"),
+      });
     if (!same) {
       return new NextResponse("Forbidden", { status: 403 });
     }
@@ -79,7 +87,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Everything except static assets and image files.
-    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|robots.txt|sitemap.xml|.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|woff2?)).*)",
+    // Everything except static assets, PWA files, and image/font files.
+    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|swe-worker-.*\\.js|robots.txt|sitemap.xml|.*\\.(?:png|jpg|jpeg|gif|svg|webp|avif|ico|woff2?)).*)",
   ],
 };

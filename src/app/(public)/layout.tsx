@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { Nav } from "@/components/site/nav";
+import { NetworkStatus } from "@/components/site/network-status";
 import { Footer } from "@/components/site/sections";
+import { SwUpdatePrompt } from "@/components/site/sw-update";
 import { getSiteSettings } from "@/server/queries/content";
 import "@/styles/site.css";
 
@@ -21,6 +23,8 @@ export default async function PublicLayout({
       <Nav brand={brand} />
       <main id="main">{children}</main>
       <Footer settings={settings} />
+      <NetworkStatus />
+      <SwUpdatePrompt />
     </div>
   );
 }

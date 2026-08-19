@@ -38,6 +38,10 @@ export default defineConfig({
         "src/server/services/audit.ts",
         "src/server/services/login-attempts.ts",
         "src/server/services/sessions.ts",
+        "src/server/services/rate-limit.ts",
+        "src/server/services/leads-intake.ts",
+        "src/server/services/email/index.ts",
+        "src/app/api/**",
         "**/*.types.ts",
       ],
       thresholds: {

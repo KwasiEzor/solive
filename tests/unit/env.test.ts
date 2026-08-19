@@ -31,9 +31,9 @@ describe("parseEnv (SLV-057)", () => {
   it("treats an empty optional var as unset", () => {
     const env = parseEnv({
       NEXT_PUBLIC_SITE_URL: "https://solive.be",
-      UPSTASH_REDIS_REST_URL: "",
+      KV_REST_API_URL: "",
     });
-    expect(env.UPSTASH_REDIS_REST_URL).toBeUndefined();
+    expect(env.KV_REST_API_URL).toBeUndefined();
   });
 
   it("treats an empty required var as missing", () => {
@@ -46,7 +46,7 @@ describe("parseEnv (SLV-057)", () => {
     expect(() =>
       parseEnv({
         NEXT_PUBLIC_SITE_URL: "https://solive.be",
-        UPSTASH_REDIS_REST_URL: "nope",
+        KV_REST_API_URL: "nope",
       }),
     ).toThrowError(EnvValidationError);
   });

@@ -29,12 +29,15 @@ export const serverEnvSchema = z.object({
   CLOUDINARY_API_SECRET: z.string().min(1).optional(),
   // Phase 3 (auth/security): salt for IP/email hashing (SLV-125)
   IP_HASH_SALT: z.string().min(16).optional(),
-  // Phase 6 (form + email): Resend, Turnstile, Upstash
-  RESEND_API_KEY: z.string().min(1).optional(),
+  // Phase 6 (form + email): Brevo (transactional), Turnstile (anti-spam),
+  // Upstash Redis (rate limiting — provisioned by Vercel with KV_* names).
+  BREVO_API_KEY: z.string().min(1).optional(),
+  EMAIL_FROM: z.string().email().optional(),
+  EMAIL_TO: z.string().email().optional(),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().min(1).optional(),
   TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
-  UPSTASH_REDIS_REST_URL: url.optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+  KV_REST_API_URL: url.optional(),
+  KV_REST_API_TOKEN: z.string().min(1).optional(),
   // Phase 9 (observability): Sentry
   NEXT_PUBLIC_SENTRY_DSN: z.string().min(1).optional(),
 });

@@ -48,6 +48,57 @@ test("security headers are set on the public site (SLV-051)", async ({
   expect(h["strict-transport-security"]).toContain("preload");
 });
 
+test("api rejects cross-origin POST (SLV-052)", async ({ request }) => {
+  const res = await request.post("/api/contact", {
+    headers: { origin: "https://evil.example" },
+    data: {},
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(403);
+});
+
+test("contact rejects a filled honeypot (SLV-055)", async ({
+  request,
+  baseURL,
+}) => {
+  const res = await request.post("/api/contact", {
+    headers: { origin: baseURL ?? "" },
+    data: {
+      name: "Bot",
+      email: "bot@x.be",
+      message: "a message long enough to pass",
+      projectTypes: [],
+      locale: "fr",
+      clientId: crypto.randomUUID(),
+      turnstileToken: "t",
+      website: "http://spam.example", // honeypot filled
+      elapsedMs: 5000,
+    },
+  });
+  expect(res.status()).toBe(400);
+});
+
+test("contact rejects sub-2s submissions (SLV-055)", async ({
+  request,
+  baseURL,
+}) => {
+  const res = await request.post("/api/contact", {
+    headers: { origin: baseURL ?? "" },
+    data: {
+      name: "Fast",
+      email: "fast@x.be",
+      message: "a message long enough to pass",
+      projectTypes: [],
+      locale: "fr",
+      clientId: crypto.randomUUID(),
+      turnstileToken: "t",
+      website: "",
+      elapsedMs: 100, // too fast
+    },
+  });
+  expect(res.status()).toBe(400);
+});
+
 test("admin routes are not cached at the CDN", async ({ request }) => {
   const res = await request.get("/admin", { maxRedirects: 0 });
   // guarded → redirect, never a 200 with private content

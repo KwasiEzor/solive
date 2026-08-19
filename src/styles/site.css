@@ -306,8 +306,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.14;
-  filter: grayscale(0.25) contrast(1.05);
+  opacity: 0.22;
+  filter: grayscale(0.15) contrast(1.08);
+}
+/* dark cover photos read too strongly on the light palette — keep subtle */
+.t-chaux .hero-media img {
+  opacity: 0.09;
 }
 .hero-media::after {
   content: "";

@@ -277,6 +277,11 @@ export function Travaux({
         <div className="grid3">
           {projects.map((r, i) => (
             <Reveal key={r.id} as="article" className="case" delay={i * 90}>
+              <Link
+                href={`/travaux/${r.slug}`}
+                className="stretched-link"
+                aria-label={`Voir l’étude de cas : ${r.title}`}
+              />
               <div className="case-media">
                 <Image
                   src={CASE_IMAGES[i % CASE_IMAGES.length]!}

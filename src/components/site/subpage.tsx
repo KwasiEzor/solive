@@ -36,6 +36,34 @@ export function PageHeader({
   );
 }
 
+/** What "prix fixe" actually guarantees — reassurance around the pricing. */
+export function PricingReassurance() {
+  const points: [string, string][] = [
+    ["Périmètre écrit", "Ce qui est inclus est noté noir sur blanc avant de commencer. On sait tous les deux où on va."],
+    ["Pas de rallonge surprise", "Le prix ne bouge pas pour le périmètre convenu. Tout ajout est chiffré à part, et c’est vous qui décidez."],
+    ["Calendrier daté", "Une date de livraison, des jalons visibles. Vous savez toujours où on en est."],
+    ["Le code est à vous", "Livré à votre nom, hébergé en Europe. Pas de dépendance, pas de rançon technique."],
+  ];
+  return (
+    <section className="sec alt">
+      <div className="wrap">
+        <div className="sec-head">
+          <span className="mono tiny eyebrow">CE QUE « PRIX FIXE » VEUT DIRE</span>
+          <h2>Un forfait, sans mauvaise surprise.</h2>
+        </div>
+        <div className="grid2 reassure">
+          {points.map(([t, d]) => (
+            <div key={t} className="reassure-item">
+              <h3>{t}</h3>
+              <p>{d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** Accent call-to-action band, closing dedicated pages and the home. */
 export function ContactCta({
   title = "Un projet en tête ?",

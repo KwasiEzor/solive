@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { Faq } from "@/components/site/faq";
 import { Tarifs } from "@/components/site/sections";
-import { ContactCta, PageHeader } from "@/components/site/subpage";
+import {
+  ContactCta,
+  PageHeader,
+  PricingReassurance,
+} from "@/components/site/subpage";
 import { env } from "@/lib/env";
 import {
   getFaqItems,
@@ -32,6 +36,7 @@ export default async function TarifsPage() {
         image="/images/circuit.jpg"
       />
       <Tarifs head={sections.tarifs} plans={plans} hideHead />
+      <PricingReassurance />
       <Faq head={sections.faq} items={faqs} />
       <ContactCta />
     </>

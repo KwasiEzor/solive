@@ -6,9 +6,10 @@ const bar = {
   right: "16px",
   bottom: "16px",
   zIndex: 80,
+  maxWidth: "min(92vw, 380px)",
   display: "flex",
   alignItems: "center",
-  gap: "12px",
+  gap: "10px",
   padding: "10px 14px",
   borderRadius: "12px",
   border: "1px solid color-mix(in srgb, var(--acc) 40%, var(--line))",
@@ -23,6 +24,7 @@ const bar = {
  */
 export function SwUpdatePrompt() {
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
+  const [dismissed, setDismissed] = useState(false);
   const accepted = useRef(false);
 
   useEffect(() => {
@@ -57,7 +59,7 @@ export function SwUpdatePrompt() {
       );
   }, []);
 
-  if (!waiting) return null;
+  if (!waiting || dismissed) return null;
 
   return (
     <div role="alert" style={bar}>
@@ -68,7 +70,6 @@ export function SwUpdatePrompt() {
           accepted.current = true;
           waiting.postMessage({ type: "SKIP_WAITING" });
         }}
-        className="rounded"
         style={{
           background: "linear-gradient(180deg, var(--acc), var(--acc-strong))",
           color: "var(--on-acc)",
@@ -78,6 +79,24 @@ export function SwUpdatePrompt() {
         }}
       >
         Recharger
+      </button>
+      <button
+        type="button"
+        onClick={() => setDismissed(true)}
+        aria-label="Plus tard"
+        title="Plus tard"
+        style={{
+          background: "none",
+          border: 0,
+          color: "var(--fg)",
+          opacity: 0.6,
+          cursor: "pointer",
+          fontSize: "18px",
+          lineHeight: 1,
+          padding: "2px 4px",
+        }}
+      >
+        ×
       </button>
     </div>
   );

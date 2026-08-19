@@ -163,6 +163,32 @@
   height: 1.6px;
   background: var(--fg);
   display: block;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+.burger.open span:nth-child(1) {
+  transform: translateY(5.6px) rotate(45deg);
+}
+.burger.open span:nth-child(2) {
+  opacity: 0;
+}
+.burger.open span:nth-child(3) {
+  transform: translateY(-5.6px) rotate(-45deg);
+}
+.nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  backdrop-filter: blur(2px);
+  animation: scrim-in 0.2s ease;
+}
+@keyframes scrim-in {
+  from {
+    opacity: 0;
+  }
 }
 .nav-mob {
   display: none;
@@ -357,6 +383,60 @@
 }
 .case:hover .case-media img {
   transform: scale(1.05);
+}
+
+/* case-study detail page */
+.case-study-head {
+  padding-top: 76px;
+}
+.case-study-head h1 {
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
+  margin-top: 12px;
+  max-width: 20ch;
+}
+.case-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 40px;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.case-facts dt {
+  color: var(--dim);
+  margin-bottom: 4px;
+}
+.case-facts dd {
+  color: var(--fg);
+  font-size: 15px;
+}
+.case-facts-metric {
+  color: var(--acc);
+  font-weight: 700;
+}
+.case-cover {
+  position: relative;
+  height: clamp(220px, 42vw, 460px);
+  margin: 32px 0 8px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+.case-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.18) contrast(1.04);
+}
+.case-study-body {
+  padding-top: 28px;
+  padding-bottom: 8px;
+}
+.case-study-body p {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 18px;
+  max-width: 66ch;
 }
 
 /* service card cover image */
@@ -651,6 +731,37 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.reassure-item {
+  padding: 22px 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg2) var(--card-grad);
+}
+.reassure-item h3 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 1.08rem;
+}
+.reassure-item h3::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--acc);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--acc) 22%, transparent);
+  flex: none;
+}
+.reassure-item p {
+  margin-top: 8px;
+  color: var(--fg);
+  line-height: 1.6;
+}
 .rv {
   opacity: 0;
   transform: translateY(20px);
@@ -761,6 +872,7 @@
 
 /* travaux */
 .case {
+  position: relative;
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 26px 24px;
@@ -770,6 +882,22 @@
   flex-direction: column;
   gap: 6px;
   transition: border-color 0.25s, transform 0.25s, box-shadow 0.3s;
+}
+/* whole-card click target (case studies) */
+.stretched-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+}
+.case:hover {
+  border-color: color-mix(in srgb, var(--acc) 45%, var(--line));
+  transform: translateY(-3px);
+}
+.case:focus-within {
+  border-color: var(--acc);
+  outline: 2px solid color-mix(in srgb, var(--acc) 55%, transparent);
+  outline-offset: 2px;
 }
 .case:hover {
   border-color: color-mix(in srgb, var(--acc) 55%, var(--line));
@@ -1070,6 +1198,7 @@
     display: flex;
   }
   .grid3,
+  .grid2,
   .row2 {
     grid-template-columns: 1fr;
   }

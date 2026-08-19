@@ -27,11 +27,11 @@ describe("BrevoMailer (SLV-133)", () => {
         return HttpResponse.json({ messageId: "1" }, { status: 201 });
       }),
     );
-    const mailer = new BrevoMailer("KEY", { email: "no-reply@solive.be", name: "Solive" });
+    const mailer = new BrevoMailer("KEY", { email: "no-reply@solive.pro", name: "Solive" });
     const r = await mailer.send(msg);
     expect(r).toEqual({ ok: true, value: undefined });
     expect(apiKey).toBe("KEY");
-    expect(payload.sender?.email).toBe("no-reply@solive.be");
+    expect(payload.sender?.email).toBe("no-reply@solive.pro");
     expect(payload.to?.[0]?.email).toBe("prospect@x.be");
   });
 

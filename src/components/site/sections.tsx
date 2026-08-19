@@ -285,7 +285,7 @@ export function Tarifs({
 
 export function Footer({ settings }: { settings: SiteSettings | null }) {
   const brand = settings?.name ?? "SOLIVE";
-  const email = settings?.email ?? "bonjour@solive.be";
+  const email = settings?.email ?? "bonjour@solive.pro";
   const vat = settings?.vat ?? "BE 0000.000.000";
   return (
     <footer className="foot">

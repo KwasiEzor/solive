@@ -5,14 +5,14 @@ describe("parseEnv (SLV-057)", () => {
   it("accepts a valid environment", () => {
     const env = parseEnv({
       NODE_ENV: "test",
-      NEXT_PUBLIC_SITE_URL: "https://solive.be",
+      NEXT_PUBLIC_SITE_URL: "https://solive.pro",
     });
-    expect(env.NEXT_PUBLIC_SITE_URL).toBe("https://solive.be");
+    expect(env.NEXT_PUBLIC_SITE_URL).toBe("https://solive.pro");
     expect(env.NODE_ENV).toBe("test");
   });
 
   it("defaults NODE_ENV to development", () => {
-    const env = parseEnv({ NEXT_PUBLIC_SITE_URL: "https://solive.be" });
+    const env = parseEnv({ NEXT_PUBLIC_SITE_URL: "https://solive.pro" });
     expect(env.NODE_ENV).toBe("development");
   });
 
@@ -30,7 +30,7 @@ describe("parseEnv (SLV-057)", () => {
 
   it("treats an empty optional var as unset", () => {
     const env = parseEnv({
-      NEXT_PUBLIC_SITE_URL: "https://solive.be",
+      NEXT_PUBLIC_SITE_URL: "https://solive.pro",
       KV_REST_API_URL: "",
     });
     expect(env.KV_REST_API_URL).toBeUndefined();
@@ -45,7 +45,7 @@ describe("parseEnv (SLV-057)", () => {
   it("rejects an invalid optional URL when provided", () => {
     expect(() =>
       parseEnv({
-        NEXT_PUBLIC_SITE_URL: "https://solive.be",
+        NEXT_PUBLIC_SITE_URL: "https://solive.pro",
         KV_REST_API_URL: "nope",
       }),
     ).toThrowError(EnvValidationError);

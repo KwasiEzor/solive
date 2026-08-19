@@ -8,7 +8,7 @@ truncate table public.faq_items, public.pricing_plans, public.projects,
 update public.site_settings set
   name = 'Solive',
   baseline = 'studio de développement',
-  email = 'bonjour@solive.be',
+  email = 'bonjour@solive.pro',
   address = 'Bruxelles, Belgique',
   vat = 'BE 0000.000.000',
   active_palette = 'chaux',

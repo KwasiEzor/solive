@@ -40,7 +40,7 @@ export default async function HomePage() {
         "@id": `${site}#studio`,
         name: settings?.name ?? "Solive",
         description: settings?.baseline ?? "studio de développement",
-        email: settings?.email ?? "bonjour@solive.be",
+        email: settings?.email ?? "bonjour@solive.pro",
         url: site,
         address: {
           "@type": "PostalAddress",

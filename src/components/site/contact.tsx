@@ -20,7 +20,7 @@ const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export function Contact({
   head,
-  email = "bonjour@solive.be",
+  email = "bonjour@solive.pro",
   hideHead,
 }: {
   head?: { kicker: string | null; heading: string | null };

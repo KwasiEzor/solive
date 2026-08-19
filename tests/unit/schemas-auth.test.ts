@@ -11,7 +11,7 @@ import {
 
 describe("auth schemas (SLV-004/040)", () => {
   it("normalises email to trimmed lowercase", () => {
-    expect(emailSchema.parse("  Bonjour@Solive.BE ")).toBe("bonjour@solive.be");
+    expect(emailSchema.parse("  Bonjour@Solive.PRO ")).toBe("bonjour@solive.pro");
   });
 
   it("rejects malformed email", () => {

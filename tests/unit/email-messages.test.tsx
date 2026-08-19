@@ -7,20 +7,20 @@ import {
 describe("email messages (SLV-130/131/133)", () => {
   it("builds the internal notification with reply-to + admin link", async () => {
     const m = await buildLeadNotification({
-      to: "studio@solive.be",
+      to: "studio@solive.pro",
       name: "Camille Dupont",
       email: "camille@x.be",
       company: "Menuiserie",
       projectTypes: ["Site vitrine"],
       budgetRange: null,
       message: "Bonjour, un projet de site.",
-      adminUrl: "https://solive.be/admin/demandes/abc",
+      adminUrl: "https://solive.pro/admin/demandes/abc",
     });
-    expect(m.to).toBe("studio@solive.be");
+    expect(m.to).toBe("studio@solive.pro");
     expect(m.subject).toContain("Camille Dupont");
     expect(m.replyTo).toBe("camille@x.be");
     expect(m.html).toContain("Menuiserie");
-    expect(m.html).toContain("https://solive.be/admin/demandes/abc");
+    expect(m.html).toContain("https://solive.pro/admin/demandes/abc");
     // plain-text alternative is always present (SLV-133)
     expect(m.text.length).toBeGreaterThan(0);
     expect(m.text).not.toContain("<p>");

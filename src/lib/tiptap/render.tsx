@@ -17,7 +17,7 @@ export interface TiptapNode {
 function safeHref(href: unknown): string | undefined {
   if (typeof href !== "string") return undefined;
   try {
-    const url = new URL(href, "https://solive.be");
+    const url = new URL(href, "https://solive.pro");
     if (["http:", "https:", "mailto:"].includes(url.protocol)) return href;
   } catch {
     /* invalid */

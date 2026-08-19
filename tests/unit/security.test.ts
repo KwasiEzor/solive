@@ -60,15 +60,15 @@ describe("security headers (SLV-051)", () => {
 
 describe("isSameOrigin (SLV-052)", () => {
   it("allows safe methods without origin", () => {
-    expect(isSameOrigin({ method: "GET", origin: null, host: "solive.be" })).toBe(true);
+    expect(isSameOrigin({ method: "GET", origin: null, host: "solive.pro" })).toBe(true);
   });
 
   it("accepts matching origin/host on POST", () => {
     expect(
       isSameOrigin({
         method: "POST",
-        origin: "https://solive.be",
-        host: "solive.be",
+        origin: "https://solive.pro",
+        host: "solive.pro",
       }),
     ).toBe(true);
   });
@@ -78,10 +78,10 @@ describe("isSameOrigin (SLV-052)", () => {
       isSameOrigin({
         method: "POST",
         origin: "https://evil.example",
-        host: "solive.be",
+        host: "solive.pro",
       }),
     ).toBe(false);
-    expect(isSameOrigin({ method: "POST", origin: null, host: "solive.be" })).toBe(
+    expect(isSameOrigin({ method: "POST", origin: null, host: "solive.pro" })).toBe(
       false,
     );
   });

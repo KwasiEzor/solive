@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type {
   PricingPlan,
@@ -7,8 +8,45 @@ import type {
   Service,
   SiteSettings,
 } from "@/server/db/types";
+import { CountUp } from "./count-up";
 import { PlanCycle } from "./plan-cycle";
+import { Reveal } from "./reveal";
 import { Mark, Tick } from "./icons";
+
+/** Dev-context cover images cycled across case studies. */
+const CASE_IMAGES = [
+  "/images/code-screen.jpg",
+  "/images/mobile-app.jpg",
+  "/images/dev-desk.jpg",
+  "/images/code-macro.jpg",
+  "/images/collaboration.jpg",
+  "/images/studio.jpg",
+];
+
+/** Full-width scrimmed image band. */
+export function MediaBand({
+  src,
+  caption,
+  priority,
+}: {
+  src: string;
+  caption: string;
+  priority?: boolean;
+}) {
+  return (
+    <div className="media-band">
+      <Image
+        src={src}
+        alt=""
+        fill
+        sizes="100vw"
+        priority={priority}
+        aria-hidden="true"
+      />
+      <p className="band-cap">{caption}</p>
+    </div>
+  );
+}
 
 const BASELINE = "studio de développement";
 const VILLE = "Bruxelles";
@@ -34,6 +72,16 @@ export function Hero({ section }: { section?: Section }) {
 
   return (
     <section id="top" className="hero">
+      <div className="hero-media">
+        <Image
+          src="/images/code-macro.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          priority
+          aria-hidden="true"
+        />
+      </div>
       <div className="wrap hero-in">
         <div className="hero-copy">
           <p className="mono tiny eyebrow">{kicker.toUpperCase()}</p>
@@ -134,8 +182,8 @@ export function Services({
           />
         )}
         <div className="grid3">
-          {items.map((s) => (
-            <article key={s.id} className="card">
+          {items.map((s, i) => (
+            <Reveal key={s.id} as="article" className="card" delay={i * 90}>
               {s.lotLabel && <span className="mono tiny lot">{s.lotLabel}</span>}
               <h3>{s.title}</h3>
               {s.summary && <p>{s.summary}</p>}
@@ -147,7 +195,7 @@ export function Services({
                   </li>
                 ))}
               </ul>
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -174,15 +222,15 @@ export function Methode({
           />
         )}
         <ol className="steps">
-          {steps.map((e) => (
-            <li key={e.id} className="step">
+          {steps.map((e, i) => (
+            <Reveal key={e.id} as="li" className="step" delay={i * 80}>
               <span className="step-n mono">{e.number}</span>
               <div>
                 <h3>{e.title}</h3>
                 {e.description && <p>{e.description}</p>}
                 {e.duration && <span className="mono tiny dim">{e.duration}</span>}
               </div>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </div>
@@ -210,16 +258,29 @@ export function Travaux({
           />
         )}
         <div className="grid3">
-          {projects.map((r) => (
-            <article key={r.id} className="case">
+          {projects.map((r, i) => (
+            <Reveal key={r.id} as="article" className="case" delay={i * 90}>
+              <div className="case-media">
+                <Image
+                  src={CASE_IMAGES[i % CASE_IMAGES.length]!}
+                  alt=""
+                  fill
+                  sizes="(max-width: 720px) 100vw, 33vw"
+                  aria-hidden="true"
+                />
+              </div>
               {r.sector && <span className="mono tiny dim">{r.sector}</span>}
-              {r.metricValue && <p className="case-num">{r.metricValue}</p>}
+              {r.metricValue && (
+                <p className="case-num">
+                  <CountUp value={r.metricValue} />
+                </p>
+              )}
               {r.metricLabel && <p className="case-leg">{r.metricLabel}</p>}
               <h3>{r.title}</h3>
               {r.stack.length > 0 && (
                 <span className="mono tiny dim">{r.stack.join(" · ")}</span>
               )}
-            </article>
+            </Reveal>
           ))}
         </div>
       </div>
@@ -246,10 +307,12 @@ export function Tarifs({
           />
         )}
         <div className="grid3">
-          {plans.map((t) => (
-            <article
+          {plans.map((t, i) => (
+            <Reveal
               key={t.id}
+              as="article"
               className={"tarif" + (t.isHighlighted ? " vedette" : "")}
+              delay={i * 90}
             >
               {t.isHighlighted && (
                 <span className="badge mono tiny">Le plus demandé</span>
@@ -271,7 +334,7 @@ export function Tarifs({
               >
                 Demander un devis
               </Link>
-            </article>
+            </Reveal>
           ))}
         </div>
         <p className="note mono tiny">

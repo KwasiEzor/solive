@@ -23,6 +23,7 @@ export default async function RealisationsPage() {
         kicker="Réalisations"
         title="Ce que ça donne une fois livré."
         lede="Des projets concrets, des résultats mesurés. Cliquez pour le détail de chaque étude de cas."
+        image="/images/code-screen.jpg"
       />
       <Travaux head={sections.travaux} projects={projects} hideHead />
       <ContactCta />

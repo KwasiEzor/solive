@@ -1,6 +1,7 @@
 import { Faq } from "@/components/site/faq";
 import {
   Hero,
+  MediaBand,
   Methode,
   Services,
   Tarifs,
@@ -84,6 +85,10 @@ export default async function HomePage() {
       <Ticker />
       <Services head={sections.services} items={services} />
       <Methode head={sections.methode} steps={steps} />
+      <MediaBand
+        src="/images/studio.jpg"
+        caption="Un atelier, pas une agence. Vous parlez à qui code."
+      />
       <Travaux head={sections.travaux} projects={projects} />
       <Tarifs head={sections.tarifs} plans={plans} />
       <Faq head={sections.faq} items={faqs} />

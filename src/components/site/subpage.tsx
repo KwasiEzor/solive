@@ -1,17 +1,32 @@
+import Image from "next/image";
 import Link from "next/link";
 
-/** Compact hero for dedicated pages. */
+/** Compact hero for dedicated pages, with optional scrimmed backdrop. */
 export function PageHeader({
   kicker,
   title,
   lede,
+  image,
 }: {
   kicker: string;
   title: string;
   lede?: string;
+  image?: string;
 }) {
   return (
-    <section className="page-head">
+    <section className={"page-head" + (image ? " has-media" : "")}>
+      {image && (
+        <div className="hero-media">
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="100vw"
+            priority
+            aria-hidden="true"
+          />
+        </div>
+      )}
       <div className="wrap">
         <p className="mono tiny eyebrow">{kicker.toUpperCase()}</p>
         <h1>{title}</h1>

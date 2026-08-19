@@ -19,6 +19,7 @@ export default async function ContactPage() {
         kicker="Contact"
         title="Dites-moi ce que vous voulez construire."
         lede="Un appel de 20 minutes, un devis fixe, un calendrier daté. Réponse sous 24 h ouvrées."
+        image="/images/collaboration.jpg"
       />
       <Contact email={settings?.email ?? undefined} hideHead />
     </>

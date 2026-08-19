@@ -29,6 +29,7 @@ export default async function TarifsPage() {
         kicker="Tarifs"
         title="Les ordres de grandeur, avant même de s’appeler."
         lede="Un devis fixe pour le périmètre écrit. Pas de rallonge surprise : tout ajout est chiffré à part, et vous décidez."
+        image="/images/workspace.jpg"
       />
       <Tarifs head={sections.tarifs} plans={plans} hideHead />
       <Faq head={sections.faq} items={faqs} />

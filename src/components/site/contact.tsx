@@ -13,9 +13,11 @@ const TYPES = [
 export function Contact({
   head,
   email = "bonjour@solive.be",
+  hideHead,
 }: {
   head?: { kicker: string | null; heading: string | null };
   email?: string;
+  hideHead?: boolean;
 }) {
   const [sel, setSel] = useState<string[]>([]);
   const [f, setF] = useState({ nom: "", email: "", societe: "", msg: "" });
@@ -40,10 +42,12 @@ export function Contact({
   return (
     <section id="contact" className="sec contact">
       <div className="wrap narrow">
-        <SecHead
-          kicker={head?.kicker ?? "Contact"}
-          titre={head?.heading ?? "Dites-moi ce que vous voulez construire."}
-        />
+        {!hideHead && (
+          <SecHead
+            kicker={head?.kicker ?? "Contact"}
+            titre={head?.heading ?? "Dites-moi ce que vous voulez construire."}
+          />
+        )}
         {sent ? (
           <div className="sent">
             <p className="mono tiny dim">DEMANDE ENREGISTRÉE</p>

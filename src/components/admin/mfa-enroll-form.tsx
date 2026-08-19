@@ -9,6 +9,14 @@ import {
 
 type Enroll = { factorId: string; qrCode: string; secret: string };
 
+const btnStyle = {
+  background: "linear-gradient(180deg, var(--acc), var(--acc-strong))",
+  color: "var(--on-acc)",
+  boxShadow: "var(--shadow-sm)",
+} as const;
+const btnCls =
+  "rounded-lg px-4 py-2.5 font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-60";
+
 export function MfaEnrollForm() {
   const router = useRouter();
   const [enroll, setEnroll] = useState<Enroll | null>(null);
@@ -35,10 +43,7 @@ export function MfaEnrollForm() {
     if (!enroll) return;
     setPending(true);
     setError("");
-    const r = await confirmTotpEnrollAction({
-      factorId: enroll.factorId,
-      code,
-    });
+    const r = await confirmTotpEnrollAction({ factorId: enroll.factorId, code });
     setPending(false);
     if (r.status === "ok") setRecoveryCodes(r.recoveryCodes);
     else setError(r.message);
@@ -46,21 +51,24 @@ export function MfaEnrollForm() {
 
   if (recoveryCodes) {
     return (
-      <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-5 px-6">
-        <h1 className="text-2xl font-extrabold">Codes de récupération</h1>
-        <p className="text-sm text-[var(--dim)]">
-          Conservez ces 8 codes en lieu sûr. Ils ne seront affichés qu’une seule
-          fois et permettent de récupérer l’accès si vous perdez votre
-          téléphone.
+      <div className="flex flex-col gap-4">
+        <h2 className="text-lg font-bold">Vos codes de récupération</h2>
+        <p className="text-sm" style={{ color: "var(--dim)" }}>
+          Conservez ces 8 codes en lieu sûr. Affichés une seule fois, ils
+          permettent de récupérer l’accès si vous perdez votre téléphone.
         </p>
-        <ul className="grid grid-cols-2 gap-2 rounded border border-[var(--line)] bg-[var(--bg2)] p-4 font-mono text-sm">
+        <ul
+          className="grid grid-cols-2 gap-2 rounded-lg p-4 font-mono text-sm"
+          style={{ border: "1px solid var(--line)", background: "var(--bg2)" }}
+        >
           {recoveryCodes.map((c) => (
             <li key={c}>{c}</li>
           ))}
         </ul>
         <button
           onClick={() => router.push("/admin")}
-          className="rounded bg-acc px-4 py-2 font-semibold text-on-acc"
+          className={btnCls}
+          style={btnStyle}
         >
           J’ai enregistré mes codes — continuer
         </button>
@@ -69,24 +77,25 @@ export function MfaEnrollForm() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center gap-5 px-6">
-      <h1 className="text-2xl font-extrabold">Activer l’authentification à deux facteurs</h1>
-      <p className="text-sm text-[var(--dim)]">
-        Scannez le QR code avec votre application d’authentification, puis entrez
-        le code à 6 chiffres.
+    <div className="flex flex-col gap-4">
+      <p className="text-sm" style={{ color: "var(--dim)" }}>
+        Scannez le QR code avec votre application d’authentification (Google
+        Authenticator, 1Password, Authy…), puis entrez le code à 6 chiffres.
       </p>
       {enroll && (
         <>
-          {/* Supabase returns an SVG/data-URI QR; render as image (CSP img-src allows data:). */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={enroll.qrCode}
             alt="QR code d’enrôlement TOTP"
-            width={200}
-            height={200}
-            className="self-start rounded bg-white p-2"
+            width={176}
+            height={176}
+            className="self-start rounded-lg bg-white p-2"
           />
-          <p className="break-all font-mono text-xs text-[var(--dim)]">
+          <p
+            className="break-all font-mono text-xs"
+            style={{ color: "var(--dim2)" }}
+          >
             Clé manuelle : {enroll.secret}
           </p>
           <form onSubmit={onConfirm} className="flex flex-col gap-3" noValidate>
@@ -101,19 +110,30 @@ export function MfaEnrollForm() {
               required
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2 tracking-widest"
+              className="rounded-lg px-3 py-2.5 tracking-[0.4em]"
+              style={{
+                border: "1px solid var(--line)",
+                background: "var(--bg2)",
+                color: "var(--fg)",
+              }}
             />
             <button
               type="submit"
               disabled={pending}
-              className="rounded bg-acc px-4 py-2 font-semibold text-on-acc disabled:opacity-60"
+              className={btnCls}
+              style={btnStyle}
             >
-              {pending ? "Vérification…" : "Activer"}
+              {pending ? "Vérification…" : "Activer la double authentification"}
             </button>
           </form>
         </>
       )}
-      <p role="alert" aria-live="polite" className="min-h-5 text-sm text-red-600">
+      <p
+        role="alert"
+        aria-live="polite"
+        className="min-h-5 text-sm"
+        style={{ color: "#f87171" }}
+      >
         {error}
       </p>
     </div>

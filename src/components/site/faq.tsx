@@ -21,15 +21,25 @@ function answerText(answer: unknown): string {
   return "";
 }
 
-export function Faq({ head, items }: { head?: { kicker: string | null; heading: string | null }; items: FaqItem[] }) {
+export function Faq({
+  head,
+  items,
+  hideHead,
+}: {
+  head?: { kicker: string | null; heading: string | null };
+  items: FaqItem[];
+  hideHead?: boolean;
+}) {
   const [open, setOpen] = useState(0);
   return (
     <section id="faq" className="sec">
       <div className="wrap narrow">
-        <SecHead
-          kicker={head?.kicker ?? "Questions"}
-          titre={head?.heading ?? "Ce qu'on nous demande avant de signer."}
-        />
+        {!hideHead && (
+          <SecHead
+            kicker={head?.kicker ?? "Questions"}
+            titre={head?.heading ?? "Ce qu'on nous demande avant de signer."}
+          />
+        )}
         <div className="faq">
           {items.map((f, i) => {
             const isOpen = open === i;

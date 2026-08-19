@@ -10,7 +10,7 @@ export default async function PublicLayout({
   children: ReactNode;
 }) {
   const settings = await getSiteSettings();
-  const palette = settings?.activePalette ?? "chaux";
+  const palette = settings?.activePalette ?? "ardoise";
   const brand = (settings?.name ?? "SOLIVE").toUpperCase();
 
   return (

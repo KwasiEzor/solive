@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AuthShell } from "@/components/admin/auth-shell";
 import { LoginForm } from "@/components/admin/login-form";
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function ConnexionPage() {
-  return <LoginForm />;
+  return (
+    <AuthShell title="Connexion" subtitle="Accédez à votre espace d’administration.">
+      <LoginForm />
+    </AuthShell>
+  );
 }

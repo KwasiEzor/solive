@@ -62,6 +62,19 @@ test.describe("vitrine", () => {
     expect(violations).toEqual([]);
   });
 
+  for (const path of ["/services", "/realisations", "/tarifs", "/contact"]) {
+    test(`no serious/critical axe violations on ${path}`, async ({ page }) => {
+      await page.goto(path);
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+        .analyze();
+      const severe = results.violations.filter(
+        (v) => v.impact === "serious" || v.impact === "critical",
+      );
+      expect(severe.map((v) => v.id)).toEqual([]);
+    });
+  }
+
   test("exposes JSON-LD and canonical metadata (SLV-101)", async ({ page }) => {
     await page.goto("/");
     const ld = await page

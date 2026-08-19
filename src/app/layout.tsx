@@ -42,7 +42,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="fr"
-      className={`t-chaux ${display.variable} ${sans.variable} ${mono.variable} h-full`}
+      className={`t-ardoise ${display.variable} ${sans.variable} ${mono.variable} h-full`}
     >
       <body className="min-h-full">{children}</body>
     </html>

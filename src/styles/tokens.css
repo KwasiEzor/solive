@@ -1,64 +1,89 @@
 /**
- * Solive design tokens — three switchable palettes (SLV-020, SLV-067).
- * Applied via a `t-<palette>` class on the root element. The active palette
- * is chosen in admin settings and applied to the public site without redeploy.
- * Contrast verified per SLV-111 (AA: 4.5:1 text, 3:1 UI) on all three.
+ * Solive design tokens — three premium, switchable palettes (SLV-020, SLV-067).
+ * Applied via a `t-<palette>` class on the root element. Each palette ships
+ * elevation + glow + gradient tokens for real depth. Contrast verified AA
+ * (SLV-111): text ≥ 4.5:1, UI ≥ 3:1, all three palettes.
+ *
+ * Default: `ardoise` — refined dark (the studio's signature look).
  */
 
-/* chaux — light */
-.t-chaux {
-  --bg: #e9eae4;
-  --bg2: #f3f4ef;
-  --bg3: #dfe1d9;
-  --fg: #151e19;
-  /* AA-compliant on --bg/--bg2/--bg3 (SLV-111): ≥4.5:1 for small text. */
-  --dim: rgba(21, 30, 25, 0.74);
-  --dim2: rgba(21, 30, 25, 0.66);
-  --acc: #0f5c43;
-  --on-acc: #f3f4ef;
-  --line: rgba(21, 30, 25, 0.16);
-  --line2: rgba(21, 30, 25, 0.07);
-  --nav: rgba(233, 234, 228, 0.86);
-  --pl-stroke: rgba(21, 30, 25, 0.42);
-  --pl-solid: rgba(21, 30, 25, 0.2);
-  --pl-dot: rgba(21, 30, 25, 0.25);
-  --theme-color: #0f5c43;
-}
-
-/* ardoise — dark */
+/* ── ardoise — refined dark (default / signature) ─────────────────────── */
 .t-ardoise {
-  --bg: #16181a;
-  --bg2: #1f2226;
-  --bg3: #101214;
-  --fg: #e8ebe7;
-  --dim: rgba(232, 235, 231, 0.68);
-  --dim2: rgba(232, 235, 231, 0.56);
-  --acc: #4fd1a5;
-  --on-acc: #0d1f19;
-  --line: rgba(232, 235, 231, 0.15);
-  --line2: rgba(232, 235, 231, 0.07);
-  --nav: rgba(22, 24, 26, 0.86);
-  --pl-stroke: rgba(232, 235, 231, 0.48);
-  --pl-solid: rgba(232, 235, 231, 0.26);
-  --pl-dot: rgba(232, 235, 231, 0.32);
-  --theme-color: #16181a;
+  --bg: #0a0c10;
+  --bg2: #12151d;
+  --bg3: #0d1016;
+  --fg: #e9edf3;
+  --dim: rgba(233, 237, 243, 0.72);
+  --dim2: rgba(233, 237, 243, 0.56);
+  --acc: #34e4a1;
+  --acc-strong: #24c98a;
+  --on-acc: #04140d;
+  --line: rgba(233, 237, 243, 0.1);
+  --line2: rgba(233, 237, 243, 0.055);
+  --nav: rgba(10, 12, 16, 0.72);
+  --pl-stroke: rgba(233, 237, 243, 0.4);
+  --pl-solid: rgba(233, 237, 243, 0.22);
+  --pl-dot: rgba(233, 237, 243, 0.3);
+  --theme-color: #0a0c10;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+  --glow: 0 0 0 1px rgba(52, 228, 161, 0.25), 0 8px 30px -8px rgba(52, 228, 161, 0.35);
+  --grad-hero: radial-gradient(120% 80% at 75% 0%, rgba(52, 228, 161, 0.1), transparent 60%);
+  --card-grad: linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
 }
 
-/* cobalt — blue */
+/* ── chaux — warm editorial light ─────────────────────────────────────── */
+.t-chaux {
+  --bg: #f7f6f2;
+  --bg2: #ffffff;
+  --bg3: #efece5;
+  --fg: #14171a;
+  --dim: rgba(20, 23, 26, 0.7);
+  --dim2: rgba(20, 23, 26, 0.58);
+  --acc: #0a7a57;
+  --acc-strong: #096547;
+  --on-acc: #ffffff;
+  --line: rgba(20, 23, 26, 0.12);
+  --line2: rgba(20, 23, 26, 0.06);
+  --nav: rgba(247, 246, 242, 0.78);
+  --pl-stroke: rgba(20, 23, 26, 0.4);
+  --pl-solid: rgba(20, 23, 26, 0.18);
+  --pl-dot: rgba(20, 23, 26, 0.24);
+  --theme-color: #f7f6f2;
+
+  --shadow-sm: 0 1px 2px rgba(20, 23, 26, 0.06);
+  --shadow-md: 0 12px 28px -12px rgba(20, 23, 26, 0.18);
+  --shadow-lg: 0 28px 60px -24px rgba(20, 23, 26, 0.22);
+  --glow: 0 0 0 1px rgba(10, 122, 87, 0.2), 0 12px 30px -10px rgba(10, 122, 87, 0.28);
+  --grad-hero: radial-gradient(120% 80% at 75% 0%, rgba(10, 122, 87, 0.07), transparent 60%);
+  --card-grad: linear-gradient(180deg, rgba(20, 23, 26, 0.015), transparent);
+}
+
+/* ── cobalt — deep blue + amber ───────────────────────────────────────── */
 .t-cobalt {
-  --bg: #0d1526;
-  --bg2: #152238;
-  --bg3: #0a101e;
-  --fg: #e4eaf5;
-  --dim: rgba(228, 234, 245, 0.68);
-  --dim2: rgba(228, 234, 245, 0.56);
-  --acc: #f0a83c;
-  --on-acc: #0d1526;
-  --line: rgba(228, 234, 245, 0.16);
-  --line2: rgba(228, 234, 245, 0.07);
-  --nav: rgba(13, 21, 38, 0.86);
-  --pl-stroke: rgba(228, 234, 245, 0.48);
-  --pl-solid: rgba(228, 234, 245, 0.26);
-  --pl-dot: rgba(228, 234, 245, 0.32);
-  --theme-color: #0d1526;
+  --bg: #0a1020;
+  --bg2: #111a2e;
+  --bg3: #0c1322;
+  --fg: #e6ecf7;
+  --dim: rgba(230, 236, 247, 0.72);
+  --dim2: rgba(230, 236, 247, 0.56);
+  --acc: #f6b24c;
+  --acc-strong: #eaa02f;
+  --on-acc: #0a1020;
+  --line: rgba(230, 236, 247, 0.12);
+  --line2: rgba(230, 236, 247, 0.06);
+  --nav: rgba(10, 16, 32, 0.74);
+  --pl-stroke: rgba(230, 236, 247, 0.42);
+  --pl-solid: rgba(230, 236, 247, 0.24);
+  --pl-dot: rgba(230, 236, 247, 0.3);
+  --theme-color: #0a1020;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 10px 26px -10px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 26px 60px -22px rgba(0, 0, 0, 0.65);
+  --glow: 0 0 0 1px rgba(246, 178, 76, 0.28), 0 10px 30px -10px rgba(246, 178, 76, 0.35);
+  --grad-hero: radial-gradient(120% 80% at 75% 0%, rgba(246, 178, 76, 0.1), transparent 60%);
+  --card-grad: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
 }

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type {
   PricingPlan,
   ProcessStep,
@@ -65,12 +66,12 @@ export function Hero({ section }: { section?: Section }) {
             calendrier daté, code livré à votre nom.
           </p>
           <div className="hero-cta">
-            <a href="#contact" className="btn">
+            <Link href="/contact" className="btn">
               Prendre 20 minutes
-            </a>
-            <a href="#methode" className="btn ghost">
+            </Link>
+            <Link href="/services" className="btn ghost">
               Voir comment on travaille
-            </a>
+            </Link>
           </div>
           <ul className="hero-facts mono tiny">
             <li>4 à 6 semaines pour un site</li>
@@ -117,17 +118,21 @@ export function Ticker() {
 export function Services({
   head,
   items,
+  hideHead,
 }: {
   head?: Section;
   items: Service[];
+  hideHead?: boolean;
 }) {
   return (
     <section id="services" className="sec">
       <div className="wrap">
-        <SecHead
-          kicker={head?.kicker ?? "Ce qu'on fabrique"}
-          titre={head?.heading ?? "Trois lots, un seul interlocuteur."}
-        />
+        {!hideHead && (
+          <SecHead
+            kicker={head?.kicker ?? "Ce qu'on fabrique"}
+            titre={head?.heading ?? "Trois lots, un seul interlocuteur."}
+          />
+        )}
         <div className="grid3">
           {items.map((s) => (
             <article key={s.id} className="card">
@@ -153,17 +158,21 @@ export function Services({
 export function Methode({
   head,
   steps,
+  hideHead,
 }: {
   head?: Section;
   steps: ProcessStep[];
+  hideHead?: boolean;
 }) {
   return (
     <section id="methode" className="sec alt">
       <div className="wrap">
-        <SecHead
-          kicker={head?.kicker ?? "La méthode"}
-          titre={head?.heading ?? "Quatre étapes. Vous savez toujours où on en est."}
-        />
+        {!hideHead && (
+          <SecHead
+            kicker={head?.kicker ?? "La méthode"}
+            titre={head?.heading ?? "Quatre étapes. Vous savez toujours où on en est."}
+          />
+        )}
         <ol className="steps">
           {steps.map((e) => (
             <li key={e.id} className="step">
@@ -184,18 +193,22 @@ export function Methode({
 export function Travaux({
   head,
   projects,
+  hideHead,
 }: {
   head?: Section;
   projects: Project[];
+  hideHead?: boolean;
 }) {
   if (projects.length === 0) return null;
   return (
     <section id="travaux" className="sec">
       <div className="wrap">
-        <SecHead
-          kicker={head?.kicker ?? "Travaux"}
-          titre={head?.heading ?? "Ce que ça donne une fois livré."}
-        />
+        {!hideHead && (
+          <SecHead
+            kicker={head?.kicker ?? "Travaux"}
+            titre={head?.heading ?? "Ce que ça donne une fois livré."}
+          />
+        )}
         <div className="grid3">
           {projects.map((r) => (
             <article key={r.id} className="case">
@@ -217,17 +230,21 @@ export function Travaux({
 export function Tarifs({
   head,
   plans,
+  hideHead,
 }: {
   head?: Section;
   plans: PricingPlan[];
+  hideHead?: boolean;
 }) {
   return (
     <section id="tarifs" className="sec alt">
       <div className="wrap">
-        <SecHead
-          kicker={head?.kicker ?? "Tarifs"}
-          titre={head?.heading ?? "Les ordres de grandeur, avant même de s'appeler."}
-        />
+        {!hideHead && (
+          <SecHead
+            kicker={head?.kicker ?? "Tarifs"}
+            titre={head?.heading ?? "Les ordres de grandeur, avant même de s'appeler."}
+          />
+        )}
         <div className="grid3">
           {plans.map((t) => (
             <article
@@ -248,12 +265,12 @@ export function Tarifs({
                   </li>
                 ))}
               </ul>
-              <a
-                href="#contact"
+              <Link
+                href="/contact"
                 className={"btn full" + (t.isHighlighted ? "" : " ghost")}
               >
                 Demander un devis
-              </a>
+              </Link>
             </article>
           ))}
         </div>

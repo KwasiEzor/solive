@@ -1,13 +1,12 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Mark } from "./icons";
 
 const LINKS: [string, string][] = [
-  ["#services", "Services"],
-  ["#methode", "Méthode"],
-  ["#travaux", "Travaux"],
-  ["#tarifs", "Tarifs"],
-  ["#faq", "Questions"],
+  ["/services", "Services"],
+  ["/realisations", "Réalisations"],
+  ["/tarifs", "Tarifs"],
 ];
 
 export function Nav({ brand = "SOLIVE" }: { brand?: string }) {
@@ -23,22 +22,22 @@ export function Nav({ brand = "SOLIVE" }: { brand?: string }) {
   return (
     <header className={"nav" + (solid ? " solid" : "")}>
       <div className="wrap nav-in">
-        <a href="#top" className="brand" aria-label={`${brand}, accueil`}>
+        <Link href="/" className="brand" aria-label={`${brand}, accueil`}>
           <span className="mark">
             <Mark />
           </span>
           <span>{brand}</span>
-        </a>
+        </Link>
         <nav className="nav-links" aria-label="Navigation principale">
-          {LINKS.map(([h, l]) => (
-            <a key={h} href={h}>
-              {l}
-            </a>
+          {LINKS.map(([href, label]) => (
+            <Link key={href} href={href}>
+              {label}
+            </Link>
           ))}
         </nav>
-        <a href="#contact" className="btn-sm">
+        <Link href="/contact" className="btn-sm">
           Parler du projet
-        </a>
+        </Link>
         <button
           type="button"
           className="burger"
@@ -53,14 +52,14 @@ export function Nav({ brand = "SOLIVE" }: { brand?: string }) {
       </div>
       {open && (
         <div className="nav-mob">
-          {LINKS.map(([h, l]) => (
-            <a key={h} href={h} onClick={() => setOpen(false)}>
-              {l}
-            </a>
+          {LINKS.map(([href, label]) => (
+            <Link key={href} href={href} onClick={() => setOpen(false)}>
+              {label}
+            </Link>
           ))}
-          <a href="#contact" className="btn" onClick={() => setOpen(false)}>
+          <Link href="/contact" className="btn" onClick={() => setOpen(false)}>
             Parler du projet
-          </a>
+          </Link>
         </div>
       )}
     </header>

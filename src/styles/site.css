@@ -108,8 +108,9 @@
 }
 .nav.solid {
   background: var(--nav);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px) saturate(1.2);
   border-bottom-color: var(--line);
+  box-shadow: var(--shadow-sm);
 }
 .nav-in {
   display: flex;
@@ -187,21 +188,22 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--acc);
+  background: linear-gradient(180deg, var(--acc), var(--acc-strong));
   color: var(--on-acc);
   font-weight: 600;
   font-size: 14.5px;
   padding: 13px 22px;
   border: 1px solid var(--acc);
-  border-radius: 2px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.15s, opacity 0.2s;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.18s ease, box-shadow 0.25s ease, opacity 0.2s;
   font-family: inherit;
 }
 .btn:hover {
   color: var(--on-acc);
   transform: translateY(-2px);
-  opacity: 0.92;
+  box-shadow: var(--glow);
 }
 .btn.ghost {
   background: transparent;
@@ -226,13 +228,14 @@
 .btn-sm {
   padding: 9px 16px;
   font-size: 13.5px;
-  background: transparent;
+  background: var(--bg2);
   color: var(--fg);
   border: 1px solid var(--line);
   display: inline-flex;
   align-items: center;
-  border-radius: 2px;
+  border-radius: 8px;
   font-weight: 500;
+  box-shadow: var(--shadow-sm);
   transition: 0.2s;
 }
 .btn-sm:hover {
@@ -242,7 +245,43 @@
 
 /* hero */
 .hero {
-  padding: 76px 0 40px;
+  padding: 88px 0 48px;
+  background: var(--grad-hero);
+}
+
+/* dedicated page header */
+.page-head {
+  padding: 76px 0 8px;
+  background: var(--grad-hero);
+}
+.page-head h1 {
+  font-size: clamp(2.2rem, 4.6vw, 3.7rem);
+  max-width: 18ch;
+}
+.page-head .lede {
+  margin-top: 20px;
+}
+
+/* call-to-action band */
+.cta-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  border: 1px solid color-mix(in srgb, var(--acc) 30%, var(--line));
+  border-radius: 18px;
+  background: var(--bg2) var(--card-grad);
+  box-shadow: var(--glow);
+  padding: 32px 36px;
+}
+.cta-band h2 {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+.cta-band p {
+  color: var(--dim);
+  max-width: 42ch;
 }
 .hero-in {
   display: grid;
@@ -309,9 +348,10 @@
 /* plan */
 .plan-wrap {
   border: 1px solid var(--line);
-  background: var(--bg2);
-  border-radius: 4px;
-  padding: 14px;
+  background: var(--bg2) var(--card-grad);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-lg);
 }
 .plan-head {
   display: flex;
@@ -467,14 +507,16 @@
 /* cards services */
 .card {
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: 14px;
   padding: 28px 24px 26px;
-  background: var(--bg2);
-  transition: border-color 0.25s, transform 0.25s;
+  background: var(--bg2) var(--card-grad);
+  box-shadow: var(--shadow-md);
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.3s;
 }
 .card:hover {
-  border-color: var(--acc);
-  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--acc) 55%, var(--line));
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 .lot {
   color: var(--acc);
@@ -562,17 +604,19 @@
 /* travaux */
 .case {
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: 14px;
   padding: 26px 24px;
-  background: var(--bg2);
+  background: var(--bg2) var(--card-grad);
+  box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: border-color 0.25s, transform 0.25s;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.3s;
 }
 .case:hover {
-  border-color: var(--acc);
-  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--acc) 55%, var(--line));
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 .case-num {
   font-family: var(--font-display), sans-serif;
@@ -598,16 +642,22 @@
 /* tarifs */
 .tarif {
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: 14px;
   padding: 28px 24px;
-  background: var(--bg2);
+  background: var(--bg2) var(--card-grad);
+  box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
   position: relative;
+  transition: transform 0.25s, box-shadow 0.3s;
+}
+.tarif:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 .tarif.vedette {
   border-color: var(--acc);
-  box-shadow: 0 0 0 1px var(--acc);
+  box-shadow: var(--glow);
 }
 .badge {
   position: absolute;

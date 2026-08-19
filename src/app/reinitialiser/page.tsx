@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { AuthShell } from "@/components/admin/auth-shell";
 import { SetNewPasswordForm } from "@/components/admin/password-forms";
 import { createSupabaseServerClient } from "@/server/auth/supabase-server";
 
@@ -15,5 +16,12 @@ export default async function ResetPage() {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/mot-de-passe-oublie");
-  return <SetNewPasswordForm />;
+  return (
+    <AuthShell
+      title="Nouveau mot de passe"
+      subtitle="Choisissez un mot de passe fort. Toutes vos autres sessions seront déconnectées."
+    >
+      <SetNewPasswordForm />
+    </AuthShell>
+  );
 }

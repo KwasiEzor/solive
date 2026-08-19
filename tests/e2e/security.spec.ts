@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 /**
@@ -21,6 +22,13 @@ test("connexion renders an accessible login form", async ({ page }) => {
   await page.goto("/connexion");
   await expect(page.getByLabel("E-mail")).toBeVisible();
   await expect(page.getByLabel("Mot de passe")).toBeVisible();
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+    .analyze();
+  const severe = results.violations.filter(
+    (v) => v.impact === "serious" || v.impact === "critical",
+  );
+  expect(severe.map((v) => v.id)).toEqual([]);
 });
 
 test("security headers are set on the public site (SLV-051)", async ({

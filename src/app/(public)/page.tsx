@@ -1,4 +1,3 @@
-import { Contact } from "@/components/site/contact";
 import { Faq } from "@/components/site/faq";
 import {
   Hero,
@@ -8,6 +7,7 @@ import {
   Ticker,
   Travaux,
 } from "@/components/site/sections";
+import { ContactCta } from "@/components/site/subpage";
 import { env } from "@/lib/env";
 import {
   getFaqItems,
@@ -87,7 +87,7 @@ export default async function HomePage() {
       <Travaux head={sections.travaux} projects={projects} />
       <Tarifs head={sections.tarifs} plans={plans} />
       <Faq head={sections.faq} items={faqs} />
-      <Contact head={sections.contact} email={settings?.email ?? undefined} />
+      <ContactCta />
     </>
   );
 }

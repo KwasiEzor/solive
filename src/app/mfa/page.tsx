@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { AuthShell } from "@/components/admin/auth-shell";
 import { MfaEnrollForm } from "@/components/admin/mfa-enroll-form";
 import { getCurrentAdmin } from "@/server/auth/guards";
 
@@ -13,5 +14,12 @@ export const metadata: Metadata = {
 export default async function MfaPage() {
   const admin = await getCurrentAdmin();
   if (!admin.ok) redirect("/connexion");
-  return <MfaEnrollForm />;
+  return (
+    <AuthShell
+      title="Double authentification"
+      subtitle="Obligatoire pour protéger l’accès à l’administration."
+    >
+      <MfaEnrollForm />
+    </AuthShell>
+  );
 }

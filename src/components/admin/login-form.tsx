@@ -1,8 +1,20 @@
 "use client";
-import type { FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { loginAction, verifyTotpAction } from "@/server/actions/auth";
+import { PasswordField } from "./password-field";
+
+const inputCls = "w-full rounded-lg px-3 py-2.5";
+const inputStyle = {
+  border: "1px solid var(--line)",
+  background: "var(--bg2)",
+  color: "var(--fg)",
+} as const;
+const btnStyle = {
+  background: "linear-gradient(180deg, var(--acc), var(--acc-strong))",
+  color: "var(--on-acc)",
+  boxShadow: "var(--shadow-sm)",
+} as const;
 
 export function LoginForm() {
   const router = useRouter();
@@ -38,9 +50,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">Connexion</h1>
-
+    <div className="flex flex-col gap-5">
       {step === "login" ? (
         <form onSubmit={onLogin} className="flex flex-col gap-4" noValidate>
           <div className="flex flex-col gap-1.5">
@@ -49,73 +59,76 @@ export function LoginForm() {
             </label>
             <input
               id="email"
-              name="email"
               type="email"
               autoComplete="username"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2"
+              className={inputCls}
+              style={inputStyle}
             />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-sm font-medium">
-              Mot de passe
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2"
-            />
-          </div>
+          <PasswordField
+            id="password"
+            label="Mot de passe"
+            value={password}
+            onChange={setPassword}
+            autoComplete="current-password"
+          />
           <button
             type="submit"
             disabled={pending}
-            className="rounded bg-acc px-4 py-2 font-semibold text-on-acc disabled:opacity-60"
+            className="rounded-lg px-4 py-2.5 font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            style={btnStyle}
           >
             {pending ? "Connexion…" : "Se connecter"}
           </button>
           <a
             href="/mot-de-passe-oublie"
-            className="text-sm text-[var(--dim)] underline underline-offset-2 hover:text-acc"
+            className="text-sm underline underline-offset-2"
+            style={{ color: "var(--dim)" }}
           >
             Mot de passe oublié ?
           </a>
         </form>
       ) : (
         <form onSubmit={onMfa} className="flex flex-col gap-4" noValidate>
+          <p className="text-sm" style={{ color: "var(--dim)" }}>
+            Entrez le code à 6 chiffres de votre application d’authentification.
+          </p>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="otp" className="text-sm font-medium">
-              Code d’authentification (6 chiffres)
+              Code d’authentification
             </label>
             <input
               id="otp"
-              name="otp"
               inputMode="numeric"
               autoComplete="one-time-code"
               pattern="\d{6}"
               required
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2 tracking-widest"
+              className={`${inputCls} tracking-[0.4em]`}
+              style={inputStyle}
             />
           </div>
           <button
             type="submit"
             disabled={pending}
-            className="rounded bg-acc px-4 py-2 font-semibold text-on-acc disabled:opacity-60"
+            className="rounded-lg px-4 py-2.5 font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            style={btnStyle}
           >
             {pending ? "Vérification…" : "Valider"}
           </button>
         </form>
       )}
 
-      <p role="alert" aria-live="polite" className="min-h-5 text-sm text-red-600">
+      <p
+        role="alert"
+        aria-live="polite"
+        className="min-h-5 text-sm"
+        style={{ color: "#f87171" }}
+      >
         {error}
       </p>
     </div>

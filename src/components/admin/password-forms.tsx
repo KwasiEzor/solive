@@ -5,11 +5,20 @@ import {
   requestPasswordResetAction,
   updatePasswordAction,
 } from "@/server/actions/password";
+import { PasswordField } from "./password-field";
 
-const inputCls =
-  "rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2";
+const inputStyle = {
+  border: "1px solid var(--line)",
+  background: "var(--bg2)",
+  color: "var(--fg)",
+} as const;
+const btnStyle = {
+  background: "linear-gradient(180deg, var(--acc), var(--acc-strong))",
+  color: "var(--on-acc)",
+  boxShadow: "var(--shadow-sm)",
+} as const;
 const btnCls =
-  "rounded bg-acc px-4 py-2 font-semibold text-on-acc disabled:opacity-60";
+  "rounded-lg px-4 py-2.5 font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-60";
 
 export function RequestResetForm() {
   const [email, setEmail] = useState("");
@@ -21,39 +30,39 @@ export function RequestResetForm() {
     setPending(true);
     await requestPasswordResetAction({ email });
     setPending(false);
-    setDone(true); // always generic (no enumeration)
+    setDone(true);
+  }
+
+  if (done) {
+    return (
+      <p role="status" className="text-sm" style={{ color: "var(--dim)" }}>
+        Si un compte est associé à cette adresse, un e-mail avec un lien de
+        réinitialisation vient d’être envoyé. Le lien expire après 30 minutes.
+      </p>
+    );
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">
-        Mot de passe oublié
-      </h1>
-      {done ? (
-        <p role="status" className="text-sm text-[var(--dim)]">
-          Si un compte est associé à cette adresse, un e-mail avec un lien de
-          réinitialisation vient d’être envoyé. Le lien expire après 30 minutes.
-        </p>
-      ) : (
-        <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
-          <label htmlFor="email" className="text-sm font-medium">
-            E-mail
-          </label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="username"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={inputCls}
-          />
-          <button type="submit" disabled={pending} className={btnCls}>
-            {pending ? "Envoi…" : "Envoyer le lien"}
-          </button>
-        </form>
-      )}
-    </div>
+    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <div className="flex flex-col gap-1.5">
+        <label htmlFor="email" className="text-sm font-medium">
+          E-mail
+        </label>
+        <input
+          id="email"
+          type="email"
+          autoComplete="username"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded-lg px-3 py-2.5"
+          style={inputStyle}
+        />
+      </div>
+      <button type="submit" disabled={pending} className={btnCls} style={btnStyle}>
+        {pending ? "Envoi…" : "Envoyer le lien"}
+      </button>
+    </form>
   );
 }
 
@@ -74,31 +83,26 @@ export function SetNewPasswordForm() {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">
-        Nouveau mot de passe
-      </h1>
-      <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
-        <label htmlFor="password" className="text-sm font-medium">
-          Mot de passe (12 caractères minimum)
-        </label>
-        <input
-          id="password"
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={12}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className={inputCls}
-        />
-        <button type="submit" disabled={pending} className={btnCls}>
-          {pending ? "Enregistrement…" : "Définir le mot de passe"}
-        </button>
-      </form>
-      <p role="alert" aria-live="polite" className="min-h-5 text-sm text-red-600">
+    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <PasswordField
+        id="password"
+        label="Nouveau mot de passe (12 caractères minimum)"
+        value={password}
+        onChange={setPassword}
+        autoComplete="new-password"
+        showStrength
+      />
+      <button type="submit" disabled={pending} className={btnCls} style={btnStyle}>
+        {pending ? "Enregistrement…" : "Définir le mot de passe"}
+      </button>
+      <p
+        role="alert"
+        aria-live="polite"
+        className="min-h-5 text-sm"
+        style={{ color: "#f87171" }}
+      >
         {error}
       </p>
-    </div>
+    </form>
   );
 }

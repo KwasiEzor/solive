@@ -23,6 +23,14 @@ const CASE_IMAGES = [
   "/images/circuit.jpg",
 ];
 
+/** Cover per service lot: vitrine → code, app web → IDE, mobile → device. */
+const SERVICE_IMAGES = [
+  "/images/code-screen.jpg",
+  "/images/code-macro.jpg",
+  "/images/mobile-app.jpg",
+  "/images/terminal.jpg",
+];
+
 /** Full-width scrimmed image band. */
 export function MediaBand({
   src,
@@ -184,6 +192,15 @@ export function Services({
         <div className="grid3">
           {items.map((s, i) => (
             <Reveal key={s.id} as="article" className="card" delay={i * 90}>
+              <div className="card-media">
+                <Image
+                  src={SERVICE_IMAGES[i % SERVICE_IMAGES.length]!}
+                  alt=""
+                  fill
+                  sizes="(max-width: 720px) 100vw, 33vw"
+                  aria-hidden="true"
+                />
+              </div>
               {s.lotLabel && <span className="mono tiny lot">{s.lotLabel}</span>}
               <h3>{s.title}</h3>
               {s.summary && <p>{s.summary}</p>}

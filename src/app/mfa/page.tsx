@@ -3,8 +3,6 @@ import { redirect } from "next/navigation";
 import { MfaEnrollForm } from "@/components/admin/mfa-enroll-form";
 import { getCurrentAdmin } from "@/server/auth/guards";
 
-export const instant = false;
-
 export const metadata: Metadata = {
   title: "Authentification à deux facteurs",
   robots: { index: false, follow: false },

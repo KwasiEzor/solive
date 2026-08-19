@@ -3,8 +3,6 @@ import { redirect } from "next/navigation";
 import { SetNewPasswordForm } from "@/components/admin/password-forms";
 import { createSupabaseServerClient } from "@/server/auth/supabase-server";
 
-export const instant = false;
-
 export const metadata: Metadata = {
   title: "Réinitialiser le mot de passe",
   robots: { index: false, follow: false },

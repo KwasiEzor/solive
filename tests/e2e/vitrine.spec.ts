@@ -39,6 +39,29 @@ test.describe("vitrine", () => {
     expect(severe.map((v) => v.id)).toEqual([]);
   });
 
+  test("client components hydrate under the CSP (FAQ accordion)", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    // The first FAQ item is open by default; use the second (closed) one.
+    const q = page.locator(".faq-item button").nth(1);
+    // Regression guard: if the CSP blocks Next's scripts, nothing hydrates and
+    // aria-expanded never flips.
+    await expect(q).toHaveAttribute("aria-expanded", "false");
+    await q.click();
+    await expect(q).toHaveAttribute("aria-expanded", "true");
+  });
+
+  test("no CSP script violations in the console (SLV-051)", async ({ page }) => {
+    const violations: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error" && /Content Security Policy/i.test(msg.text()))
+        violations.push(msg.text());
+    });
+    await page.goto("/", { waitUntil: "networkidle" });
+    expect(violations).toEqual([]);
+  });
+
   test("exposes JSON-LD and canonical metadata (SLV-101)", async ({ page }) => {
     await page.goto("/");
     const ld = await page

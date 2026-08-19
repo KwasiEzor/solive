@@ -28,8 +28,13 @@ test("security headers are set on the public site (SLV-051)", async ({
 }) => {
   const res = await request.get("/");
   const h = res.headers();
-  expect(h["content-security-policy"]).toContain("frame-ancestors 'none'");
-  expect(h["content-security-policy"]).not.toContain("unsafe-inline");
+  const csp = h["content-security-policy"] ?? "";
+  expect(csp).toContain("frame-ancestors 'none'");
+  const scriptSrc = csp
+    .split(";")
+    .map((d) => d.trim())
+    .find((d) => d.startsWith("script-src"));
+  expect(scriptSrc).not.toContain("unsafe-inline"); // scripts stay strict
   expect(h["x-frame-options"]).toBe("DENY");
   expect(h["x-content-type-options"]).toBe("nosniff");
   expect(h["strict-transport-security"]).toContain("preload");

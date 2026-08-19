@@ -23,7 +23,10 @@ export function contentSecurityPolicy(nonce: string, isDev = false): string {
       "https://challenges.cloudflare.com",
       ...(isDev ? ["'unsafe-eval'"] : []),
     ],
-    "style-src": ["'self'", `'nonce-${nonce}'`],
+    // Styles can't execute code; inline style attributes (animation delays,
+    // etc.) require 'unsafe-inline' — and a style nonce would disable it. Scripts
+    // stay strict (nonce, no unsafe-inline) per SLV-051's intent.
+    "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
     "font-src": ["'self'"],
     "connect-src": ["'self'", "https://*.supabase.co", "https://api.pwnedpasswords.com"],

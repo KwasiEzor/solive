@@ -29,10 +29,14 @@ describe("saltedHash (SLV-125)", () => {
 });
 
 describe("security headers (SLV-051)", () => {
-  it("CSP carries the nonce and forbids inline/object", () => {
+  it("CSP nonces scripts, keeps script-src free of unsafe-inline", () => {
     const csp = contentSecurityPolicy("NONCE123");
-    expect(csp).toContain("'nonce-NONCE123'");
-    expect(csp).not.toContain("unsafe-inline");
+    const scriptSrc = csp
+      .split(";")
+      .map((d) => d.trim())
+      .find((d) => d.startsWith("script-src"))!;
+    expect(scriptSrc).toContain("'nonce-NONCE123'");
+    expect(scriptSrc).not.toContain("unsafe-inline"); // scripts stay strict
     expect(csp).toContain("object-src 'none'");
     expect(csp).toContain("frame-ancestors 'none'");
   });

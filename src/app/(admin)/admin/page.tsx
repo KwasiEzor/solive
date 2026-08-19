@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { getCurrentAdmin } from "@/server/auth/guards";
 
-export const instant = false;
-
 export const metadata: Metadata = {
   title: "Tableau de bord",
   robots: { index: false, follow: false },

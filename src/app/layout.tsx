@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { headers } from "next/headers";
 import { env } from "@/lib/env";
 import "./globals.css";
 
@@ -33,7 +34,11 @@ export const metadata: Metadata = {
     "Studio de développement à Bruxelles : sites vitrines, applications web métier et applications mobiles. Devis fixe, calendrier daté, code livré à votre nom.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Read a request header so pages render per-request: the middleware's CSP
+  // nonce is then applied to Next's scripts (SLV-051). A per-request nonce is
+  // incompatible with static prerendering — see ADR-0006.
+  await headers();
   return (
     <html
       lang="fr"

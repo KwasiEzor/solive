@@ -4,8 +4,7 @@ import type { NextConfig } from "next";
 import "./src/lib/env";
 
 const nextConfig: NextConfig = {
-  // Enables the `use cache` directive + tag-based invalidation (SLV-092).
-  cacheComponents: true,
+  /* config options here */
 };
 
 export default nextConfig;

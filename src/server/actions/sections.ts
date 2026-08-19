@@ -1,7 +1,7 @@
 "use server";
 import { and, eq, sql } from "drizzle-orm";
 import { headers } from "next/headers";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { hashIp } from "@/lib/hash";
 import { clientIpFromHeaders } from "@/lib/request-ip";
 import { err, ok, type Result } from "@/lib/result";
@@ -132,7 +132,7 @@ async function setStatus(
     diff: { status },
   });
   // Publishing/unpublishing changes public output → targeted invalidation only.
-  updateTag("content:sections");
+  revalidateTag("content:sections", "max");
   return ok({ updatedAt: updated!.updatedAt.toISOString() });
 }
 

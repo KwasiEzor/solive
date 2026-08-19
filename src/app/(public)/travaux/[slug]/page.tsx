@@ -2,15 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { env } from "@/lib/env";
-import { getProjectBySlug, getProjects } from "@/server/queries/content";
+import { getProjectBySlug } from "@/server/queries/content";
 
 type Params = { params: Promise<{ slug: string }> };
-
-// Prerender a static page per published project (keeps the vitrine fast).
-export async function generateStaticParams() {
-  const projects = await getProjects("fr");
-  return projects.map((p) => ({ slug: p.slug }));
-}
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;

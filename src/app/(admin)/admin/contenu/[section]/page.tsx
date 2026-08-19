@@ -5,8 +5,6 @@ import { SectionEditor } from "@/components/admin/section-editor";
 import { restoreSectionRevisionAction } from "@/server/actions/sections";
 import { getSectionForEdit, listSectionRevisions } from "@/server/queries/admin";
 
-export const instant = false;
-
 export const metadata: Metadata = {
   title: "Édition de contenu",
   robots: { index: false, follow: false },

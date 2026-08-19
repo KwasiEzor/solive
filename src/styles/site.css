@@ -439,6 +439,73 @@
   max-width: 66ch;
 }
 
+/* testimonials */
+.quote {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 26px 24px 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg2) var(--card-grad);
+  box-shadow: var(--shadow-md);
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.3s;
+}
+.quote:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--acc) 40%, var(--line));
+}
+.stars {
+  color: var(--acc);
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+.stars-empty {
+  color: var(--line);
+}
+.quote blockquote {
+  margin: 0;
+  font-size: 1.06rem;
+  line-height: 1.6;
+  color: var(--fg);
+}
+.quote blockquote::before {
+  content: "“";
+  color: var(--acc);
+  font-weight: 800;
+  margin-right: 2px;
+}
+.quote-by {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 6px;
+}
+.quote-by strong {
+  display: block;
+  font-size: 0.95rem;
+}
+.quote-by .dim {
+  display: block;
+  margin-top: 2px;
+}
+.quote-avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--on-acc);
+  background: linear-gradient(180deg, var(--acc), var(--acc-strong));
+}
+
 /* service card cover image */
 .card-media {
   position: relative;

@@ -15,6 +15,7 @@ import type {
   sections,
   services,
   siteSettings,
+  testimonials,
 } from "../../../drizzle/schema";
 
 export type AdminUser = typeof adminUsers.$inferSelect;
@@ -33,6 +34,8 @@ export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
 export type PricingPlan = typeof pricingPlans.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
+export type Testimonial = typeof testimonials.$inferSelect;
+export type NewTestimonial = typeof testimonials.$inferInsert;
 export type Media = typeof media.$inferSelect;
 export type NewMedia = typeof media.$inferInsert;
 export type ContentRevision = typeof contentRevisions.$inferSelect;

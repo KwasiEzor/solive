@@ -382,6 +382,35 @@ export const faqItems = pgTable(
   (t) => [index("faq_items_status_idx").on(t.status, t.locale, t.sortOrder)],
 );
 
+// SLV-027b — client testimonials (social proof)
+export const testimonials = pgTable(
+  "testimonials",
+  {
+    ...pk,
+    author: text("author").notNull(),
+    role: text("role"),
+    company: text("company"),
+    sector: text("sector"),
+    quote: text("quote").notNull(),
+    rating: integer("rating"),
+    projectSlug: text("project_slug"),
+    avatarMediaId: uuid("avatar_media_id").references(() => media.id, {
+      onDelete: "set null",
+    }),
+    isFeatured: boolean("is_featured").notNull().default(false),
+    sortOrder: integer("sort_order").notNull().default(0),
+    status: publicationStatus("status").notNull().default("draft"),
+    locale: locale("locale").notNull().default("fr"),
+    translationStatus: translationStatus("translation_status")
+      .notNull()
+      .default("up_to_date"),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+    ...timestamps,
+    ...softDelete,
+  },
+  (t) => [index("testimonials_status_idx").on(t.status, t.locale, t.sortOrder)],
+);
+
 // SLV-028 — keep last 30 revisions per entity (pruned)
 export const contentRevisions = pgTable(
   "content_revisions",

@@ -11,6 +11,7 @@ import {
   sections,
   services,
   siteSettings,
+  testimonials,
 } from "../../../drizzle/schema";
 
 export type Locale = "fr" | "nl" | "en";
@@ -163,6 +164,27 @@ export function getPricingPlans(locale: Locale = "fr") {
     },
     ["pricing-plans", locale],
     { tags: ["content:pricing_plans"] },
+  )();
+}
+
+export function getTestimonials(locale: Locale = "fr") {
+  return unstable_cache(
+    async () => {
+      const db = getDb();
+      return db
+        .select()
+        .from(testimonials)
+        .where(
+          and(
+            eq(testimonials.status, "published"),
+            eq(testimonials.locale, locale),
+            isNull(testimonials.deletedAt),
+          ),
+        )
+        .orderBy(asc(testimonials.sortOrder));
+    },
+    ["testimonials", locale],
+    { tags: ["content:testimonials"] },
   )();
 }
 

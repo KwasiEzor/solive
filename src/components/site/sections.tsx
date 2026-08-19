@@ -7,6 +7,7 @@ import type {
   Section,
   Service,
   SiteSettings,
+  Testimonial,
 } from "@/server/db/types";
 import { CountUp } from "./count-up";
 import { PlanCycle } from "./plan-cycle";
@@ -363,6 +364,69 @@ export function Tarifs({
           Entretien, hébergement et petites évolutions : 90 € / mois, sans
           engagement. Prix hors TVA.
         </p>
+      </div>
+    </section>
+  );
+}
+
+function Stars({ n }: { n: number }) {
+  const full = Math.max(0, Math.min(5, n));
+  return (
+    <span className="stars" aria-label={`${full} sur 5`}>
+      {"★★★★★".slice(0, full)}
+      <span className="stars-empty">{"★★★★★".slice(full)}</span>
+    </span>
+  );
+}
+
+export function Testimonials({
+  head,
+  items,
+}: {
+  head?: Section;
+  items: Testimonial[];
+}) {
+  if (items.length === 0) return null;
+  const initials = (name: string) =>
+    name
+      .split(/\s+/)
+      .map((w) => w[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  return (
+    <section id="temoignages" className="sec">
+      <div className="wrap">
+        <SecHead
+          kicker={head?.kicker ?? "Ils en parlent"}
+          titre={head?.heading ?? "Ce que disent les gens pour qui j’ai livré."}
+        />
+        <div className="grid3">
+          {items.map((t, i) => (
+            <Reveal key={t.id} as="figure" className="quote" delay={i * 90}>
+              {typeof t.rating === "number" && <Stars n={t.rating} />}
+              <blockquote>{t.quote}</blockquote>
+              <figcaption className="quote-by">
+                <span className="quote-avatar" aria-hidden="true">
+                  {initials(t.author)}
+                </span>
+                <span>
+                  <strong>{t.author}</strong>
+                  <span className="mono tiny dim">
+                    {[t.role, t.company, t.sector].filter(Boolean).join(" · ")}
+                  </span>
+                </span>
+              </figcaption>
+              {t.projectSlug && (
+                <Link
+                  href={`/travaux/${t.projectSlug}`}
+                  className="stretched-link"
+                  aria-label={`Étude de cas liée à l’avis de ${t.author}`}
+                />
+              )}
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

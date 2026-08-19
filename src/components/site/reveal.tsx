@@ -13,7 +13,7 @@ export function Reveal({
 }: {
   children: ReactNode;
   delay?: number;
-  as?: "div" | "li" | "article" | "section";
+  as?: "div" | "li" | "article" | "section" | "figure";
   className?: string;
 }) {
   const ref = useRef<HTMLElement>(null);

@@ -5,6 +5,7 @@ import {
   Methode,
   Services,
   Tarifs,
+  Testimonials,
   Ticker,
   Travaux,
 } from "@/components/site/sections";
@@ -18,10 +19,11 @@ import {
   getSectionsMap,
   getServices,
   getSiteSettings,
+  getTestimonials,
 } from "@/server/queries/content";
 
 export default async function HomePage() {
-  const [settings, sections, services, steps, projects, plans, faqs] =
+  const [settings, sections, services, steps, projects, plans, faqs, quotes] =
     await Promise.all([
       getSiteSettings(),
       getSectionsMap("fr"),
@@ -30,6 +32,7 @@ export default async function HomePage() {
       getProjects("fr"),
       getPricingPlans("fr"),
       getFaqItems("fr"),
+      getTestimonials("fr"),
     ]);
 
   const site = env.NEXT_PUBLIC_SITE_URL;
@@ -90,6 +93,7 @@ export default async function HomePage() {
         caption="Un atelier, pas une agence. Vous parlez à qui code."
       />
       <Travaux head={sections.travaux} projects={projects} />
+      <Testimonials head={sections.temoignages} items={quotes} />
       <Tarifs head={sections.tarifs} plans={plans} />
       <Faq head={sections.faq} items={faqs} />
       <ContactCta />

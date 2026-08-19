@@ -3,7 +3,8 @@
 -- NOT run against production.
 
 truncate table public.faq_items, public.pricing_plans, public.projects,
-  public.process_steps, public.services, public.sections restart identity cascade;
+  public.process_steps, public.services, public.sections,
+  public.testimonials restart identity cascade;
 
 update public.site_settings set
   name = 'Solive',
@@ -66,3 +67,9 @@ insert into public.faq_items (question, answer, sort_order, status, locale, publ
  ('À qui appartient le site à la fin ?', to_jsonb('À vous. Le code, le nom de domaine, l''hébergement, les comptes : tout est créé à votre nom et vous en avez les clés. Vous pouvez partir avec.'::text), 2,'published','fr',now()),
  ('Et la facture électronique obligatoire ?', to_jsonb('La réception devient obligatoire en France en septembre 2026, l''émission en 2027, avec un calendrier proche en Belgique. Les outils que je construis sont prêts pour le format Factur-X et le réseau Peppol.'::text), 3,'published','fr',now()),
  ('Vous travaillez en dehors de la Belgique ?', to_jsonb('Oui, en France et au Luxembourg. Le cadrage se fait en visio, le reste par écrit. Je me déplace pour les projets qui le justifient.'::text), 4,'published','fr',now());
+
+-- ── témoignages (EXEMPLES — à remplacer par de vrais avis clients) ────────
+insert into public.testimonials (author, role, company, sector, quote, rating, project_slug, is_featured, sort_order, status, locale, published_at) values
+ ('Julien Bastin','Gérant','Menuiserie Bastin','Artisanat','Devis fixe tenu, livré dans les temps, et je récupère les demandes de devis directement en ligne. Je parle à la personne qui code, pas à un commercial.',5,'menuisier-devis-en-ligne', true, 0,'published','fr',now()),
+ ('Sofia Renard','Fondatrice','Atelier Renard','Commerce','Un site qui charge vite et qui me ressemble. Le calendrier daté m''a rassurée dès le départ : je savais toujours où on en était.',5, null, false, 1,'published','fr',now()),
+ ('Marc Vanden Berghe','Directeur','VDB Logistics','PME','Outil métier livré sans rallonge surprise. Le code est à notre nom, hébergé en Europe. Exactement ce qui était écrit dans le devis.',5, null, false, 2,'published','fr',now());

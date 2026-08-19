@@ -42,7 +42,7 @@ export default async function ServicesPage() {
         kicker="Services"
         title="Ce qu’on fabrique, de bout en bout."
         lede="Du site vitrine à l’application métier, un seul studio conçoit, développe et livre — avec un devis fixe et un calendrier daté."
-        image="/images/dev-desk.jpg"
+        image="/images/terminal.jpg"
       />
       <Services head={sections.services} items={services} hideHead />
       <Methode head={sections.methode} steps={steps} />

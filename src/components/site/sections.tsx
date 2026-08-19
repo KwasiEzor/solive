@@ -13,14 +13,14 @@ import { PlanCycle } from "./plan-cycle";
 import { Reveal } from "./reveal";
 import { Mark, Tick } from "./icons";
 
-/** Dev-context cover images cycled across case studies. */
+/** Tech cover images cycled across case studies (no people — solo studio). */
 const CASE_IMAGES = [
   "/images/code-screen.jpg",
   "/images/mobile-app.jpg",
   "/images/dev-desk.jpg",
   "/images/code-macro.jpg",
-  "/images/collaboration.jpg",
-  "/images/studio.jpg",
+  "/images/terminal.jpg",
+  "/images/circuit.jpg",
 ];
 
 /** Full-width scrimmed image band. */

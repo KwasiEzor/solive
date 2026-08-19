@@ -86,7 +86,7 @@ export default async function HomePage() {
       <Services head={sections.services} items={services} />
       <Methode head={sections.methode} steps={steps} />
       <MediaBand
-        src="/images/studio.jpg"
+        src="/images/dev-desk.jpg"
         caption="Un atelier, pas une agence. Vous parlez à qui code."
       />
       <Travaux head={sections.travaux} projects={projects} />

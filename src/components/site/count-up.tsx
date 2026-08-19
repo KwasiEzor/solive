@@ -1,30 +1,34 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+/** Split "×3", "6 h", "9 sem." into prefix / number / suffix (once). */
+function parse(value: string) {
+  const m = value.match(/^(\D*)(\d+(?:[.,]\d+)?)(.*)$/);
+  if (!m) return null;
+  return { prefix: m[1]!, target: Number(m[2]!.replace(",", ".")), suffix: m[3]! };
+}
 
 /**
- * Animates the numeric part of a metric string (e.g. "×3", "6 h", "9 sem.")
- * from 0 to its value when scrolled into view. Reduced-motion → jumps to the
- * final value with no animation (decided inside the observer callback).
+ * Animates the numeric part of a metric from 0 to its value when scrolled into
+ * view. Reduced-motion → jumps straight to the value. The parsed value has a
+ * stable identity (useMemo) so re-renders during the animation never restart it.
  */
 export function CountUp({ value }: { value: string }) {
-  const match = value.match(/^(\D*)(\d+(?:[.,]\d+)?)(.*)$/);
+  const parsed = useMemo(() => parse(value), [value]);
   const ref = useRef<HTMLSpanElement>(null);
-  const target = match ? Number(match[2]!.replace(",", ".")) : 0;
-  const [n, setN] = useState(match ? 0 : target);
+  const started = useRef(false);
+  const [n, setN] = useState(0);
 
   useEffect(() => {
-    if (!match) return;
+    if (!parsed) return;
     const el = ref.current;
     if (!el) return;
-    let done = false;
+    const { target } = parsed;
     const run = () => {
-      if (done) return;
-      done = true;
+      if (started.current) return;
+      started.current = true;
       io.disconnect();
-      const reduce = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-      if (reduce) {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         setN(target);
         return;
       }
@@ -32,8 +36,7 @@ export function CountUp({ value }: { value: string }) {
       const dur = 1100;
       const tick = (t: number) => {
         const p = Math.min(1, (t - start) / dur);
-        const eased = 1 - (1 - p) ** 3;
-        setN(target * eased);
+        setN(target * (1 - (1 - p) ** 3));
         if (p < 1) requestAnimationFrame(tick);
         else setN(target);
       };
@@ -46,20 +49,20 @@ export function CountUp({ value }: { value: string }) {
       { threshold: 0.25 },
     );
     io.observe(el);
-    // Fallback for suspended IO: if already on screen, start next frame.
+    // Already on screen at mount → start next frame (IO won't re-notify).
     const r = el.getBoundingClientRect();
     if (r.top < window.innerHeight && r.bottom > 0) requestAnimationFrame(run);
     return () => io.disconnect();
-  }, [match, target]);
+  }, [parsed]);
 
-  if (!match) return <span>{value}</span>;
-  const isInt = Number.isInteger(target);
+  if (!parsed) return <span>{value}</span>;
+  const isInt = Number.isInteger(parsed.target);
   const shown = isInt ? Math.round(n) : n.toFixed(1);
   return (
     <span ref={ref}>
-      {match[1]}
+      {parsed.prefix}
       {shown}
-      {match[3]}
+      {parsed.suffix}
     </span>
   );
 }

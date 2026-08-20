@@ -150,12 +150,16 @@ export function Ticker() {
     "TypeScript",
     "React Native",
     "Supabase",
+    "Agents IA",
+    "RAG",
+    "Mistral / Llama",
+    "Évals & garde-fous",
     "Stripe",
     "Tailwind",
     "Vercel",
     "SEO technique",
     "Facture électronique 2026",
-    "RGPD",
+    "RGPD & AI Act",
   ];
   const row = [...items, ...items];
   return (

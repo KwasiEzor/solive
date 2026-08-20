@@ -6,6 +6,7 @@ import { Mark } from "./icons";
 const LINKS: [string, string][] = [
   ["/", "Accueil"],
   ["/services", "Services"],
+  ["/ia", "IA"],
   ["/realisations", "Réalisations"],
   ["/tarifs", "Tarifs"],
 ];

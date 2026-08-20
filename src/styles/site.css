@@ -510,6 +510,117 @@
   background: linear-gradient(180deg, var(--acc), var(--acc-strong));
 }
 
+/* ── IA offering ──────────────────────────────────────────────────────── */
+.diff-item {
+  padding: 22px 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg2) var(--card-grad);
+}
+.diff-item h3 {
+  font-size: 1.06rem;
+}
+.diff-con {
+  margin-top: 8px;
+  color: var(--dim);
+  font-size: 0.92rem;
+  padding-left: 18px;
+  position: relative;
+}
+.diff-con::before {
+  content: "✕";
+  position: absolute;
+  left: 0;
+  color: color-mix(in srgb, var(--fg) 40%, transparent);
+  font-size: 0.82rem;
+}
+.diff-pro {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: var(--fg);
+  line-height: 1.5;
+}
+.diff-pro svg {
+  flex: none;
+  margin-top: 3px;
+  color: var(--acc);
+}
+.grid-ia {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+}
+.ia-faq details {
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+}
+.ia-faq summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.02rem;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ia-faq summary::-webkit-details-marker {
+  display: none;
+}
+.ia-faq summary::after {
+  content: "+";
+  color: var(--acc);
+  font-weight: 700;
+}
+.ia-faq details[open] summary::after {
+  content: "–";
+}
+.ia-faq details p {
+  margin-top: 12px;
+  color: var(--dim);
+  line-height: 1.65;
+  max-width: 62ch;
+}
+.ia-live {
+  border: 1px dashed color-mix(in srgb, var(--acc) 50%, var(--line));
+  border-radius: 16px;
+  padding: 34px 30px;
+  background: color-mix(in srgb, var(--acc) 6%, var(--bg2));
+  text-align: center;
+}
+.ia-live p {
+  margin: 12px auto 0;
+  max-width: 60ch;
+  color: var(--dim);
+}
+.ia-teaser {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+  padding: 34px 32px;
+  border: 1px solid color-mix(in srgb, var(--acc) 30%, var(--line));
+  border-radius: 18px;
+  background: linear-gradient(
+    120deg,
+    var(--bg2),
+    color-mix(in srgb, var(--acc) 10%, var(--bg2))
+  );
+  box-shadow: var(--shadow-md);
+}
+.ia-teaser > div {
+  max-width: 60ch;
+}
+.ia-teaser p {
+  margin-top: 10px;
+  color: var(--dim);
+}
+.ia-teaser .btn {
+  flex: none;
+}
+
 /* service card cover image */
 .card-media {
   position: relative;

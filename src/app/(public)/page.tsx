@@ -9,6 +9,7 @@ import {
   Ticker,
   Travaux,
 } from "@/components/site/sections";
+import { IaHomeTeaser } from "@/components/site/ia";
 import { ContactCta } from "@/components/site/subpage";
 import { env } from "@/lib/env";
 import {
@@ -87,6 +88,7 @@ export default async function HomePage() {
       <Hero section={sections.hero} />
       <Ticker />
       <Services head={sections.services} items={services} />
+      <IaHomeTeaser />
       <Methode head={sections.methode} steps={steps} />
       <MediaBand
         src="/images/dev-desk.jpg"

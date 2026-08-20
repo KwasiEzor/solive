@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { ConsentBanner } from "@/components/site/consent-banner";
 import { Nav } from "@/components/site/nav";
 import { NetworkStatus } from "@/components/site/network-status";
+import { ScrollTop } from "@/components/site/scroll-top";
 import { Footer } from "@/components/site/sections";
 import { SwUpdatePrompt } from "@/components/site/sw-update";
 import { getSiteSettings } from "@/server/queries/content";
@@ -26,6 +27,7 @@ export default async function PublicLayout({
       <Footer settings={settings} />
       <NetworkStatus />
       <SwUpdatePrompt />
+      <ScrollTop />
       <ConsentBanner />
     </div>
   );

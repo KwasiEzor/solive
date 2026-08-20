@@ -41,7 +41,9 @@ for (const line of raw.split("\n")) {
 }
 
 const toPush = {
-  NEXT_PUBLIC_SITE_URL: process.env.PROD_SITE_URL || "https://solive.pro",
+  // Current production URL. Switch to https://solive.pro once that domain is
+  // attached in Vercel (Settings → Domains), or override with PROD_SITE_URL.
+  NEXT_PUBLIC_SITE_URL: process.env.PROD_SITE_URL || "https://solive.vercel.app",
   CRON_SECRET: local.CRON_SECRET || randomBytes(24).toString("hex"),
 };
 for (const k of KEYS) if (local[k]) toPush[k] = local[k];

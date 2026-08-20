@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ConsentBanner } from "@/components/site/consent-banner";
 import { Nav } from "@/components/site/nav";
 import { NetworkStatus } from "@/components/site/network-status";
 import { Footer } from "@/components/site/sections";
@@ -25,6 +26,7 @@ export default async function PublicLayout({
       <Footer settings={settings} />
       <NetworkStatus />
       <SwUpdatePrompt />
+      <ConsentBanner />
     </div>
   );
 }

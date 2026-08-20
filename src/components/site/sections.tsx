@@ -427,6 +427,7 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
             <p className="dim">Légal</p>
             <a href="/mentions-legales">Mentions légales</a>
             <a href="/confidentialite">Confidentialité</a>
+            <a href="/cookies">Cookies</a>
             <span>TVA {vat}</span>
           </div>
         </div>

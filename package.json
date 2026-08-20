@@ -16,7 +16,8 @@
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
     "seed:owner": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-owner.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "owner:password": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/set-owner-password.mjs"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.1.0",

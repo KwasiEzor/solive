@@ -9,7 +9,7 @@ const FG = "#e9edf3";
 const DIM = "rgba(233,237,243,0.72)";
 const ACC = "#34e4a1";
 
-const MARK = `<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 18 18"><g stroke="${ACC}" stroke-width="1.7" stroke-linecap="round" fill="none"><path d="M2.5 3.5h13M2.5 14.5h13"/><path d="M9 3.5v11"/></g></svg>`;
+const MARK = `<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 48 48" fill="none" stroke="${ACC}" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"><path d="M33 13 H15 V24 H33 V35 H15"/><path d="M33 9.5 V16.5"/><path d="M15 31.5 V38.5"/></svg>`;
 
 /** Branded 1200×630 social card. `eyebrow` sits above the title. */
 export function renderOg({

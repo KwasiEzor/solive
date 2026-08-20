@@ -1,18 +1,23 @@
+/**
+ * Solive monogram — a structural "S" drawn in beams, with the joist rails at
+ * its terminals. Keeps the "qui tient debout" concept in a letterform.
+ */
 export function Mark({ size = 18 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 18 18" aria-hidden="true">
-      <path
-        d="M2.5 3.5h13M2.5 14.5h13"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9 3.5v11"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-      />
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 48 48"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3.1"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M33 13 H15 V24 H33 V35 H15" />
+      <path d="M33 9.5 V16.5" />
+      <path d="M15 31.5 V38.5" />
     </svg>
   );
 }

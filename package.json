@@ -17,7 +17,9 @@
     "db:studio": "drizzle-kit studio",
     "seed:owner": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-owner.mjs",
     "test:e2e": "playwright test",
-    "owner:password": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/set-owner-password.mjs"
+    "owner:password": "node --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/set-owner-password.mjs",
+    "vercel:env": "node scripts/push-vercel-env.mjs",
+    "vercel:deploy": "vercel deploy --prod"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.1.0",

@@ -16,6 +16,16 @@ export type ConfirmResult =
 /** Begin TOTP enrollment — returns the QR + secret to display once (SLV-041). */
 export async function enrollTotpAction(): Promise<EnrollResult> {
   const supabase = await createSupabaseServerClient();
+
+  // Clean up any half-finished enrolment: an unverified factor left by an
+  // abandoned attempt collides on the friendly name and blocks a retry.
+  const { data: factors } = await supabase.auth.mfa.listFactors();
+  for (const f of factors?.all ?? []) {
+    if (f.status === "unverified") {
+      await supabase.auth.mfa.unenroll({ factorId: f.id });
+    }
+  }
+
   const { data, error } = await supabase.auth.mfa.enroll({
     factorType: "totp",
     friendlyName: "Solive",

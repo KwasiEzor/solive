@@ -621,6 +621,78 @@
   flex: none;
 }
 
+/* testimonial wall (marquee) */
+.wall {
+  margin-top: 26px;
+}
+.wall-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 6%,
+    #000 94%,
+    transparent
+  );
+}
+.wall-track {
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+  width: max-content;
+  padding: 6px 24px;
+  animation: wall-scroll 48s linear infinite;
+}
+.wall:hover .wall-track,
+.wall:focus-within .wall-track,
+.wall.is-paused .wall-track {
+  animation-play-state: paused;
+}
+@keyframes wall-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.wall-card {
+  width: clamp(270px, 78vw, 360px);
+  flex: none;
+}
+.wall-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+.wall-toggle {
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  color: var(--dim);
+  border-radius: 999px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.wall-toggle:hover {
+  color: var(--fg);
+  border-color: color-mix(in srgb, var(--acc) 40%, var(--line));
+}
+@media (prefers-reduced-motion: reduce) {
+  .wall-track {
+    animation: none;
+  }
+  .wall-viewport {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 /* service card cover image */
 .card-media {
   position: relative;

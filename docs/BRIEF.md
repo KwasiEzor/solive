@@ -374,6 +374,23 @@ next-intl, traductions FR/NL/EN, hreflang, bandeau de consentement, pages légal
 Budgets Lighthouse en CI, analyse de bundle, Sentry, health check, RUNBOOK, domaine et emails.
 *Acceptation :* tous les budgets de SLV-090 respectés, SPF/DKIM/DMARC valides, une restauration de sauvegarde effectuée pour de vrai.
 
+**Phase 10 — Assistant IA (SLV-160 à 172)**
+L'assistant Solive sur le site : preuve vivante de l'offre IA, ancré dans le contenu du site, souverain et sans lock-in. Construit **après** l'intégration du contenu IA (page `/ia`).
+- **SLV-160** AI Gateway (Vercel) provisionné via le marketplace : multi-modèle, routage UE, zéro rétention. Clés en variables d'environnement, jamais commitées.
+- **SLV-161** Client IA agnostique (AI SDK) : modèles interchangeables, aucun SDK fournisseur codé en dur (prolonge « pas de lock-in »).
+- **SLV-162** Index RAG sur le contenu **publié** (services, tarifs, méthode, FAQ, projets, page IA) ; réponses citant leurs sources.
+- **SLV-163** Route de chat en streaming (runtime Node, compatible CSP à nonce), rate-limit via Upstash, garde anti-abus (honeypot/timing réutilisés).
+- **SLV-164** Garde-fous : filtres PII / injection de prompt / hors-sujet ; portée système explicite ; repli « je ne sais pas → formulaire ».
+- **SLV-165** Réponses strictement ancrées (anti-hallucination) : refuse d'inventer, cite la section source.
+- **SLV-166** Qualification de lead : détecte l'intention, recueille le besoin, passe la main vers `/contact` (lead idempotent, même `client_id` que SLV-084).
+- **SLV-167** Widget assistant : Client Component accessible (clavier, `aria-live`, `prefers-reduced-motion`), streaming, sur `/ia` puis lanceur global.
+- **SLV-168** Évals : jeu de tests + métriques d'hallucination/refus, seuil bloquant en CI, garde de régression.
+- **SLV-169** Journalisation des conversations en base (sans rétention de PII au-delà de la politique) + surveillance du coût des tokens.
+- **SLV-170** Gouvernance : traitement UE, DPA, politique de rétention, mention de transparence RGPD + AI Act.
+- **SLV-171** Contrôle des coûts : budget/plafond de tokens, plafonds par IP/jour.
+- **SLV-172** i18n de l'assistant (FR/NL/EN) et `axe` propre (cohérent SLV-104/115).
+*Acceptation :* l'assistant ne répond qu'avec des sources issues du contenu du site (zéro invention, vérifié par les évals de SLV-168) ; une injection de prompt est bloquée ; une conversation qualifiante crée exactement un lead idempotent ; l'UE et l'absence de lock-in sont documentées ; `axe` sans violation ; `prefers-reduced-motion` respecté.
+
 ---
 
 ## 16. Definition of Done

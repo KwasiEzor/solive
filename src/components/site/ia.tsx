@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Reveal } from "./reveal";
 import { Tick } from "./icons";
@@ -62,30 +63,36 @@ export function IaDifferentiators() {
 }
 
 /* ── 2. Cas d’usage (Lot 04) ───────────────────────────────────────────── */
-const USE_CASES: [string, string][] = [
+const USE_CASES: [string, string, string][] = [
   [
     "Assistant client (RAG)",
     "Répond à vos clients à partir de vos documents. Support et FAQ 24/7, chaque réponse sourcée.",
+    "/images/code-screen.jpg",
   ],
   [
     "Agent de qualification",
     "Qualifie vos leads, répond la nuit, propose un créneau. Vous récupérez des demandes prêtes à traiter.",
+    "/images/mobile-app.jpg",
   ],
   [
     "Copilote interne",
     "Cherche dans vos documents, résume, rédige des brouillons. Vos équipes gagnent des heures.",
+    "/images/code-macro.jpg",
   ],
   [
     "Automatisations métier",
     "Tri d’emails, extraction de PDF et de factures, saisie évitée. L’IA fait la corvée, pas vous.",
+    "/images/circuit.jpg",
   ],
   [
     "Facture électronique 2026",
     "Extraction et contrôle Factur-X / Peppol, prêts pour l’obligation qui arrive en 2026–2027.",
+    "/images/dev-desk.jpg",
   ],
   [
     "Recherche IA (GEO)",
     "Être trouvé et cité par les moteurs génératifs, pas seulement référencé par Google.",
+    "/images/server.jpg",
   ],
 ];
 
@@ -98,8 +105,17 @@ export function IaUseCases() {
           <h2>Des assistants et des agents ancrés dans votre métier.</h2>
         </div>
         <div className="grid3">
-          {USE_CASES.map(([t, d], i) => (
+          {USE_CASES.map(([t, d, img], i) => (
             <Reveal key={t} as="article" className="card" delay={i * 70}>
+              <div className="card-media">
+                <Image
+                  src={img}
+                  alt=""
+                  fill
+                  sizes="(max-width: 720px) 100vw, 33vw"
+                  aria-hidden="true"
+                />
+              </div>
               <h3>{t}</h3>
               <p>{d}</p>
             </Reveal>

@@ -7,6 +7,7 @@ import {
   IaPricing,
   IaUseCases,
 } from "@/components/site/ia";
+import { MediaBand } from "@/components/site/sections";
 import { ContactCta, PageHeader } from "@/components/site/subpage";
 import { env } from "@/lib/env";
 
@@ -40,6 +41,10 @@ export default function IaPage() {
         image="/images/terminal.jpg"
       />
       <IaDifferentiators />
+      <MediaBand
+        src="/images/ai-data.jpg"
+        caption="Des évals, pas de la magie. On mesure le taux d’erreur avant de livrer."
+      />
       <IaUseCases />
       <IaMethod />
       <IaPricing />

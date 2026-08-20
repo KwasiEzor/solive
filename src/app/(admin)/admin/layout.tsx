@@ -30,9 +30,8 @@ export default async function AdminLayout({
 
   const nav = [
     ["/admin", "Tableau de bord"],
-    ["/admin/contenu/hero", "Contenu"],
-    ["/admin/travaux", "Travaux"],
-    ["/admin/medias", "Médias"],
+    ["/admin/contenu/hero", "Sections"],
+    ["/admin/collections", "Collections"],
     ["/admin/demandes", "Demandes"],
     ["/admin/parametres", "Paramètres"],
     ["/admin/utilisateurs", "Utilisateurs"],

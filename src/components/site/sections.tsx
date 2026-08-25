@@ -10,6 +10,7 @@ import type {
   Testimonial,
 } from "@/server/db/types";
 import { CountUp } from "./count-up";
+import { HeroStructure } from "./hero-structure";
 import { PlanCycle } from "./plan-cycle";
 import { Reveal } from "./reveal";
 import { TestimonialsWall } from "./testimonials-wall";
@@ -81,14 +82,7 @@ export function Hero({ section }: { section?: Section }) {
   return (
     <section id="top" className="hero">
       <div className="hero-media">
-        <Image
-          src="/images/code-macro.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          priority
-          aria-hidden="true"
-        />
+        <HeroStructure />
       </div>
       <div className="wrap hero-in">
         <div className="hero-copy">

@@ -297,7 +297,7 @@
   padding: 88px 0 48px;
   background: var(--grad-hero);
 }
-/* decorative, scrimmed background image — blends into any palette */
+/* decorative, scrimmed background — blends into any palette */
 .hero-media {
   position: absolute;
   inset: 0;
@@ -305,16 +305,81 @@
   overflow: hidden;
   pointer-events: none;
 }
-.hero-media img {
+
+/* bespoke hero illustration — the "solive" itself, drawing itself in */
+.hero-structure {
+  position: absolute;
+  inset: 0;
+}
+.hero-structure svg {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  opacity: 0.22;
-  filter: grayscale(0.15) contrast(1.08);
 }
-/* dark cover photos read too strongly on the light palette — keep subtle */
-.t-chaux .hero-media img {
-  opacity: 0.09;
+.hs-layer {
+  fill: none;
+  stroke: var(--acc);
+  stroke-linecap: round;
+  transition: transform 0.35s ease-out;
+}
+.hs-layer line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hs-draw 1s ease-out forwards;
+}
+.hs-joint {
+  fill: var(--acc);
+  stroke: none;
+  opacity: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+  transform: scale(0);
+  animation: hs-joint-in 0.4s ease-out forwards;
+}
+.hs-back {
+  stroke-width: 1.4;
+  opacity: 0.3;
+  transform: translate(calc(var(--px, 0) * -6px), calc(var(--py, 0) * -6px));
+}
+.hs-mid {
+  stroke-width: 1.8;
+  opacity: 0.45;
+  transform: translate(calc(var(--px, 0) * -14px), calc(var(--py, 0) * -14px));
+}
+.hs-front {
+  stroke-width: 2.2;
+  opacity: 0.65;
+  transform: translate(calc(var(--px, 0) * -24px), calc(var(--py, 0) * -24px));
+}
+@keyframes hs-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes hs-joint-in {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* dark line art reads too strongly on the light palette — keep subtle */
+.t-chaux .hero-structure {
+  opacity: 0.55;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hs-layer line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .hs-joint {
+    animation: none;
+    opacity: 1;
+    transform: scale(1);
+  }
+  .hs-back,
+  .hs-mid,
+  .hs-front {
+    transition: none;
+  }
 }
 .hero-media::after {
   content: "";

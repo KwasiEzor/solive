@@ -113,6 +113,8 @@
   box-shadow: var(--shadow-sm);
 }
 .nav-in {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 28px;
@@ -177,11 +179,11 @@
 .nav-scrim {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 1;
   border: 0;
   padding: 0;
   cursor: pointer;
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
   backdrop-filter: blur(2px);
   animation: scrim-in 0.2s ease;
 }
@@ -192,11 +194,12 @@
 }
 .nav-mob {
   display: none;
+  position: relative;
+  z-index: 2;
   flex-direction: column;
   gap: 2px;
   padding: 12px 24px 22px;
-  background: var(--nav);
-  backdrop-filter: blur(12px);
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 .nav-mob a {

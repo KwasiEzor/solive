@@ -696,6 +696,50 @@
   }
 }
 
+/* "Pourquoi Solive" page */
+.founder-card {
+  display: flex;
+  gap: 26px;
+  align-items: flex-start;
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--bg2) var(--card-grad);
+  box-shadow: var(--shadow-md);
+}
+.founder-avatar {
+  flex: none;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--on-acc);
+  background: linear-gradient(160deg, var(--acc), var(--acc-strong));
+  box-shadow: var(--glow);
+}
+.founder-text {
+  margin-top: 12px;
+  line-height: 1.7;
+  color: var(--fg);
+}
+.founder-text:first-of-type {
+  margin-top: 10px;
+}
+.vision-text {
+  margin-top: 18px;
+  max-width: 62ch;
+  line-height: 1.75;
+  font-size: 1.05rem;
+  color: var(--fg);
+}
+.vision-text + .vision-text {
+  margin-top: 16px;
+}
+.vision-text + .btn {
+  margin-top: 28px;
+}
+
 /* floating call-to-action — stacked directly above the back-to-top button */
 .float-cta {
   position: fixed;

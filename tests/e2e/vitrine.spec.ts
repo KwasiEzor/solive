@@ -6,7 +6,7 @@ test.describe("vitrine", () => {
     await page.goto("/");
     await expect(
       page.getByRole("heading", { level: 1 }),
-    ).toContainText("tiennent debout");
+    ).toContainText("solide");
     await expect(
       page.getByRole("heading", { name: /Trois lots/ }),
     ).toBeVisible();

@@ -44,6 +44,11 @@ export async function getDashboardStats() {
     .select({ n: count() })
     .from(sections)
     .where(eq(sections.status, "draft"));
+  const [totalLeads] = await db.select({ n: count() }).from(leads);
+  const [published] = await db
+    .select({ n: count() })
+    .from(sections)
+    .where(eq(sections.status, "published"));
   const recentLeads = await db
     .select()
     .from(leads)
@@ -57,6 +62,8 @@ export async function getDashboardStats() {
   return {
     newLeads: newLeads?.n ?? 0,
     drafts: drafts?.n ?? 0,
+    totalLeads: totalLeads?.n ?? 0,
+    publishedSections: published?.n ?? 0,
     recentLeads,
     recentChanges,
   };

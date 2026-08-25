@@ -1,7 +1,11 @@
 import { and, lt, ne } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getDb } from "@/server/db";
-import { leads, loginAttempts } from "../../../../../drizzle/schema";
+import {
+  leads,
+  loginAttempts,
+  pageViews,
+} from "../../../../../drizzle/schema";
 
 // Data-retention job (SLV-124): anonymise old leads and prune technical logs,
 // enforcing storage limitation (art. 5.1.e RGPD). Triggered by Vercel Cron;
@@ -28,6 +32,13 @@ export async function GET(req: Request) {
     .where(lt(loginAttempts.createdAt, attemptsCutoff))
     .returning({ id: loginAttempts.id });
 
+  // Anonymous analytics — keep ~14 months for year-over-year, then drop.
+  const analyticsCutoff = new Date(now - 426 * DAY);
+  const prunedViews = await db
+    .delete(pageViews)
+    .where(lt(pageViews.createdAt, analyticsCutoff))
+    .returning({ id: pageViews.id });
+
   const anonymizedLeads = await db
     .update(leads)
     .set({
@@ -44,6 +55,7 @@ export async function GET(req: Request) {
   return NextResponse.json({
     ok: true,
     prunedLoginAttempts: prunedAttempts.length,
+    prunedPageViews: prunedViews.length,
     anonymizedLeads: anonymizedLeads.length,
   });
 }

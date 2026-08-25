@@ -505,3 +505,32 @@ export const leadEvents = pgTable(
   },
   (t) => [index("lead_events_lead_idx").on(t.leadId, t.createdAt)],
 );
+
+// SLV-140 — privacy-first, cookieless analytics. Stores NO personal data:
+// coarse country (2-letter), device class, referrer host, UTM campaign, and a
+// daily-rotating one-way visitor hash (never the IP). No cookie, no profiling.
+export const pageViews = pgTable(
+  "page_views",
+  {
+    id: uuid("id")
+      .primaryKey()
+      .default(sql`uuid_generate_v7()`),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    path: text("path").notNull(),
+    referrerHost: text("referrer_host"),
+    utmSource: text("utm_source"),
+    utmMedium: text("utm_medium"),
+    utmCampaign: text("utm_campaign"),
+    country: text("country"),
+    device: text("device"),
+    // sha256(ip + ua + day + salt) — one-way, rotates daily, never reversible.
+    visitorHash: text("visitor_hash").notNull(),
+  },
+  (t) => [
+    index("page_views_created_idx").on(t.createdAt),
+    index("page_views_country_idx").on(t.country),
+    index("page_views_campaign_idx").on(t.utmCampaign),
+  ],
+);

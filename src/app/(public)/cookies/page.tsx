@@ -46,14 +46,25 @@ export default function CookiesPage() {
       />
       <section className="sec">
         <div className="wrap narrow legal">
-          <h2>Pas de traceur, pas de profilage</h2>
+          <h2>Une mesure d’audience anonyme, sans cookie</h2>
           <p>
-            La vitrine ne charge aucun outil d’analyse d’audience ni aucun script
-            publicitaire. Aucune donnée n’est partagée avec des régies. Le
-            bandeau de consentement est préventif : le jour où une mesure
-            d’audience anonyme ou l’assistant IA seront proposés, ils ne se
-            chargeront <strong>qu’avec votre accord explicite</strong>, et vous
-            pourrez revenir sur ce choix à tout moment.
+            On mesure l’audience du site pour l’améliorer et évaluer nos
+            campagnes, mais <strong>sans cookie et sans donnée personnelle</strong>.
+            Concrètement : la page vue, le pays (à la maille du pays),
+            l’appareil (mobile/ordinateur), le site référent et les paramètres
+            de campagne (<code>utm_*</code>) sont enregistrés de façon agrégée.
+            Aucune adresse IP n’est conservée — elle sert uniquement à calculer
+            une empreinte <em>à sens unique qui change chaque jour</em>, ce qui
+            permet de compter les visiteurs sans jamais les identifier ni les
+            suivre d’un jour à l’autre.
+          </p>
+          <p>
+            Ces données restent <strong>chez nous, hébergées en Europe</strong>,
+            et ne sont partagées avec aucune régie publicitaire. Vous n’en voulez
+            pas ? Cliquez <em>« Refuser le non-essentiel »</em> dans le bandeau —
+            la mesure est alors désactivée pour vous. Les signaux navigateur
+            « Do Not Track » et « Global Privacy Control » sont également
+            respectés.
           </p>
 
           <h2>Ce qui est réellement utilisé</h2>

@@ -57,8 +57,10 @@ export default async function ConfidentialitePage() {
               limiter le spam. L’IP en clair n’est pas conservée.
             </li>
             <li>
-              <strong>Aucune donnée de suivi :</strong> pas d’analyse d’audience,
-              pas de cookie publicitaire, pas de profilage.
+              <strong>Mesure d’audience anonyme :</strong> page vue, pays,
+              appareil, référent et paramètres de campagne, de façon agrégée et
+              sans cookie. Aucune IP conservée (empreinte à sens unique changée
+              chaque jour). Pas de profilage, pas de suivi publicitaire.
             </li>
           </ul>
 
@@ -73,8 +75,13 @@ export default async function ConfidentialitePage() {
               <em>intérêt légitime</em> (art. 6.1.f).
             </li>
             <li>
-              Mesure d’audience anonyme ou assistant IA, le cas échéant —{" "}
-              <em>consentement</em> (art. 6.1.a), révocable à tout moment.
+              Mesure d’audience anonyme (sans donnée personnelle) —{" "}
+              <em>intérêt légitime</em> (art. 6.1.f), avec opposition possible à
+              tout moment via le bandeau ou les signaux « Do Not Track ».
+            </li>
+            <li>
+              Assistant IA, le cas échéant — <em>consentement</em> (art. 6.1.a),
+              révocable à tout moment.
             </li>
           </ul>
 

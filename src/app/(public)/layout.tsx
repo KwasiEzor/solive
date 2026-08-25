@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AnalyticsBeacon } from "@/components/site/analytics-beacon";
 import { ConsentBanner } from "@/components/site/consent-banner";
 import { Nav } from "@/components/site/nav";
 import { NetworkStatus } from "@/components/site/network-status";
@@ -29,6 +30,7 @@ export default async function PublicLayout({
       <SwUpdatePrompt />
       <ScrollTop />
       <ConsentBanner />
+      <AnalyticsBeacon />
     </div>
   );
 }

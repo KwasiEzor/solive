@@ -1,5 +1,6 @@
 "use client";
 import {
+  BarChart3,
   Boxes,
   ExternalLink,
   Inbox,
@@ -24,7 +25,15 @@ type Item = { href: string; label: string; icon: LucideIcon; match?: string };
 const GROUPS: { label: string; items: Item[] }[] = [
   {
     label: "Pilotage",
-    items: [{ href: "/admin", label: "Tableau de bord", icon: LayoutDashboard }],
+    items: [
+      { href: "/admin", label: "Tableau de bord", icon: LayoutDashboard },
+      {
+        href: "/admin/statistiques",
+        label: "Statistiques",
+        icon: BarChart3,
+        match: "/admin/statistiques",
+      },
+    ],
   },
   {
     label: "Contenu",

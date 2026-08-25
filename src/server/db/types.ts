@@ -6,6 +6,7 @@ import type {
   invitations,
   leadEvents,
   leads,
+  pageViews,
   legalPages,
   loginAttempts,
   media,
@@ -36,6 +37,8 @@ export type PricingPlan = typeof pricingPlans.$inferSelect;
 export type FaqItem = typeof faqItems.$inferSelect;
 export type Testimonial = typeof testimonials.$inferSelect;
 export type NewTestimonial = typeof testimonials.$inferInsert;
+export type PageView = typeof pageViews.$inferSelect;
+export type NewPageView = typeof pageViews.$inferInsert;
 export type Media = typeof media.$inferSelect;
 export type NewMedia = typeof media.$inferInsert;
 export type ContentRevision = typeof contentRevisions.$inferSelect;

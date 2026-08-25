@@ -63,3 +63,32 @@ export async function checkContactRateLimit(
     retryAfterSec: Math.max(0, Math.ceil((reset - Date.now()) / 1000)),
   };
 }
+
+/**
+ * Analytics collector limit (SLV-140): best-effort cap per IP to keep the
+ * cookieless beacon from being flooded. Generous — it only stops abuse.
+ */
+let collectLimiter: Ratelimit | null | undefined;
+
+function getCollectLimiter() {
+  if (collectLimiter !== undefined) return collectLimiter;
+  if (!env.KV_REST_API_URL || !env.KV_REST_API_TOKEN) {
+    collectLimiter = null;
+    return null;
+  }
+  collectLimiter = new Ratelimit({
+    redis: new Redis({ url: env.KV_REST_API_URL, token: env.KV_REST_API_TOKEN }),
+    limiter: Ratelimit.slidingWindow(120, "1 m"),
+    prefix: "collect",
+  });
+  return collectLimiter;
+}
+
+export async function checkCollectRateLimit(
+  identifier: string,
+): Promise<boolean> {
+  const l = getCollectLimiter();
+  if (!l) return true;
+  const r = await l.limit(identifier);
+  return r.success;
+}

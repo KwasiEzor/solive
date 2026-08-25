@@ -34,8 +34,8 @@ export function ConsentBanner() {
       <div className="consent-in">
         <p id="consent-text">
           <strong>On respecte votre vie privée.</strong> Ce site ne dépose aucun
-          cookie de suivi. On aimerait, à terme, mesurer l’audience de façon
-          anonyme et proposer un assistant — uniquement avec votre accord.{" "}
+          cookie de suivi. On mesure l’audience de façon anonyme — sans cookie,
+          sans donnée personnelle — et vous pouvez refuser en un clic.{" "}
           <Link href="/cookies">En savoir plus</Link>.
         </p>
         <div className="consent-actions">

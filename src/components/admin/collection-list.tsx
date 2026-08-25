@@ -1,4 +1,12 @@
 "use client";
+import {
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  EyeOff,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -8,6 +16,7 @@ import {
   togglePublishItem,
 } from "@/server/actions/collections";
 import type { CollectionMeta } from "@/server/admin/collections";
+import { Badge } from "@/components/admin/ui";
 
 export interface ListItem {
   id: string;
@@ -35,52 +44,44 @@ export function CollectionList({
 
   if (items.length === 0) {
     return (
-      <p className="text-sm text-[var(--dim)]">
+      <div className="adm-card adm-card-p text-sm text-[var(--dim)]">
         Aucun élément. Créez le premier avec « Nouveau ».
-      </p>
+      </div>
     );
   }
 
   return (
     <div
       className={
-        "overflow-x-auto rounded border border-[var(--line)]" +
-        (pending ? " opacity-60" : "")
+        "adm-card overflow-x-auto" + (pending ? " opacity-60" : "")
       }
     >
-      <table className="w-full text-sm">
+      <table className="adm-table">
         <thead>
-          <tr className="border-b border-[var(--line)] text-left text-[var(--dim)]">
+          <tr>
             {meta.listColumns.map((c) => (
-              <th key={c} className="px-3 py-2 font-medium">
+              <th key={c}>
                 {meta.fields.find((f) => f.name === c)?.label ?? c}
               </th>
             ))}
-            <th className="px-3 py-2 font-medium">Statut</th>
-            <th className="px-3 py-2 text-right font-medium">Actions</th>
+            <th>Statut</th>
+            <th className="text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
           {items.map((it, i) => (
-            <tr key={it.id} className="border-b border-[var(--line)]">
+            <tr key={it.id}>
               {it.cols.map((v, j) => (
-                <td key={j} className="max-w-xs truncate px-3 py-2">
+                <td key={j} className="max-w-xs truncate">
                   {v || "—"}
                 </td>
               ))}
-              <td className="px-3 py-2">
-                <span
-                  className={
-                    "rounded bg-[var(--bg3)] px-1.5 py-0.5 text-xs " +
-                    (it.status === "published"
-                      ? "text-acc"
-                      : "text-[var(--dim)]")
-                  }
-                >
+              <td>
+                <Badge tone={it.status === "published" ? "green" : "neutral"}>
                   {it.status === "published" ? "Publié" : "Brouillon"}
-                </span>
+                </Badge>
               </td>
-              <td className="px-3 py-2">
+              <td>
                 <div className="flex items-center justify-end gap-1.5">
                   {meta.orderable && (
                     <>
@@ -88,23 +89,23 @@ export function CollectionList({
                         type="button"
                         aria-label="Monter"
                         disabled={pending || i === 0}
-                        className="rounded border border-[var(--line)] px-1.5 py-0.5 disabled:opacity-40"
+                        className="adm-icon-btn"
                         onClick={() =>
                           run(() => reorderItem(collectionKey, it.id, "up"))
                         }
                       >
-                        ↑
+                        <ChevronUp size={15} />
                       </button>
                       <button
                         type="button"
                         aria-label="Descendre"
                         disabled={pending || i === items.length - 1}
-                        className="rounded border border-[var(--line)] px-1.5 py-0.5 disabled:opacity-40"
+                        className="adm-icon-btn"
                         onClick={() =>
                           run(() => reorderItem(collectionKey, it.id, "down"))
                         }
                       >
-                        ↓
+                        <ChevronDown size={15} />
                       </button>
                     </>
                   )}
@@ -112,7 +113,11 @@ export function CollectionList({
                     <button
                       type="button"
                       disabled={pending}
-                      className="rounded border border-[var(--line)] px-2 py-0.5"
+                      aria-label={
+                        it.status === "published" ? "Dépublier" : "Publier"
+                      }
+                      title={it.status === "published" ? "Dépublier" : "Publier"}
+                      className="adm-icon-btn"
                       onClick={() =>
                         run(() =>
                           togglePublishItem(
@@ -123,30 +128,38 @@ export function CollectionList({
                         )
                       }
                     >
-                      {it.status === "published" ? "Dépublier" : "Publier"}
+                      {it.status === "published" ? (
+                        <EyeOff size={15} />
+                      ) : (
+                        <Eye size={15} />
+                      )}
                     </button>
                   )}
                   <Link
                     href={`/admin/collections/${collectionKey}/${it.id}`}
-                    className="rounded border border-[var(--line)] px-2 py-0.5 hover:border-acc"
+                    aria-label="Éditer"
+                    title="Éditer"
+                    className="adm-icon-btn"
                   >
-                    Éditer
+                    <Pencil size={15} />
                   </Link>
                   <button
                     type="button"
                     disabled={pending}
-                    className="rounded border border-[var(--line)] px-2 py-0.5 text-red-400 hover:border-red-400"
+                    aria-label="Supprimer"
+                    title="Supprimer"
+                    className="adm-icon-btn danger"
                     onClick={() => {
                       if (
                         window.confirm(
-                          `Supprimer « ${it.title} » ? Cette action est réversible depuis la base, mais l’élément disparaîtra du site.`,
+                          `Supprimer « ${it.title} » ? L’élément disparaîtra du site (réversible en base).`,
                         )
                       ) {
                         run(() => deleteItem(collectionKey, it.id));
                       }
                     }}
                   >
-                    Suppr.
+                    <Trash2 size={15} />
                   </button>
                 </div>
               </td>

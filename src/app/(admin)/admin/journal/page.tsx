@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Badge, type BadgeTone, PageHeader } from "@/components/admin/ui";
 import { getCurrentAdmin } from "@/server/auth/guards";
 import { getAuditLog } from "@/server/queries/admin";
 
@@ -20,6 +21,18 @@ const ACTION_LABEL: Record<string, string> = {
   role_change: "rôle",
   reorder: "réordre",
 };
+const TONE: Record<string, BadgeTone> = {
+  create: "green",
+  publish: "green",
+  restore: "green",
+  update: "blue",
+  reorder: "blue",
+  login: "neutral",
+  invite: "amber",
+  unpublish: "amber",
+  role_change: "amber",
+  delete: "red",
+};
 
 // Owner-only (SLV-069).
 export default async function JournalPage() {
@@ -31,39 +44,53 @@ export default async function JournalPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="text-2xl font-extrabold tracking-tight">Journal d’audit</h1>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
+      <PageHeader
+        title="Journal d’audit"
+        description="Traçabilité des actions d’administration (200 dernières)."
+      />
+      <div className="adm-card overflow-x-auto">
+        <table className="adm-table">
           <thead>
-            <tr className="border-b border-[var(--line)] text-left text-[var(--dim)]">
-              <th className="py-2 pr-4 font-medium">Quand</th>
-              <th className="py-2 pr-4 font-medium">Action</th>
-              <th className="py-2 pr-4 font-medium">Entité</th>
-              <th className="py-2 font-medium">Diff</th>
+            <tr>
+              <th>Quand</th>
+              <th>Action</th>
+              <th>Entité</th>
+              <th>Diff</th>
             </tr>
           </thead>
           <tbody>
             {entries.map((a) => (
-              <tr key={a.id} className="border-b border-[var(--line2)] align-top">
-                <td className="whitespace-nowrap py-2 pr-4 text-[var(--dim)]">
+              <tr key={a.id} className="align-top">
+                <td className="whitespace-nowrap text-[var(--dim)]">
                   {new Date(a.createdAt).toLocaleString("fr-BE", {
                     dateStyle: "short",
                     timeStyle: "short",
                   })}
                 </td>
-                <td className="py-2 pr-4">{ACTION_LABEL[a.action] ?? a.action}</td>
-                <td className="py-2 pr-4">
-                  {a.entityType}
-                  {a.entityId ? ` · ${a.entityId.slice(0, 8)}` : ""}
+                <td>
+                  <Badge tone={TONE[a.action] ?? "neutral"}>
+                    {ACTION_LABEL[a.action] ?? a.action}
+                  </Badge>
                 </td>
-                <td className="py-2 font-mono text-xs text-[var(--dim)]">
+                <td>
+                  {a.entityType}
+                  {a.entityId ? (
+                    <span className="text-[var(--dim)]">
+                      {" · "}
+                      {a.entityId.slice(0, 8)}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </td>
+                <td className="max-w-md truncate font-mono text-xs text-[var(--dim)]">
                   {a.diff ? JSON.stringify(a.diff) : "—"}
                 </td>
               </tr>
             ))}
             {entries.length === 0 && (
               <tr>
-                <td colSpan={4} className="py-3 text-[var(--dim)]">
+                <td colSpan={4} className="text-[var(--dim)]">
                   Aucune entrée.
                 </td>
               </tr>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ClearCacheButton } from "@/components/admin/clear-cache";
+import { PageHeader } from "@/components/admin/ui";
 import { updatePaletteAction } from "@/server/actions/settings";
 import {
   revokeOtherSessionsAction,
@@ -38,23 +39,30 @@ export default async function SettingsPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">Paramètres</h1>
+      <PageHeader
+        title="Paramètres"
+        description="Apparence du site, sessions et cache local."
+      />
 
-      <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-bold">Cache local (PWA)</h2>
-        <p className="text-sm text-[var(--dim)]">
-          Vide le cache hors-ligne, la file d’attente et le service worker sur
-          cet appareil.
-        </p>
+      <section className="adm-card adm-card-p flex flex-col gap-3">
+        <div>
+          <h2 className="font-bold">Cache local (PWA)</h2>
+          <p className="text-sm text-[var(--dim)]">
+            Vide le cache hors-ligne, la file d’attente et le service worker sur
+            cet appareil.
+          </p>
+        </div>
         <ClearCacheButton />
       </section>
 
       {isOwner && (
-        <section className="flex flex-col gap-3">
-          <h2 className="text-lg font-bold">Palette du site</h2>
-          <p className="text-sm text-[var(--dim)]">
-            Appliquée à la vitrine sans redéploiement.
-          </p>
+        <section className="adm-card adm-card-p flex flex-col gap-3">
+          <div>
+            <h2 className="font-bold">Palette du site</h2>
+            <p className="text-sm text-[var(--dim)]">
+              Appliquée à la vitrine sans redéploiement.
+            </p>
+          </div>
           <form action={updatePaletteAction} className="flex items-end gap-2">
             <label htmlFor="palette" className="sr-only">
               Palette
@@ -63,7 +71,7 @@ export default async function SettingsPage() {
               id="palette"
               name="palette"
               defaultValue={settings?.activePalette ?? "chaux"}
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2 text-sm"
+              className="adm-select"
             >
               {PALETTES.map(([value, label]) => (
                 <option key={value} value={value}>
@@ -71,55 +79,46 @@ export default async function SettingsPage() {
                 </option>
               ))}
             </select>
-            <button
-              type="submit"
-              className="rounded bg-acc px-3 py-2 text-sm font-semibold text-on-acc"
-            >
+            <button type="submit" className="adm-btn adm-btn-primary">
               Appliquer
             </button>
           </form>
         </section>
       )}
 
-      <section className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">Sessions actives</h2>
+      <section className="adm-card adm-card-p flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-bold">Sessions actives</h2>
           <form action={revokeOtherSessionsAction}>
-            <button
-              type="submit"
-              className="rounded border border-[var(--line)] px-3 py-1.5 text-sm hover:border-acc"
-            >
-              Révoquer les autres sessions
+            <button type="submit" className="adm-btn adm-btn-ghost text-sm">
+              Révoquer les autres
             </button>
           </form>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
+        <div className="-mx-5 -mb-5 overflow-x-auto">
+          <table className="adm-table">
             <thead>
-              <tr className="border-b border-[var(--line)] text-left text-[var(--dim)]">
-                <th className="py-2 pr-4 font-medium">Appareil</th>
-                <th className="py-2 pr-4 font-medium">IP</th>
-                <th className="py-2 pr-4 font-medium">Dernière activité</th>
-                <th className="py-2 pr-4 font-medium">Niveau</th>
-                <th className="py-2 font-medium" />
+              <tr>
+                <th>Appareil</th>
+                <th>IP</th>
+                <th>Dernière activité</th>
+                <th>Niveau</th>
+                <th />
               </tr>
             </thead>
             <tbody>
               {sessions.map((s) => (
-                <tr key={s.id} className="border-b border-[var(--line2)]">
-                  <td className="max-w-xs truncate py-2 pr-4">
-                    {s.userAgent ?? "Inconnu"}
+                <tr key={s.id}>
+                  <td className="max-w-xs truncate">{s.userAgent ?? "Inconnu"}</td>
+                  <td className="text-[var(--dim)]">{s.ip ?? "—"}</td>
+                  <td className="text-[var(--dim)]">
+                    {fmt(s.updatedAt ?? s.createdAt)}
                   </td>
-                  <td className="py-2 pr-4">{s.ip ?? "—"}</td>
-                  <td className="py-2 pr-4">{fmt(s.updatedAt ?? s.createdAt)}</td>
-                  <td className="py-2 pr-4">{s.aal ?? "—"}</td>
-                  <td className="py-2">
+                  <td>{s.aal ?? "—"}</td>
+                  <td className="text-right">
                     <form action={revokeSessionAction}>
                       <input type="hidden" name="sessionId" value={s.id} />
-                      <button
-                        type="submit"
-                        className="rounded border border-[var(--line)] px-2 py-1 text-xs hover:border-red-500"
-                      >
+                      <button type="submit" className="adm-icon-btn danger px-3 text-xs">
                         Révoquer
                       </button>
                     </form>
@@ -128,7 +127,7 @@ export default async function SettingsPage() {
               ))}
               {sessions.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-3 text-[var(--dim)]">
+                  <td colSpan={5} className="text-[var(--dim)]">
                     Aucune session listée.
                   </td>
                 </tr>

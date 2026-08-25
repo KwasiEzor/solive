@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -36,23 +37,21 @@ export default async function CollectionPage({ params }: Params) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm text-[var(--dim)]">
+          <p className="text-xs text-[var(--dim)]">
             <Link href="/admin/collections" className="hover:text-acc">
               Collections
             </Link>{" "}
-            ›
+            /
           </p>
-          <h1 className="text-2xl font-extrabold tracking-tight">
-            {cfg.plural}
-          </h1>
+          <h1 className="text-xl font-extrabold tracking-tight">{cfg.plural}</h1>
         </div>
         <Link
           href={`/admin/collections/${collection}/new`}
-          className="rounded bg-acc px-4 py-2 text-sm font-semibold text-[var(--on-acc)]"
+          className="adm-btn adm-btn-primary"
         >
-          Nouveau
+          <Plus size={16} /> Nouveau
         </Link>
       </div>
       <CollectionList

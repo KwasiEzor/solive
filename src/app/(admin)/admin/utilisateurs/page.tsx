@@ -1,6 +1,8 @@
+import { UserPlus } from "lucide-react";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ReauthGate } from "@/components/admin/reauth-gate";
+import { Badge, PageHeader } from "@/components/admin/ui";
 import {
   changeRoleAction,
   inviteUserAction,
@@ -34,7 +36,7 @@ export default async function UsersPage({ searchParams }: Search) {
   if (!(await hasRecentReauth())) {
     return (
       <div className="flex flex-col gap-5">
-        <h1 className="text-2xl font-extrabold tracking-tight">Utilisateurs</h1>
+        <PageHeader title="Utilisateurs" />
         <ReauthGate />
       </div>
     );
@@ -46,29 +48,34 @@ export default async function UsersPage({ searchParams }: Search) {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-extrabold tracking-tight">Utilisateurs</h1>
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Utilisateurs"
+        description="Comptes d’administration, rôles et invitations."
+      />
 
       {error && (
-        <p role="alert" className="rounded border border-red-500 p-3 text-sm text-red-600">
+        <p
+          role="alert"
+          className="adm-card adm-card-p border-red-500/50 text-sm text-red-500"
+        >
           {ERRORS[error] ?? "Erreur."}
         </p>
       )}
       {invited && (
-        <div className="rounded border border-acc p-3 text-sm">
-          Invitation créée. Lien d’acceptation (à transmettre — l’envoi par
-          e-mail arrive en phase 6, valable 72 h) :
-          <code className="mt-1 block break-all font-mono text-xs">
+        <div className="adm-card adm-card-p text-sm">
+          Invitation créée. Lien d’acceptation à transmettre (valable 72 h) :
+          <code className="mt-1 block break-all font-mono text-xs text-acc">
             /invitation/{invited}
           </code>
         </div>
       )}
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-bold">Inviter</h2>
+      <section className="adm-card adm-card-p flex flex-col gap-3">
+        <h2 className="font-bold">Inviter un utilisateur</h2>
         <form action={inviteUserAction} className="flex flex-wrap items-end gap-2">
           <div className="flex flex-col gap-1">
-            <label htmlFor="email" className="text-sm font-medium">
+            <label htmlFor="email" className="text-xs font-medium text-[var(--dim)]">
               E-mail
             </label>
             <input
@@ -76,73 +83,74 @@ export default async function UsersPage({ searchParams }: Search) {
               name="email"
               type="email"
               required
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2 text-sm"
+              className="adm-input"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="role" className="text-sm font-medium">
+            <label htmlFor="role" className="text-xs font-medium text-[var(--dim)]">
               Rôle
             </label>
-            <select
-              id="role"
-              name="role"
-              defaultValue="editor"
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2 text-sm"
-            >
+            <select id="role" name="role" defaultValue="editor" className="adm-select">
               <option value="editor">Éditeur</option>
               <option value="owner">Propriétaire</option>
             </select>
           </div>
-          <button
-            type="submit"
-            className="rounded bg-acc px-3 py-2 text-sm font-semibold text-on-acc"
-          >
-            Envoyer l’invitation
+          <button type="submit" className="adm-btn adm-btn-primary">
+            <UserPlus size={16} /> Envoyer l’invitation
           </button>
         </form>
       </section>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-bold">Comptes</h2>
+      <section className="adm-card flex flex-col">
+        <h2 className="px-5 pt-5 font-bold">Comptes</h2>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
+          <table className="adm-table mt-3">
             <thead>
-              <tr className="border-b border-[var(--line)] text-left text-[var(--dim)]">
-                <th className="py-2 pr-4 font-medium">E-mail</th>
-                <th className="py-2 pr-4 font-medium">Rôle</th>
-                <th className="py-2 pr-4 font-medium">État</th>
-                <th className="py-2 font-medium">Actions</th>
+              <tr>
+                <th>E-mail</th>
+                <th>Rôle</th>
+                <th>État</th>
+                <th className="text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-b border-[var(--line2)]">
-                  <td className="py-2 pr-4">{u.email}</td>
-                  <td className="py-2 pr-4">
-                    <form action={changeRoleAction} className="flex items-center gap-1">
+                <tr key={u.id}>
+                  <td className="font-medium">{u.email}</td>
+                  <td>
+                    <form
+                      action={changeRoleAction}
+                      className="flex items-center gap-1.5"
+                    >
                       <input type="hidden" name="userId" value={u.id} />
                       <select
                         name="role"
                         defaultValue={u.role}
                         aria-label={`Rôle de ${u.email}`}
-                        className="rounded border border-[var(--line)] bg-[var(--bg2)] px-2 py-1"
+                        className="adm-select py-1.5 text-xs"
                       >
                         <option value="editor">Éditeur</option>
                         <option value="owner">Propriétaire</option>
                       </select>
-                      <button type="submit" className="rounded border border-[var(--line)] px-2 py-1 text-xs hover:border-acc">
+                      <button type="submit" className="adm-icon-btn px-3 text-xs">
                         OK
                       </button>
                     </form>
                   </td>
-                  <td className="py-2 pr-4">
-                    {u.disabledAt ? "Désactivé" : "Actif"}
+                  <td>
+                    <Badge tone={u.disabledAt ? "red" : "green"}>
+                      {u.disabledAt ? "Désactivé" : "Actif"}
+                    </Badge>
                   </td>
-                  <td className="py-2">
+                  <td className="text-right">
                     <form action={setUserDisabledAction}>
                       <input type="hidden" name="userId" value={u.id} />
-                      <input type="hidden" name="disable" value={u.disabledAt ? "0" : "1"} />
-                      <button type="submit" className="rounded border border-[var(--line)] px-2 py-1 text-xs hover:border-acc">
+                      <input
+                        type="hidden"
+                        name="disable"
+                        value={u.disabledAt ? "0" : "1"}
+                      />
+                      <button type="submit" className="adm-icon-btn px-3 text-xs">
                         {u.disabledAt ? "Réactiver" : "Désactiver"}
                       </button>
                     </form>
@@ -151,7 +159,7 @@ export default async function UsersPage({ searchParams }: Search) {
               ))}
               {users.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-3 text-[var(--dim)]">
+                  <td colSpan={4} className="text-[var(--dim)]">
                     Aucun compte (exécutez <code>pnpm seed:owner</code>).
                   </td>
                 </tr>
@@ -161,16 +169,19 @@ export default async function UsersPage({ searchParams }: Search) {
         </div>
       </section>
 
-      {invites.length > 0 && (
-        <section className="flex flex-col gap-3">
-          <h2 className="text-lg font-bold">Invitations en attente</h2>
-          <ul className="flex flex-col gap-1 text-sm">
+      {invites.filter((i) => !i.acceptedAt).length > 0 && (
+        <section className="adm-card adm-card-p flex flex-col gap-3">
+          <h2 className="font-bold">Invitations en attente</h2>
+          <ul className="flex flex-col divide-y divide-[var(--line2)] text-sm">
             {invites
               .filter((i) => !i.acceptedAt)
               .map((i) => (
-                <li key={i.id} className="flex justify-between">
+                <li key={i.id} className="flex justify-between py-2">
                   <span>
-                    {i.email} · {i.role === "owner" ? "Propriétaire" : "Éditeur"}
+                    {i.email}{" "}
+                    <Badge tone={i.role === "owner" ? "amber" : "neutral"}>
+                      {i.role === "owner" ? "Propriétaire" : "Éditeur"}
+                    </Badge>
                   </span>
                   <span className="text-[var(--dim)]">
                     expire {new Date(i.expiresAt).toLocaleDateString("fr-BE")}

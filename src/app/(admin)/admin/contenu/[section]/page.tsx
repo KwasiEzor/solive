@@ -40,11 +40,11 @@ export default async function ContentSectionPage({ params }: Params) {
         }}
       />
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-bold">Historique ({revisions.length})</h2>
+      <section className="adm-card adm-card-p flex flex-col gap-3">
+        <h2 className="font-bold">Historique ({revisions.length})</h2>
         <ul className="flex flex-col divide-y divide-[var(--line2)] text-sm">
           {revisions.map((r) => (
-            <li key={r.id} className="flex items-center justify-between py-2">
+            <li key={r.id} className="flex items-center justify-between gap-3 py-2.5">
               <span className="text-[var(--dim)]">
                 {new Date(r.createdAt).toLocaleString("fr-BE", {
                   dateStyle: "short",
@@ -53,17 +53,14 @@ export default async function ContentSectionPage({ params }: Params) {
               </span>
               <form action={restore}>
                 <input type="hidden" name="revisionId" value={r.id} />
-                <button
-                  type="submit"
-                  className="rounded border border-[var(--line)] px-2 py-1 text-xs hover:border-acc"
-                >
-                  Restaurer cette version
+                <button type="submit" className="adm-icon-btn px-3 text-xs">
+                  Restaurer
                 </button>
               </form>
             </li>
           ))}
           {revisions.length === 0 && (
-            <li className="py-2 text-[var(--dim)]">Aucune révision.</li>
+            <li className="py-2.5 text-[var(--dim)]">Aucune révision.</li>
           )}
         </ul>
       </section>

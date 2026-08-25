@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CollectionForm } from "@/components/admin/collection-form";
 import {
@@ -55,9 +56,24 @@ export default async function CollectionItemPage({ params }: Params) {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-extrabold tracking-tight">
-        {isNew ? `Nouveau ${cfg.singular}` : `Éditer — ${cfg.plural}`}
-      </h1>
+      <div>
+        <p className="text-xs text-[var(--dim)]">
+          <Link href="/admin/collections" className="hover:text-acc">
+            Collections
+          </Link>{" "}
+          /{" "}
+          <Link
+            href={`/admin/collections/${collection}`}
+            className="hover:text-acc"
+          >
+            {cfg.plural}
+          </Link>{" "}
+          /
+        </p>
+        <h1 className="text-xl font-extrabold tracking-tight">
+          {isNew ? `Nouveau ${cfg.singular}` : `Éditer — ${cfg.singular}`}
+        </h1>
+      </div>
       <CollectionForm
         collectionKey={collection}
         meta={meta(cfg)}

@@ -117,18 +117,15 @@ export function SectionEditor({ section }: { section: EditableSection }) {
   }, [doSave, doPublish]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-extrabold capitalize tracking-tight">
+          <h1 className="text-xl font-extrabold capitalize tracking-tight">
             {section.key}
           </h1>
           <span
             className={
-              "rounded px-2 py-0.5 text-xs " +
-              (status === "published"
-                ? "bg-acc text-on-acc"
-                : "border border-[var(--line)] text-[var(--dim)]")
+              "adm-badge " + (status === "published" ? "green" : "neutral")
             }
           >
             {status === "published" ? "Publié" : "Brouillon"}
@@ -139,7 +136,7 @@ export function SectionEditor({ section }: { section: EditableSection }) {
             aria-live="polite"
             className={
               "text-sm " +
-              (saveState === "error" ? "text-red-600" : "text-[var(--dim)]")
+              (saveState === "error" ? "text-red-500" : "text-[var(--dim)]")
             }
           >
             {STATE_LABEL[saveState]}
@@ -147,15 +144,15 @@ export function SectionEditor({ section }: { section: EditableSection }) {
           <button
             type="button"
             onClick={() => void doSave()}
-            className="rounded border border-[var(--line)] px-3 py-1.5 text-sm hover:border-acc"
+            className="adm-btn adm-btn-ghost text-sm"
           >
-            Enregistrer <kbd>⌘S</kbd>
+            Enregistrer <kbd className="text-xs opacity-70">⌘S</kbd>
           </button>
           {status === "published" ? (
             <button
               type="button"
               onClick={() => void doUnpublish()}
-              className="rounded border border-[var(--line)] px-3 py-1.5 text-sm hover:border-acc"
+              className="adm-btn adm-btn-ghost text-sm"
             >
               Dépublier
             </button>
@@ -163,24 +160,27 @@ export function SectionEditor({ section }: { section: EditableSection }) {
             <button
               type="button"
               onClick={() => void doPublish()}
-              className="rounded bg-acc px-3 py-1.5 text-sm font-semibold text-on-acc"
+              className="adm-btn adm-btn-primary text-sm"
             >
-              Publier <kbd>⌘⇧P</kbd>
+              Publier <kbd className="text-xs opacity-70">⌘⇧P</kbd>
             </button>
           )}
         </div>
       </div>
 
       {conflict && (
-        <p role="alert" className="rounded border border-red-500 p-3 text-sm text-red-600">
+        <p
+          role="alert"
+          className="adm-card adm-card-p border-red-500/50 text-sm text-red-500"
+        >
           Cette section a été modifiée ailleurs depuis votre ouverture. Rechargez
           la page pour récupérer la dernière version (aucun écrasement silencieux).
         </p>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-5 lg:grid-cols-2">
         {/* Édition */}
-        <div className="flex flex-col gap-4">
+        <div className="adm-card adm-card-p flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="kicker" className="text-sm font-medium">
               Kicker
@@ -192,7 +192,7 @@ export function SectionEditor({ section }: { section: EditableSection }) {
                 setKicker(e.target.value);
                 markDirty();
               }}
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2"
+              className="adm-input"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -206,7 +206,7 @@ export function SectionEditor({ section }: { section: EditableSection }) {
                 setHeading(e.target.value);
                 markDirty();
               }}
-              className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2"
+              className="adm-input"
             />
           </div>
           <div className="flex flex-col gap-1.5">
@@ -223,10 +223,10 @@ export function SectionEditor({ section }: { section: EditableSection }) {
 
         {/* Aperçu en direct (SLV-061) */}
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-[var(--dim)]">
-            Aperçu
+          <span className="px-1 font-mono text-[10px] uppercase tracking-widest text-[var(--dim)]">
+            Aperçu en direct
           </span>
-          <div className="site t-chaux overflow-hidden rounded border border-[var(--line)]">
+          <div className="site t-chaux overflow-hidden rounded-xl border border-[var(--line)]">
             <div className="sec" style={{ padding: "40px 24px" }}>
               <div className="sec-head">
                 {kicker && (

@@ -1,9 +1,28 @@
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Font, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { formatCentsEUR } from "@/lib/money";
+import { PDF_SANS_BOLD_DATA_URI, PDF_SANS_REGULAR_DATA_URI } from "./pdf-fonts";
 import type { Quote, QuoteItem, SiteSettings } from "@/server/db/types";
 
+/**
+ * Embed a real font instead of using react-pdf's default "Helvetica": that
+ * default routes through pdfkit's built-in standard-font loader, which
+ * resolves its data files via a package.json subpath-import map Vercel's
+ * build-time file tracer can't expand — the files silently go missing from
+ * the deployed function (MODULE_NOT_FOUND, production-only). @react-pdf/font
+ * always loads `src` via `fetch()` (even server-side), so a data: URI baked
+ * into the compiled module — no separate file, nothing to trace — sidesteps
+ * the whole problem.
+ */
+Font.register({
+  family: "Sans",
+  fonts: [
+    { src: PDF_SANS_REGULAR_DATA_URI, fontWeight: 400 },
+    { src: PDF_SANS_BOLD_DATA_URI, fontWeight: 700 },
+  ],
+});
+
 const styles = StyleSheet.create({
-  page: { padding: 40, fontSize: 10, fontFamily: "Helvetica", color: "#1a1a1a" },
+  page: { padding: 40, fontSize: 10, fontFamily: "Sans", color: "#1a1a1a" },
   header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 28 },
   studioName: { fontSize: 14, fontWeight: 700 },
   dim: { color: "#666666" },

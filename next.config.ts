@@ -5,13 +5,7 @@ import type { NextConfig } from "next";
 import "./src/lib/env";
 
 const nextConfig: NextConfig = {
-  // pdfkit (via @react-pdf/renderer) loads its standard font metrics from
-  // disk at runtime with a dynamic require Next's tracer can't follow — the
-  // serverless bundle silently drops them without this (MODULE_NOT_FOUND on
-  // Helvetica.cjs in production).
-  outputFileTracingIncludes: {
-    "/api/admin/devis/\\[id\\]/pdf": ["./node_modules/pdfkit/**/*"],
-  },
+  /* config options here */
 };
 
 // PWA / offline (SLV-080-088). SW disabled in dev to avoid caching churn.

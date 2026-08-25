@@ -1,13 +1,18 @@
-import { Document, Page, renderToBuffer, Text } from "@react-pdf/renderer";
+import { Document, Font, Page, renderToBuffer, Text } from "@react-pdf/renderer";
+import { PDF_SANS_REGULAR_DATA_URI } from "@/components/admin/pdf-fonts";
 
-// Temporary diagnostic route: isolate whether a MINIMAL react-pdf render (no
-// custom fonts, no app component) already crashes on Helvetica in this
-// environment, vs. something specific to QuoteDocument. Deleted after use.
+Font.register({
+  family: "Sans",
+  fonts: [{ src: PDF_SANS_REGULAR_DATA_URI, fontWeight: 400 }],
+});
+
+// Temporary diagnostic route: does an explicit custom fontFamily (never
+// touching the "Helvetica" default) avoid the crash entirely? Deleted after use.
 export async function GET() {
   const buffer = await renderToBuffer(
     <Document>
       <Page size="A4">
-        <Text>hello</Text>
+        <Text style={{ fontFamily: "Sans" }}>bonjour éèêë</Text>
       </Page>
     </Document>,
   );

@@ -838,7 +838,11 @@
   transform: none;
   pointer-events: auto;
 }
-.float-cta:hover {
+a.float-cta:hover {
+  /* matches the specificity of `.site a:hover { color: var(--acc) }` (which
+     would otherwise win and turn the label mint-on-mint on hover) and wins
+     the tie by appearing later in the cascade. */
+  color: var(--on-acc);
   box-shadow: var(--glow);
 }
 .float-cta:hover .float-cta-arrow {

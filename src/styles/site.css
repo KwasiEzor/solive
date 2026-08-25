@@ -696,6 +696,78 @@
   }
 }
 
+/* floating call-to-action — stacked directly above the back-to-top button */
+.float-cta {
+  position: fixed;
+  right: 20px;
+  bottom: 76px;
+  z-index: 71;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--acc), var(--acc-strong));
+  color: var(--on-acc);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translateY(12px) scale(0.94);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.2s ease;
+}
+.float-cta.in {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.float-cta:hover {
+  box-shadow: var(--glow);
+}
+.float-cta:hover .float-cta-arrow {
+  transform: translateX(3px);
+}
+.float-cta-arrow {
+  transition: transform 0.2s ease;
+  flex: none;
+}
+.float-cta-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--acc);
+  opacity: 0.55;
+  animation: float-cta-ping 2.6s cubic-bezier(0.2, 0.7, 0.3, 1) infinite;
+  z-index: -1;
+}
+@keyframes float-cta-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70%,
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+@media (max-width: 520px) {
+  .float-cta {
+    bottom: 80px;
+    padding: 12px 16px;
+  }
+  .float-cta-label {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .float-cta-pulse {
+    animation: none;
+    display: none;
+  }
+}
+
 /* back-to-top button */
 .scroll-top {
   position: fixed;
@@ -921,24 +993,35 @@
 .eyebrow {
   color: var(--acc);
   display: block;
+}
+.hero-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
   margin-bottom: 22px;
+}
+.hero-tag {
+  color: var(--dim);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  letter-spacing: 0.08em;
 }
 .hero h1 {
   font-size: clamp(2.5rem, 5.4vw, 4.6rem);
 }
+/* Native CSS underline (was an absolutely-positioned SVG in an inline-block
+   span — on long phrases it could wrap internally and strand trailing
+   punctuation on its own line). Plain inline text wraps normally and the
+   underline follows every wrapped line automatically, with no JS/SVG. */
 .hl {
-  position: relative;
-  display: inline-block;
   color: var(--acc);
-}
-.hl-line {
-  position: absolute;
-  left: 0;
-  bottom: -0.12em;
-  width: 100%;
-  height: 0.16em;
-  color: var(--acc);
-  opacity: 0.8;
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.18em;
+  text-decoration-skip-ink: none;
 }
 .lede {
   margin-top: 26px;

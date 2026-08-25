@@ -60,7 +60,7 @@ export function MediaBand({
 
 const BASELINE = "studio de développement";
 const VILLE = "Charleroi";
-const HL = "qui tiennent debout";
+const HL = "solide";
 
 export function SecHead({ kicker, titre }: { kicker: string; titre: string }) {
   return (
@@ -72,9 +72,7 @@ export function SecHead({ kicker, titre }: { kicker: string; titre: string }) {
 }
 
 export function Hero({ section }: { section?: Section }) {
-  const heading =
-    section?.heading ??
-    "On construit des sites et des applications qui tiennent debout.";
+  const heading = section?.heading ?? "On construit solide.";
   const kicker = section?.kicker ?? `${BASELINE} — ${VILLE}`;
   const idx = heading.indexOf(HL);
   const before = idx >= 0 ? heading.slice(0, idx) : heading;
@@ -94,28 +92,13 @@ export function Hero({ section }: { section?: Section }) {
       </div>
       <div className="wrap hero-in">
         <div className="hero-copy">
-          <p className="mono tiny eyebrow">{kicker.toUpperCase()}</p>
+          <div className="hero-tags">
+            <span className="mono tiny eyebrow">{kicker.toUpperCase()}</span>
+            <span className="hero-tag mono tiny">BUILD STRONG</span>
+          </div>
           <h1>
             {before}
-            {idx >= 0 && (
-              <span className="hl">
-                {HL}
-                <svg
-                  className="hl-line"
-                  viewBox="0 0 300 12"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M2 8 C 70 2, 150 11, 298 4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>
-            )}
+            {idx >= 0 && <span className="hl">{HL}</span>}
             {after}
           </h1>
           <p className="lede">

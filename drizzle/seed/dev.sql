@@ -18,7 +18,7 @@ where singleton = true;
 
 -- ── sections (headings/kickers) ──────────────────────────────────────────
 insert into public.sections (key, locale, kicker, heading, status, sort_order, published_at) values
- ('hero',    'fr', 'studio de développement — Charleroi', 'On construit des sites et des applications qui tiennent debout.', 'published', 0, now()),
+ ('hero',    'fr', 'studio de développement — Charleroi', 'On construit solide.', 'published', 0, now()),
  ('services','fr', 'Ce qu''on fabrique', 'Trois lots, un seul interlocuteur.', 'published', 1, now()),
  ('methode', 'fr', 'La méthode', 'Quatre étapes. Vous savez toujours où on en est.', 'published', 2, now()),
  ('travaux', 'fr', 'Travaux', 'Ce que ça donne une fois livré.', 'published', 3, now()),

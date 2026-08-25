@@ -1,20 +1,10 @@
 "use client";
+import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { loginAction, verifyTotpAction } from "@/server/actions/auth";
+import { OtpInput } from "./otp-input";
 import { PasswordField } from "./password-field";
-
-const inputCls = "w-full rounded-lg px-3 py-2.5";
-const inputStyle = {
-  border: "1px solid var(--line)",
-  background: "var(--bg2)",
-  color: "var(--fg)",
-} as const;
-const btnStyle = {
-  background: "linear-gradient(180deg, var(--acc), var(--acc-strong))",
-  color: "var(--on-acc)",
-  boxShadow: "var(--shadow-sm)",
-} as const;
 
 export function LoginForm() {
   const router = useRouter();
@@ -39,33 +29,42 @@ export function LoginForm() {
     else setError(r.message);
   }
 
-  async function onMfa(e: FormEvent) {
-    e.preventDefault();
+  async function verify(current: string) {
     setPending(true);
     setError("");
-    const r = await verifyTotpAction({ code });
+    const r = await verifyTotpAction({ code: current });
     setPending(false);
     if (r.status === "ok") router.push("/admin");
-    else setError(r.status === "error" ? r.message : "Erreur.");
+    else {
+      setError(r.status === "error" ? r.message : "Erreur.");
+      setCode("");
+    }
   }
+
+  // Auto-submit once the 6th digit is entered — best-practice OTP UX.
+  const onCodeChange = (v: string) => {
+    setCode(v);
+    if (v.length === 6) void verify(v);
+  };
 
   return (
     <div className="flex flex-col gap-5">
       {step === "login" ? (
         <form onSubmit={onLogin} className="flex flex-col gap-4" noValidate>
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-sm font-medium">
+            <label htmlFor="email" className="auth-label">
               E-mail
             </label>
             <input
               id="email"
               type="email"
               autoComplete="username"
+              autoFocus
               required
+              placeholder="vous@solive.pro"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={inputCls}
-              style={inputStyle}
+              className="auth-input"
             />
           </div>
           <PasswordField
@@ -75,62 +74,57 @@ export function LoginForm() {
             onChange={setPassword}
             autoComplete="current-password"
           />
-          <button
-            type="submit"
-            disabled={pending}
-            className="rounded-lg px-4 py-2.5 font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-60"
-            style={btnStyle}
-          >
+          <button type="submit" disabled={pending} className="auth-btn">
+            {pending && <Loader2 size={16} className="spin" />}
             {pending ? "Connexion…" : "Se connecter"}
           </button>
           <a
             href="/mot-de-passe-oublie"
-            className="text-sm underline underline-offset-2"
-            style={{ color: "var(--dim)" }}
+            className="text-sm text-[var(--dim)] underline underline-offset-2 hover:text-acc"
           >
             Mot de passe oublié ?
           </a>
         </form>
       ) : (
-        <form onSubmit={onMfa} className="flex flex-col gap-4" noValidate>
-          <p className="text-sm" style={{ color: "var(--dim)" }}>
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-[var(--dim)]">
             Entrez le code à 6 chiffres de votre application d’authentification.
           </p>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="otp" className="text-sm font-medium">
-              Code d’authentification
-            </label>
-            <input
-              id="otp"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              pattern="\d{6}"
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className={`${inputCls} tracking-[0.4em]`}
-              style={inputStyle}
-            />
-          </div>
-          <button
-            type="submit"
+          <OtpInput
+            value={code}
+            onChange={onCodeChange}
+            autoFocus
             disabled={pending}
-            className="rounded-lg px-4 py-2.5 font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-60"
-            style={btnStyle}
+          />
+          <button
+            type="button"
+            onClick={() => void verify(code)}
+            disabled={pending || code.length < 6}
+            className="auth-btn"
           >
+            {pending && <Loader2 size={16} className="spin" />}
             {pending ? "Vérification…" : "Valider"}
           </button>
-        </form>
+          <button
+            type="button"
+            onClick={() => {
+              setStep("login");
+              setCode("");
+              setError("");
+            }}
+            className="flex items-center justify-center gap-1.5 text-sm text-[var(--dim)] hover:text-acc"
+          >
+            <ArrowLeft size={14} /> Revenir à la connexion
+          </button>
+        </div>
       )}
 
-      <p
-        role="alert"
-        aria-live="polite"
-        className="min-h-5 text-sm"
-        style={{ color: "#f87171" }}
-      >
-        {error}
-      </p>
+      {error && (
+        <p role="alert" aria-live="polite" className="auth-error">
+          <AlertCircle size={15} className="mt-px flex-none" />
+          <span>{error}</span>
+        </p>
+      )}
     </div>
   );
 }

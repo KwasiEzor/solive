@@ -21,7 +21,8 @@ test("mfa page requires a session (SLV-041)", async ({ page }) => {
 test("connexion renders an accessible login form", async ({ page }) => {
   await page.goto("/connexion");
   await expect(page.getByLabel("E-mail")).toBeVisible();
-  await expect(page.getByLabel("Mot de passe")).toBeVisible();
+  // exact: false-match ("Afficher le mot de passe" button) collides on substring
+  await expect(page.getByLabel("Mot de passe", { exact: true })).toBeVisible();
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();

@@ -1,21 +1,14 @@
 "use client";
-import type { FormEvent } from "react";
+import { AlertCircle, Check, Copy, Download, Loader2, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   confirmTotpEnrollAction,
   enrollTotpAction,
 } from "@/server/actions/mfa";
+import { OtpInput } from "./otp-input";
 
 type Enroll = { factorId: string; qrCode: string; secret: string };
-
-const btnStyle = {
-  background: "linear-gradient(180deg, var(--acc), var(--acc-strong))",
-  color: "var(--on-acc)",
-  boxShadow: "var(--shadow-sm)",
-} as const;
-const btnCls =
-  "rounded-lg px-4 py-2.5 font-semibold transition-transform hover:-translate-y-0.5 disabled:opacity-60";
 
 export function MfaEnrollForm() {
   const router = useRouter();
@@ -24,6 +17,7 @@ export function MfaEnrollForm() {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [recoveryCodes, setRecoveryCodes] = useState<string[] | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -38,37 +32,93 @@ export function MfaEnrollForm() {
     };
   }, []);
 
-  async function onConfirm(e: FormEvent) {
-    e.preventDefault();
+  async function verify(current: string) {
     if (!enroll) return;
     setPending(true);
     setError("");
-    const r = await confirmTotpEnrollAction({ factorId: enroll.factorId, code });
+    const r = await confirmTotpEnrollAction({
+      factorId: enroll.factorId,
+      code: current,
+    });
     setPending(false);
     if (r.status === "ok") setRecoveryCodes(r.recoveryCodes);
-    else setError(r.message);
+    else {
+      setError(r.message);
+      setCode("");
+    }
   }
+
+  const onCodeChange = (v: string) => {
+    setCode(v);
+    if (v.length === 6) void verify(v);
+  };
+
+  const copyAll = () => {
+    if (!recoveryCodes) return;
+    void navigator.clipboard.writeText(recoveryCodes.join("\n"));
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const downloadAll = () => {
+    if (!recoveryCodes) return;
+    const blob = new Blob(
+      [
+        "Solive — codes de récupération MFA\n" +
+          "Conservez ce fichier en lieu sûr. Chaque code n’est utilisable qu’une fois.\n\n" +
+          recoveryCodes.join("\n") +
+          "\n",
+      ],
+      { type: "text/plain" },
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "solive-codes-recuperation.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   if (recoveryCodes) {
     return (
       <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-bold">Vos codes de récupération</h2>
-        <p className="text-sm" style={{ color: "var(--dim)" }}>
+        <div className="flex items-center gap-2.5 text-acc">
+          <ShieldCheck size={20} />
+          <h2 className="text-lg font-bold text-[var(--fg)]">
+            Double authentification activée
+          </h2>
+        </div>
+        <p className="text-sm text-[var(--dim)]">
           Conservez ces 8 codes en lieu sûr. Affichés une seule fois, ils
-          permettent de récupérer l’accès si vous perdez votre téléphone.
+          permettent de récupérer l’accès si vous perdez votre téléphone —
+          chacun n’est utilisable qu’une fois.
         </p>
-        <ul
-          className="grid grid-cols-2 gap-2 rounded-lg p-4 font-mono text-sm"
-          style={{ border: "1px solid var(--line)", background: "var(--bg2)" }}
-        >
+        <ul className="grid grid-cols-2 gap-2 rounded-xl border border-[var(--line)] bg-[var(--bg2)] p-4 font-mono text-sm">
           {recoveryCodes.map((c) => (
             <li key={c}>{c}</li>
           ))}
         </ul>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={copyAll}
+            className="auth-btn-ghost auth-btn flex-1"
+          >
+            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? "Copié" : "Copier"}
+          </button>
+          <button
+            type="button"
+            onClick={downloadAll}
+            className="auth-btn-ghost auth-btn flex-1"
+          >
+            <Download size={16} /> Télécharger
+          </button>
+        </div>
         <button
+          type="button"
           onClick={() => router.push("/admin")}
-          className={btnCls}
-          style={btnStyle}
+          className="auth-btn"
         >
           J’ai enregistré mes codes — continuer
         </button>
@@ -78,64 +128,57 @@ export function MfaEnrollForm() {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm" style={{ color: "var(--dim)" }}>
+      <p className="text-sm text-[var(--dim)]">
         Scannez le QR code avec votre application d’authentification (Google
         Authenticator, 1Password, Authy…), puis entrez le code à 6 chiffres.
       </p>
-      {enroll && (
+      {enroll ? (
         <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={enroll.qrCode}
-            alt="QR code d’enrôlement TOTP"
-            width={176}
-            height={176}
-            className="self-start rounded-lg bg-white p-2"
-          />
-          <p
-            className="break-all font-mono text-xs"
-            style={{ color: "var(--dim2)" }}
-          >
-            Clé manuelle : {enroll.secret}
-          </p>
-          <form onSubmit={onConfirm} className="flex flex-col gap-3" noValidate>
-            <label htmlFor="otp" className="text-sm font-medium">
-              Code à 6 chiffres
-            </label>
-            <input
-              id="otp"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              pattern="\d{6}"
-              required
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="rounded-lg px-3 py-2.5 tracking-[0.4em]"
-              style={{
-                border: "1px solid var(--line)",
-                background: "var(--bg2)",
-                color: "var(--fg)",
-              }}
+          <div className="self-start rounded-xl border border-[var(--line)] bg-white p-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={enroll.qrCode}
+              alt="QR code d’enrôlement TOTP"
+              width={168}
+              height={168}
             />
-            <button
-              type="submit"
-              disabled={pending}
-              className={btnCls}
-              style={btnStyle}
-            >
-              {pending ? "Vérification…" : "Activer la double authentification"}
-            </button>
-          </form>
+          </div>
+          <details className="text-xs text-[var(--dim)]">
+            <summary className="cursor-pointer select-none hover:text-acc">
+              Impossible de scanner ? Saisir la clé manuellement
+            </summary>
+            <p className="mt-2 break-all rounded-lg bg-[var(--bg2)] p-2.5 font-mono">
+              {enroll.secret}
+            </p>
+          </details>
+          <div className="flex flex-col gap-2">
+            <label className="auth-label">Code à 6 chiffres</label>
+            <OtpInput value={code} onChange={onCodeChange} autoFocus disabled={pending} />
+          </div>
+          <button
+            type="button"
+            onClick={() => void verify(code)}
+            disabled={pending || code.length < 6}
+            className="auth-btn"
+          >
+            {pending && <Loader2 size={16} className="spin" />}
+            {pending ? "Vérification…" : "Activer la double authentification"}
+          </button>
         </>
+      ) : (
+        !error && (
+          <div className="flex items-center gap-2 text-sm text-[var(--dim)]">
+            <Loader2 size={15} className="spin" /> Préparation de
+            l’enrôlement…
+          </div>
+        )
       )}
-      <p
-        role="alert"
-        aria-live="polite"
-        className="min-h-5 text-sm"
-        style={{ color: "#f87171" }}
-      >
-        {error}
-      </p>
+      {error && (
+        <p role="alert" aria-live="polite" className="auth-error">
+          <AlertCircle size={15} className="mt-px flex-none" />
+          <span>{error}</span>
+        </p>
+      )}
     </div>
   );
 }

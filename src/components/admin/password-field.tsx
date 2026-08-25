@@ -1,4 +1,5 @@
 "use client";
+import { Eye, EyeOff } from "lucide-react";
 import { type KeyboardEvent, useState } from "react";
 
 function scorePassword(pw: string): number {
@@ -39,7 +40,7 @@ export function PasswordField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label htmlFor={id} className="auth-label">
         {label}
       </label>
       <div className="relative">
@@ -51,27 +52,22 @@ export function PasswordField({
           onKeyUp={onKey}
           autoComplete={autoComplete}
           required
-          className="w-full rounded-lg px-3 py-2.5 pr-20"
-          style={{
-            border: "1px solid var(--line)",
-            background: "var(--bg2)",
-            color: "var(--fg)",
-          }}
+          className="auth-input pr-11"
         />
         <button
           type="button"
           onClick={() => setShow((s) => !s)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded px-2 py-1 text-xs"
-          style={{ color: "var(--dim)" }}
+          className="absolute right-2 top-1/2 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-md text-[var(--dim)] hover:text-acc"
           aria-pressed={show}
+          aria-label={show ? "Masquer le mot de passe" : "Afficher le mot de passe"}
         >
-          {show ? "Masquer" : "Afficher"}
+          {show ? <EyeOff size={16} /> : <Eye size={16} />}
         </button>
       </div>
 
       {caps && (
-        <p className="text-xs" style={{ color: "#f59e0b" }} role="status">
-          ⚠ Verrouillage des majuscules activé
+        <p className="text-xs text-[#e6a13c]" role="status">
+          Verrouillage des majuscules activé
         </p>
       )}
 
@@ -81,15 +77,14 @@ export function PasswordField({
             {[0, 1, 2, 3].map((i) => (
               <span
                 key={i}
-                className="h-1 flex-1 rounded-full"
+                className="h-1.5 flex-1 rounded-full transition-colors"
                 style={{
-                  background:
-                    i < score ? STRENGTH_COLOR[score] : "var(--line)",
+                  background: i < score ? STRENGTH_COLOR[score] : "var(--line)",
                 }}
               />
             ))}
           </div>
-          <span className="text-xs" style={{ color: "var(--dim)" }}>
+          <span className="w-16 text-right text-xs text-[var(--dim)]">
             {STRENGTH[score]}
           </span>
         </div>

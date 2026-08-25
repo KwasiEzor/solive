@@ -166,3 +166,99 @@ body {
   border-color: #ef6b6b;
   color: #ef6b6b;
 }
+
+/* ── Auth screens ─────────────────────────────────────────────────────── */
+.auth-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  color: var(--fg);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 15px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.auth-input::placeholder {
+  color: var(--dim2);
+}
+.auth-input:focus {
+  outline: none;
+  border-color: var(--acc);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc) 22%, transparent);
+}
+.auth-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+.auth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s, box-shadow 0.2s;
+  background: linear-gradient(180deg, var(--acc), var(--acc-strong));
+  color: var(--on-acc);
+  box-shadow: var(--shadow-sm);
+}
+.auth-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.auth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.auth-btn-ghost {
+  background: none;
+  color: var(--fg);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.auth-btn-ghost:hover:not(:disabled) {
+  border-color: var(--acc);
+  transform: none;
+}
+.auth-error {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(239, 100, 100, 0.12);
+  border: 1px solid rgba(239, 100, 100, 0.32);
+  color: #ef6b6b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.otp-input {
+  width: 44px;
+  height: 52px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  font-family: var(--font-mono), monospace;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+  color: var(--fg);
+  border-radius: 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.otp-input:focus {
+  outline: none;
+  border-color: var(--acc);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc) 22%, transparent);
+}
+.spin {
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

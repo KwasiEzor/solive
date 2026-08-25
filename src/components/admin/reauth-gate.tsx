@@ -1,7 +1,9 @@
 "use client";
+import { AlertCircle, Loader2, ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { reauthenticateAction } from "@/server/actions/reauth";
+import { PasswordField } from "./password-field";
 
 /** Password re-check before sensitive operations (SLV-047). */
 export function ReauthGate() {
@@ -21,32 +23,40 @@ export function ReauthGate() {
   }
 
   return (
-    <form onSubmit={submit} className="flex max-w-sm flex-col gap-3">
-      <p className="text-sm text-[var(--dim)]">
-        Confirmez votre mot de passe pour gérer les utilisateurs.
-      </p>
-      <label htmlFor="reauth" className="text-sm font-medium">
-        Mot de passe
-      </label>
-      <input
+    <form
+      onSubmit={submit}
+      className="adm-card adm-card-p flex max-w-sm flex-col gap-4"
+    >
+      <div className="flex items-center gap-2.5">
+        <span className="grid h-9 w-9 flex-none place-items-center rounded-lg bg-[color-mix(in_srgb,var(--acc)_14%,transparent)] text-acc">
+          <ShieldAlert size={18} />
+        </span>
+        <p className="text-sm text-[var(--dim)]">
+          Confirmez votre mot de passe pour gérer les utilisateurs.
+        </p>
+      </div>
+      <PasswordField
         id="reauth"
-        type="password"
-        autoComplete="current-password"
-        required
+        label="Mot de passe"
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="rounded border border-[var(--line)] bg-[var(--bg2)] px-3 py-2"
+        onChange={setPassword}
+        autoComplete="current-password"
       />
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded bg-acc px-4 py-2 text-sm font-semibold text-on-acc disabled:opacity-60"
+        style={{ width: "auto" }}
+        className="auth-btn self-start px-5"
       >
+        {pending && <Loader2 size={16} className="spin" />}
         {pending ? "Vérification…" : "Confirmer"}
       </button>
-      <p role="alert" aria-live="polite" className="min-h-5 text-sm text-red-600">
-        {error}
-      </p>
+      {error && (
+        <p role="alert" aria-live="polite" className="auth-error">
+          <AlertCircle size={15} className="mt-px flex-none" />
+          <span>{error}</span>
+        </p>
+      )}
     </form>
   );
 }

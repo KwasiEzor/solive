@@ -1,0 +1,78 @@
+diff --git a/js/pdfkit.js b/js/pdfkit.js
+index ee380077464b4ab0c4ce7cd5609c587c095304af..dd45b02737338aa8a0e6afe8bc51c32377dfabbe 100644
+--- a/js/pdfkit.js
++++ b/js/pdfkit.js
+@@ -7262,20 +7262,20 @@ mixin(TableMixin);
+ 
+ const require$1 = module$1.createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('pdfkit.js', document.baseURI).href)));
+ registerStdFontLoaders({
+-  Courier: () => require$1('#standard-fonts/Courier'),
+-  'Courier-Bold': () => require$1('#standard-fonts/CourierBold'),
+-  'Courier-BoldOblique': () => require$1('#standard-fonts/CourierBoldOblique'),
+-  'Courier-Oblique': () => require$1('#standard-fonts/CourierOblique'),
+-  Helvetica: () => require$1('#standard-fonts/Helvetica'),
+-  'Helvetica-Bold': () => require$1('#standard-fonts/HelveticaBold'),
+-  'Helvetica-BoldOblique': () => require$1('#standard-fonts/HelveticaBoldOblique'),
+-  'Helvetica-Oblique': () => require$1('#standard-fonts/HelveticaOblique'),
+-  Symbol: () => require$1('#standard-fonts/Symbol'),
+-  'Times-Bold': () => require$1('#standard-fonts/TimesBold'),
+-  'Times-BoldItalic': () => require$1('#standard-fonts/TimesBoldItalic'),
+-  'Times-Italic': () => require$1('#standard-fonts/TimesItalic'),
+-  'Times-Roman': () => require$1('#standard-fonts/TimesRoman'),
+-  ZapfDingbats: () => require$1('#standard-fonts/ZapfDingbats')
++  Courier: () => require$1('./standard-fonts/Courier.cjs'),
++  'Courier-Bold': () => require$1('./standard-fonts/CourierBold.cjs'),
++  'Courier-BoldOblique': () => require$1('./standard-fonts/CourierBoldOblique.cjs'),
++  'Courier-Oblique': () => require$1('./standard-fonts/CourierOblique.cjs'),
++  Helvetica: () => require$1('./standard-fonts/Helvetica.cjs'),
++  'Helvetica-Bold': () => require$1('./standard-fonts/HelveticaBold.cjs'),
++  'Helvetica-BoldOblique': () => require$1('./standard-fonts/HelveticaBoldOblique.cjs'),
++  'Helvetica-Oblique': () => require$1('./standard-fonts/HelveticaOblique.cjs'),
++  Symbol: () => require$1('./standard-fonts/Symbol.cjs'),
++  'Times-Bold': () => require$1('./standard-fonts/TimesBold.cjs'),
++  'Times-BoldItalic': () => require$1('./standard-fonts/TimesBoldItalic.cjs'),
++  'Times-Italic': () => require$1('./standard-fonts/TimesItalic.cjs'),
++  'Times-Roman': () => require$1('./standard-fonts/TimesRoman.cjs'),
++  ZapfDingbats: () => require$1('./standard-fonts/ZapfDingbats.cjs')
+ });
+ 
+ exports.LineWrapper = LineWrapper;
+diff --git a/js/pdfkit.node.mjs b/js/pdfkit.node.mjs
+index e852d25eed77cbd9054fd75df94843b87769a611..8dda92fa5db69b852b28620281f5a739a0981529 100644
+--- a/js/pdfkit.node.mjs
++++ b/js/pdfkit.node.mjs
+@@ -7257,20 +7257,20 @@ mixin(TableMixin);
+ 
+ const require$1 = createRequire(import.meta.url);
+ registerStdFontLoaders({
+-  Courier: () => require$1('#standard-fonts/Courier'),
+-  'Courier-Bold': () => require$1('#standard-fonts/CourierBold'),
+-  'Courier-BoldOblique': () => require$1('#standard-fonts/CourierBoldOblique'),
+-  'Courier-Oblique': () => require$1('#standard-fonts/CourierOblique'),
+-  Helvetica: () => require$1('#standard-fonts/Helvetica'),
+-  'Helvetica-Bold': () => require$1('#standard-fonts/HelveticaBold'),
+-  'Helvetica-BoldOblique': () => require$1('#standard-fonts/HelveticaBoldOblique'),
+-  'Helvetica-Oblique': () => require$1('#standard-fonts/HelveticaOblique'),
+-  Symbol: () => require$1('#standard-fonts/Symbol'),
+-  'Times-Bold': () => require$1('#standard-fonts/TimesBold'),
+-  'Times-BoldItalic': () => require$1('#standard-fonts/TimesBoldItalic'),
+-  'Times-Italic': () => require$1('#standard-fonts/TimesItalic'),
+-  'Times-Roman': () => require$1('#standard-fonts/TimesRoman'),
+-  ZapfDingbats: () => require$1('#standard-fonts/ZapfDingbats')
++  Courier: () => require$1('./standard-fonts/Courier.cjs'),
++  'Courier-Bold': () => require$1('./standard-fonts/CourierBold.cjs'),
++  'Courier-BoldOblique': () => require$1('./standard-fonts/CourierBoldOblique.cjs'),
++  'Courier-Oblique': () => require$1('./standard-fonts/CourierOblique.cjs'),
++  Helvetica: () => require$1('./standard-fonts/Helvetica.cjs'),
++  'Helvetica-Bold': () => require$1('./standard-fonts/HelveticaBold.cjs'),
++  'Helvetica-BoldOblique': () => require$1('./standard-fonts/HelveticaBoldOblique.cjs'),
++  'Helvetica-Oblique': () => require$1('./standard-fonts/HelveticaOblique.cjs'),
++  Symbol: () => require$1('./standard-fonts/Symbol.cjs'),
++  'Times-Bold': () => require$1('./standard-fonts/TimesBold.cjs'),
++  'Times-BoldItalic': () => require$1('./standard-fonts/TimesBoldItalic.cjs'),
++  'Times-Italic': () => require$1('./standard-fonts/TimesItalic.cjs'),
++  'Times-Roman': () => require$1('./standard-fonts/TimesRoman.cjs'),
++  ZapfDingbats: () => require$1('./standard-fonts/ZapfDingbats.cjs')
+ });
+ 
+ export { LineWrapper, PDFDocument, PDFDocument as default, registerFile };

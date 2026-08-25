@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ClearCacheButton } from "@/components/admin/clear-cache";
 import { PageHeader } from "@/components/admin/ui";
-import { updatePaletteAction } from "@/server/actions/settings";
+import { updateCompanyInfoAction, updatePaletteAction } from "@/server/actions/settings";
 import {
   revokeOtherSessionsAction,
   revokeSessionAction,
@@ -54,6 +54,96 @@ export default async function SettingsPage() {
         </div>
         <ClearCacheButton />
       </section>
+
+      {isOwner && (
+        <section className="adm-card adm-card-p flex flex-col gap-3">
+          <div>
+            <h2 className="font-bold">Coordonnées de l’entreprise</h2>
+            <p className="text-sm text-[var(--dim)]">
+              Affichées sur les devis générés (en-tête du PDF).
+            </p>
+          </div>
+          <form
+            action={updateCompanyInfoAction}
+            className="grid gap-3 sm:grid-cols-2"
+          >
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="name" className="text-sm font-medium">
+                Nom
+              </label>
+              <input
+                id="name"
+                name="name"
+                defaultValue={settings?.name ?? ""}
+                required
+                className="adm-input"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="baseline" className="text-sm font-medium">
+                Baseline
+              </label>
+              <input
+                id="baseline"
+                name="baseline"
+                defaultValue={settings?.baseline ?? ""}
+                className="adm-input"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="text-sm font-medium">
+                E-mail
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                defaultValue={settings?.email ?? ""}
+                className="adm-input"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="phone" className="text-sm font-medium">
+                Téléphone
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                defaultValue={settings?.phone ?? ""}
+                className="adm-input"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
+              <label htmlFor="address" className="text-sm font-medium">
+                Adresse
+              </label>
+              <input
+                id="address"
+                name="address"
+                defaultValue={settings?.address ?? ""}
+                className="adm-input"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="vat" className="text-sm font-medium">
+                N° TVA
+              </label>
+              <input
+                id="vat"
+                name="vat"
+                defaultValue={settings?.vat ?? ""}
+                className="adm-input"
+              />
+            </div>
+            <button
+              type="submit"
+              className="adm-btn adm-btn-primary self-end text-sm"
+            >
+              Enregistrer
+            </button>
+          </form>
+        </section>
+      )}
 
       {isOwner && (
         <section className="adm-card adm-card-p flex flex-col gap-3">

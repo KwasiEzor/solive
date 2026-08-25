@@ -1,5 +1,5 @@
 import "server-only";
-import { and, count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, isNull } from "drizzle-orm";
 import { getDb } from "@/server/db";
 import {
   adminUsers,
@@ -8,6 +8,8 @@ import {
   invitations,
   leadEvents,
   leads,
+  quoteItems,
+  quotes,
   sections,
 } from "../../../drizzle/schema";
 
@@ -130,6 +132,46 @@ export async function listSectionRevisions(sectionId: string) {
     )
     .orderBy(desc(contentRevisions.createdAt))
     .limit(30);
+}
+
+type QuoteStatus = "draft" | "sent" | "accepted" | "declined";
+
+export async function getQuotes(status?: QuoteStatus) {
+  const db = getDb();
+  return db
+    .select()
+    .from(quotes)
+    .where(
+      status
+        ? and(eq(quotes.status, status), isNull(quotes.deletedAt))
+        : isNull(quotes.deletedAt),
+    )
+    .orderBy(desc(quotes.createdAt));
+}
+
+export async function getQuotesForLead(leadId: string) {
+  const db = getDb();
+  return db
+    .select()
+    .from(quotes)
+    .where(and(eq(quotes.leadId, leadId), isNull(quotes.deletedAt)))
+    .orderBy(desc(quotes.createdAt));
+}
+
+export async function getQuote(id: string) {
+  const db = getDb();
+  const [quote] = await db
+    .select()
+    .from(quotes)
+    .where(and(eq(quotes.id, id), isNull(quotes.deletedAt)))
+    .limit(1);
+  if (!quote) return null;
+  const items = await db
+    .select()
+    .from(quoteItems)
+    .where(eq(quoteItems.quoteId, id))
+    .orderBy(quoteItems.sortOrder);
+  return { quote, items };
 }
 
 export const EDITABLE_SECTIONS = [

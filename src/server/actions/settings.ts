@@ -41,3 +41,45 @@ export async function updatePaletteAction(formData: FormData): Promise<void> {
   revalidateTag("content:settings", "max");
   revalidatePath("/admin/parametres");
 }
+
+/**
+ * Studio's own letterhead info (name, address, VAT…) — used on generated
+ * quote PDFs. Owner-only, same shape as updatePaletteAction.
+ */
+export async function updateCompanyInfoAction(formData: FormData): Promise<void> {
+  const owner = await requireOwner();
+  const name = String(formData.get("name") ?? "").trim();
+  const baseline = String(formData.get("baseline") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim();
+  const phone = String(formData.get("phone") ?? "").trim();
+  const address = String(formData.get("address") ?? "").trim();
+  const vat = String(formData.get("vat") ?? "").trim();
+  if (!name) return;
+
+  const db = getDb();
+  await db
+    .update(siteSettings)
+    .set({
+      name,
+      baseline: baseline || null,
+      email: email || null,
+      phone: phone || null,
+      address: address || null,
+      vat: vat || null,
+      updatedAt: new Date(),
+    })
+    .where(eq(siteSettings.singleton, true));
+
+  await writeAudit({
+    actorId: owner.userId,
+    action: "update",
+    entityType: "site_settings",
+    diff: { name, baseline, email, phone, address, vat },
+    ipHash: hashIp(
+      clientIpFromHeaders(await headers()) ?? "unknown",
+      env.IP_HASH_SALT ?? "dev-insecure-salt",
+    ),
+  });
+  revalidateTag("content:settings", "max");
+  revalidatePath("/admin/parametres");
+}

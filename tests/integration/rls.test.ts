@@ -130,6 +130,44 @@ describe.skipIf(!hasDb)("RLS", () => {
     });
   });
 
+  describe("quotes: admin-only, no public access", () => {
+    const insertQuote = (n: string) =>
+      `insert into public.quotes
+       (number, year, sequence_number, client_name, client_email)
+       values ('${n}', 2026, 1, 'A', 'a@a.be')`;
+
+    it("anon cannot insert a quote", async () => {
+      const ok = await asRole(sql!, "anon", (tx) =>
+        allowed(() => tx.unsafe(insertQuote("DEV-2026-ANON"))),
+      );
+      expect(ok).toBe(false);
+    });
+
+    it("anon cannot read quotes", async () => {
+      const n = await asRole(
+        sql!,
+        "anon",
+        async (tx) => (await tx`select count(*)::int n from public.quotes`)[0]!.n,
+        async (tx) => {
+          await tx.unsafe(insertQuote("DEV-2026-SEED"));
+        },
+      );
+      expect(n).toBe(0);
+    });
+
+    it("admin can insert and read a quote", async () => {
+      const n = await asRole(
+        sql!,
+        "owner",
+        async (tx) => (await tx`select count(*)::int n from public.quotes`)[0]!.n,
+        async (tx) => {
+          await tx.unsafe(insertQuote("DEV-2026-OWNER"));
+        },
+      );
+      expect(n).toBeGreaterThanOrEqual(1);
+    });
+  });
+
   describe("audit log (SLV-012/069)", () => {
     it("owner can read the audit log, editor cannot", async () => {
       const seed = async (tx: import("postgres").TransactionSql) => {

@@ -14,6 +14,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgEnum,
   pgSchema,
   pgTable,
@@ -504,6 +505,75 @@ export const leadEvents = pgTable(
       .defaultNow(),
   },
   (t) => [index("lead_events_lead_idx").on(t.leadId, t.createdAt)],
+);
+
+/* ═══ 4.4 Quotes ════════════════════════════════════════════════════ */
+
+export const quoteStatus = pgEnum("quote_status", [
+  "draft",
+  "sent",
+  "accepted",
+  "declined",
+]);
+
+// Per-year atomic counter backing the human-readable quote number
+// (DEV-2026-0001) — a dedicated table rather than a bare sequence because the
+// format resets to 0001 every new year.
+export const quoteNumberCounters = pgTable("quote_number_counters", {
+  year: integer("year").primaryKey(),
+  lastNumber: integer("last_number").notNull().default(0),
+});
+
+export const quotes = pgTable(
+  "quotes",
+  {
+    ...pk,
+    number: text("number").notNull(),
+    year: integer("year").notNull(),
+    sequenceNumber: integer("sequence_number").notNull(),
+    leadId: uuid("lead_id").references(() => leads.id, { onDelete: "set null" }),
+    // Snapshot at creation time: a quote is quasi-legal and must not silently
+    // change if the source lead's name/email is edited afterwards.
+    clientName: text("client_name").notNull(),
+    clientEmail: text("client_email").notNull(),
+    clientCompany: text("client_company"),
+    status: quoteStatus("status").notNull().default("draft"),
+    vatRate: numeric("vat_rate", { precision: 5, scale: 2 })
+      .notNull()
+      .default("21.00"),
+    subtotalCents: integer("subtotal_cents").notNull().default(0),
+    vatAmountCents: integer("vat_amount_cents").notNull().default(0),
+    totalCents: integer("total_cents").notNull().default(0),
+    validUntil: timestamp("valid_until", { withTimezone: true }),
+    notes: text("notes"),
+    sentAt: timestamp("sent_at", { withTimezone: true }),
+    ...timestamps,
+    ...softDelete,
+  },
+  (t) => [
+    uniqueIndex("quotes_number_idx").on(t.number),
+    index("quotes_lead_idx").on(t.leadId),
+    index("quotes_status_idx").on(t.status, t.createdAt),
+  ],
+);
+
+export const quoteItems = pgTable(
+  "quote_items",
+  {
+    ...pk,
+    quoteId: uuid("quote_id")
+      .notNull()
+      .references(() => quotes.id, { onDelete: "cascade" }),
+    description: text("description").notNull(),
+    quantity: numeric("quantity", { precision: 10, scale: 2 })
+      .notNull()
+      .default("1"),
+    unitPriceCents: integer("unit_price_cents").notNull().default(0),
+    lineTotalCents: integer("line_total_cents").notNull().default(0),
+    sortOrder: integer("sort_order").notNull().default(0),
+    ...timestamps,
+  },
+  (t) => [index("quote_items_quote_idx").on(t.quoteId, t.sortOrder)],
 );
 
 // SLV-140 — privacy-first, cookieless analytics. Stores NO personal data:

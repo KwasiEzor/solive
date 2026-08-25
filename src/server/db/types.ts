@@ -13,6 +13,8 @@ import type {
   pricingPlans,
   processSteps,
   projects,
+  quoteItems,
+  quotes,
   sections,
   services,
   siteSettings,
@@ -47,3 +49,8 @@ export type LegalPage = typeof legalPages.$inferSelect;
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
 export type LeadEvent = typeof leadEvents.$inferSelect;
+
+export type Quote = typeof quotes.$inferSelect;
+export type NewQuote = typeof quotes.$inferInsert;
+export type QuoteItem = typeof quoteItems.$inferSelect;
+export type NewQuoteItem = typeof quoteItems.$inferInsert;

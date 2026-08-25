@@ -1,7 +1,24 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Badge, type BadgeTone } from "@/components/admin/ui";
+import { formatCentsEUR } from "@/lib/money";
 import { addLeadNoteAction, updateLeadStatusAction } from "@/server/actions/leads";
-import { getLead } from "@/server/queries/admin";
+import { createQuoteFromLeadAction } from "@/server/actions/quotes";
+import { getLead, getQuotesForLead } from "@/server/queries/admin";
+
+const QUOTE_STATUS_LABEL: Record<string, string> = {
+  draft: "Brouillon",
+  sent: "Envoyé",
+  accepted: "Accepté",
+  declined: "Refusé",
+};
+const QUOTE_STATUS_TONE: Record<string, BadgeTone> = {
+  draft: "neutral",
+  sent: "blue",
+  accepted: "green",
+  declined: "red",
+};
 
 export const metadata: Metadata = {
   title: "Demande",
@@ -25,6 +42,7 @@ export default async function LeadDetailPage({ params }: Params) {
   if (!data) notFound();
   const { lead, events } = data;
   const projectTypes = Array.isArray(lead.projectTypes) ? lead.projectTypes : [];
+  const quotesForLead = await getQuotesForLead(id);
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
@@ -104,6 +122,54 @@ export default async function LeadDetailPage({ params }: Params) {
           Ajouter la note
         </button>
       </form>
+
+      <section className="adm-card adm-card-p flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-bold">Devis</h2>
+          <form action={createQuoteFromLeadAction}>
+            <input type="hidden" name="leadId" value={lead.id} />
+            <button type="submit" className="adm-btn adm-btn-primary text-sm">
+              Créer un devis
+            </button>
+          </form>
+        </div>
+        {quotesForLead.length > 0 ? (
+          <div className="-mx-5 -mb-5 overflow-x-auto">
+            <table className="adm-table">
+              <thead>
+                <tr>
+                  <th>Numéro</th>
+                  <th>Statut</th>
+                  <th>Total</th>
+                  <th>Créé le</th>
+                </tr>
+              </thead>
+              <tbody>
+                {quotesForLead.map((q) => (
+                  <tr key={q.id}>
+                    <td>
+                      <Link href={`/admin/devis/${q.id}`} className="font-medium hover:text-acc">
+                        {q.number}
+                      </Link>
+                    </td>
+                    <td>
+                      <Badge tone={QUOTE_STATUS_TONE[q.status] ?? "neutral"}>
+                        {QUOTE_STATUS_LABEL[q.status] ?? q.status}
+                      </Badge>
+                    </td>
+                    <td>{formatCentsEUR(q.totalCents)}</td>
+                    <td className="text-[var(--dim)]">
+                      {new Date(q.createdAt).toLocaleDateString("fr-BE")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-sm text-[var(--dim)]">Aucun devis pour cette demande.</p>
+        )}
+      </section>
 
       <section className="flex flex-col gap-2">
         <h2 className="text-sm font-medium text-[var(--dim)]">Historique</h2>

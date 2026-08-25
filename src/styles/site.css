@@ -90,6 +90,7 @@
   z-index: 100;
   background: var(--acc);
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   padding: 10px 16px;
   border-radius: 2px;
 }
@@ -219,6 +220,7 @@
   gap: 8px;
   background: linear-gradient(180deg, var(--acc), var(--acc-strong));
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   font-weight: 600;
   font-size: 14.5px;
   padding: 13px 22px;
@@ -231,6 +233,7 @@
 }
 .btn:hover {
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   transform: translateY(-2px);
   box-shadow: var(--glow);
 }
@@ -250,6 +253,7 @@
 /* `.site a{color:inherit}` outranks `.btn` by specificity — restore button text. */
 .site a.btn {
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
 }
 .site a.btn.ghost {
   color: var(--fg);
@@ -575,6 +579,7 @@
   font-size: 13px;
   font-weight: 700;
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   background: linear-gradient(180deg, var(--acc), var(--acc-strong));
 }
 
@@ -780,6 +785,7 @@
   display: grid;
   place-items: center;
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   background: linear-gradient(160deg, var(--acc), var(--acc-strong));
   box-shadow: var(--glow);
 }
@@ -818,6 +824,7 @@
   border-radius: 999px;
   background: linear-gradient(180deg, var(--acc), var(--acc-strong));
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   font-weight: 700;
   font-size: 14px;
   box-shadow: var(--shadow-md);
@@ -1119,6 +1126,7 @@
 }
 .hero h1 {
   font-size: clamp(2.5rem, 5.4vw, 4.6rem);
+  margin-bottom: 40px;
 }
 /* Native CSS underline (was an absolutely-positioned SVG in an inline-block
    span — on long phrases it could wrap internally and strand trailing
@@ -1204,6 +1212,7 @@
 }
 .plan-tab.on {
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   background: var(--acc);
   border-color: var(--acc);
 }
@@ -1534,6 +1543,7 @@
   left: 24px;
   background: var(--acc);
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   padding: 3px 10px;
   border-radius: 2px;
   font-weight: 500;
@@ -1677,6 +1687,7 @@
   background: var(--acc);
   border-color: var(--acc);
   color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
   font-weight: 500;
 }
 .err {

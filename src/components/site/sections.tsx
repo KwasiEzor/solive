@@ -391,7 +391,7 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
           </p>
           <p className="pourquoi">
             Une solive, c&apos;est la poutre qu&apos;on ne voit jamais et sur
-            laquelle repose tout le plancher.
+            laquelle repose tout le plancher. On construit solide.
           </p>
         </div>
         <div className="foot-cols mono tiny">

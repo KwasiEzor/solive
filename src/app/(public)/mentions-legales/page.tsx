@@ -15,7 +15,7 @@ export default async function MentionsLegalesPage() {
   const email = s?.email ?? "bonjour@solive.pro";
   const name = s?.name ?? "Solive";
   const vat = s?.vat ?? "[À COMPLÉTER]";
-  const address = s?.address ?? "Bruxelles, Belgique";
+  const address = s?.address ?? "Charleroi, Belgique";
   const phone = s?.phone;
 
   return (

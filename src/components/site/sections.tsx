@@ -59,7 +59,7 @@ export function MediaBand({
 }
 
 const BASELINE = "studio de développement";
-const VILLE = "Bruxelles";
+const VILLE = "Charleroi";
 const HL = "qui tiennent debout";
 
 export function SecHead({ kicker, titre }: { kicker: string; titre: string }) {

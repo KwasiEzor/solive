@@ -38,7 +38,7 @@ export default async function ConfidentialitePage() {
 
           <h2>1. Responsable du traitement</h2>
           <p>
-            {name}, studio de développement établi à Bruxelles (Belgique).
+            {name}, studio de développement établi à Charleroi (Belgique).
             Contact : <a href={`mailto:${email}`}>{email}</a>.<br />
             <em>
               Dénomination légale, numéro BCE et siège social : [À COMPLÉTER].

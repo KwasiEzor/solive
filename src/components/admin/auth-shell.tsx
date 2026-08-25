@@ -70,7 +70,7 @@ export function AuthShell({
         </div>
 
         <p className="font-mono text-[11px]" style={{ color: "var(--dim2)" }}>
-          Solive · studio de développement · Bruxelles
+          Solive · studio de développement · Charleroi
         </p>
       </aside>
 

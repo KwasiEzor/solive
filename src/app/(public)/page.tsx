@@ -49,7 +49,7 @@ export default async function HomePage() {
         url: site,
         address: {
           "@type": "PostalAddress",
-          addressLocality: "Bruxelles",
+          addressLocality: "Charleroi",
           addressCountry: "BE",
         },
         areaServed: ["BE", "FR", "LU"],

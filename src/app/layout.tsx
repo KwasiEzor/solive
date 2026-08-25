@@ -27,11 +27,11 @@ const mono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
   title: {
-    default: "Solive — studio de développement à Bruxelles",
+    default: "Solive — studio de développement à Charleroi",
     template: "%s · Solive",
   },
   description:
-    "Studio de développement à Bruxelles : sites vitrines, applications web métier et applications mobiles. Devis fixe, calendrier daté, code livré à votre nom.",
+    "Studio de développement à Charleroi : sites vitrines, applications web métier et applications mobiles. Devis fixe, calendrier daté, code livré à votre nom.",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

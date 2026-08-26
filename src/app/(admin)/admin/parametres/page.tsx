@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ClearCacheButton } from "@/components/admin/clear-cache";
 import { PageHeader } from "@/components/admin/ui";
-import { updateCompanyInfoAction, updatePaletteAction } from "@/server/actions/settings";
+import {
+  updateCompanyInfoAction,
+  updatePaletteAction,
+  updateVisibilityAction,
+} from "@/server/actions/settings";
 import {
   revokeOtherSessionsAction,
   revokeSessionAction,
@@ -171,6 +175,51 @@ export default async function SettingsPage() {
             </select>
             <button type="submit" className="adm-btn adm-btn-primary">
               Appliquer
+            </button>
+          </form>
+        </section>
+      )}
+
+      {isOwner && (
+        <section className="adm-card adm-card-p flex flex-col gap-3">
+          <div>
+            <h2 className="font-bold">Boutons flottants</h2>
+            <p className="text-sm text-[var(--dim)]">
+              Affichés sur la vitrine publique, en bas de l’écran.
+            </p>
+          </div>
+          <form action={updateVisibilityAction} className="flex flex-col gap-2.5">
+            <label className="flex items-center gap-2.5">
+              <input
+                type="checkbox"
+                name="showFloatCta"
+                value="1"
+                defaultChecked={settings?.showFloatCta ?? true}
+                className="h-4 w-4 accent-[var(--acc)]"
+              />
+              <span className="text-sm font-medium">CTA flottant</span>
+              <span className="text-xs text-[var(--dim)]">
+                — « Prendre 20 minutes », en bas à droite
+              </span>
+            </label>
+            <label className="flex items-center gap-2.5">
+              <input
+                type="checkbox"
+                name="showThemeSwitcher"
+                value="1"
+                defaultChecked={settings?.showThemeSwitcher ?? true}
+                className="h-4 w-4 accent-[var(--acc)]"
+              />
+              <span className="text-sm font-medium">Sélecteur de palette</span>
+              <span className="text-xs text-[var(--dim)]">
+                — laisse les visiteurs choisir leur propre palette, en bas à gauche
+              </span>
+            </label>
+            <button
+              type="submit"
+              className="adm-btn adm-btn-primary self-start text-sm"
+            >
+              Enregistrer
             </button>
           </form>
         </section>

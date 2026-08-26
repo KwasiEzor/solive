@@ -5,13 +5,11 @@ import { headers } from "next/headers";
 import { hashIp } from "@/lib/hash";
 import { clientIpFromHeaders } from "@/lib/request-ip";
 import { env } from "@/lib/env";
+import { PALETTES, type Palette } from "@/lib/palette";
 import { requireOwner } from "@/server/auth/guards";
 import { getDb } from "@/server/db";
 import { writeAudit } from "@/server/services/audit";
 import { siteSettings } from "../../../drizzle/schema";
-
-const PALETTES = ["chaux", "ardoise", "cobalt"] as const;
-type Palette = (typeof PALETTES)[number];
 
 /**
  * Change the active palette (SLV-067). Owner-only (SLV-038). Applied to the
@@ -33,6 +31,35 @@ export async function updatePaletteAction(formData: FormData): Promise<void> {
     action: "update",
     entityType: "site_settings",
     diff: { activePalette: palette },
+    ipHash: hashIp(
+      clientIpFromHeaders(await headers()) ?? "unknown",
+      env.IP_HASH_SALT ?? "dev-insecure-salt",
+    ),
+  });
+  revalidateTag("content:settings", "max");
+  revalidatePath("/admin/parametres");
+}
+
+/**
+ * Show/hide the floating CTA and palette-switcher buttons on the public site
+ * (SLV-067-adjacent). Owner-only, same shape as updatePaletteAction.
+ */
+export async function updateVisibilityAction(formData: FormData): Promise<void> {
+  const owner = await requireOwner();
+  const showFloatCta = formData.get("showFloatCta") === "1";
+  const showThemeSwitcher = formData.get("showThemeSwitcher") === "1";
+
+  const db = getDb();
+  await db
+    .update(siteSettings)
+    .set({ showFloatCta, showThemeSwitcher, updatedAt: new Date() })
+    .where(eq(siteSettings.singleton, true));
+
+  await writeAudit({
+    actorId: owner.userId,
+    action: "update",
+    entityType: "site_settings",
+    diff: { showFloatCta, showThemeSwitcher },
     ipHash: hashIp(
       clientIpFromHeaders(await headers()) ?? "unknown",
       env.IP_HASH_SALT ?? "dev-insecure-salt",

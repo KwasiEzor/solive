@@ -112,6 +112,12 @@ export const fr = {
   },
   floatCta: { label: "Prendre 20 minutes" },
   scrollTop: { ariaLabel: "Remonter en haut" },
+  paletteSwitch: {
+    ariaLabel: "Changer la palette de couleurs",
+    chaux: "Chaux (clair)",
+    ardoise: "Ardoise (sombre)",
+    cobalt: "Cobalt (bleu)",
+  },
   consentBanner: {
     ariaLabel: "Consentement aux cookies",
     textBold: "On respecte votre vie privée.",

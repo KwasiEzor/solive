@@ -201,6 +201,8 @@ export const siteSettings = pgTable("site_settings", {
     .$type<Array<"fr" | "nl" | "en">>()
     .notNull()
     .default(["fr"]),
+  showFloatCta: boolean("show_float_cta").notNull().default(true),
+  showThemeSwitcher: boolean("show_theme_switcher").notNull().default(true),
   // Enforce single row via a constant unique column (see migration).
   singleton: boolean("singleton").notNull().default(true),
   ...timestamps,

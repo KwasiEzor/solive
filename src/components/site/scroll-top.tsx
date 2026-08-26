@@ -1,13 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 
 /**
  * Back-to-top button: fades in past one viewport of scrolling, fades out near
  * the top. Keyboard-operable, labelled, and honours prefers-reduced-motion
  * (jumps instead of smooth-scrolling).
  */
-export function ScrollTop() {
+export function ScrollTop({ locale }: { locale: Locale }) {
   const [visible, setVisible] = useState(false);
+  const t = getDictionary(locale).scrollTop;
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 600);
@@ -29,7 +32,7 @@ export function ScrollTop() {
       type="button"
       className={"scroll-top" + (visible ? " in" : "")}
       onClick={toTop}
-      aria-label="Remonter en haut"
+      aria-label={t.ariaLabel}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
     >

@@ -7,27 +7,39 @@ import {
   WhyVision,
 } from "@/components/site/why-solive";
 import { env } from "@/lib/env";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { getRequestLocale } from "@/lib/i18n/locale";
+import { localizedPath } from "@/lib/i18n/urls";
 
-export const metadata: Metadata = {
-  title: "Pourquoi Solive",
-  description:
-    "Un atelier d'une personne, par choix. Ce que Solive défend, ce qu'on sait faire, et pourquoi rester petit garde la relation honnête.",
-  alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/pourquoi-solive` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale).meta.pourquoiSolive;
+  const site = env.NEXT_PUBLIC_SITE_URL;
+  return {
+    title: t.title,
+    description: t.description,
+    alternates: {
+      canonical: `${site}${localizedPath("/pourquoi-solive", locale)}`,
+      languages: { fr: `${site}/pourquoi-solive`, en: `${site}/en/pourquoi-solive` },
+    },
+  };
+}
 
-export default function PourquoiSolivePage() {
+export default async function PourquoiSolivePage() {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale);
   return (
     <>
       <PageHeader
-        kicker="Pourquoi Solive"
-        title="Un atelier d’une personne. C’est un choix, pas une contrainte."
-        lede="Pas de chef de projet, pas de commercial, pas de sous-traitance invisible. Voici ce qu'on défend, ce qu'on sait faire, et pourquoi ça reste ainsi."
+        kicker={t.pageHeaders.pourquoiSolive.kicker}
+        title={t.pageHeaders.pourquoiSolive.title}
+        lede={t.pageHeaders.pourquoiSolive.lede}
         image="/images/dev-desk.jpg"
       />
-      <WhyFounder />
-      <WhyValues />
-      <WhySkills />
-      <WhyVision />
+      <WhyFounder locale={locale} />
+      <WhyValues locale={locale} />
+      <WhySkills locale={locale} />
+      <WhyVision locale={locale} />
     </>
   );
 }

@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { CountUp } from "@/components/site/count-up";
 import { ContactCta } from "@/components/site/subpage";
 import { env } from "@/lib/env";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { getRequestLocale } from "@/lib/i18n/locale";
+import { localizedPath } from "@/lib/i18n/urls";
 import { getProjectBySlug } from "@/server/queries/content";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -43,20 +46,41 @@ function bodyParagraphs(body: unknown): string[] {
   return [];
 }
 
+/**
+ * Not every project necessarily has an English case study yet — fall back to
+ * the French row rather than 404ing an otherwise-real, published project.
+ */
+async function loadProject(slug: string, locale: "fr" | "nl" | "en") {
+  const project = await getProjectBySlug(slug, locale);
+  if (project) return project;
+  if (locale === "fr") return null;
+  return getProjectBySlug(slug, "fr");
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const locale = await getRequestLocale();
+  const project = await loadProject(slug, locale);
   if (!project) return {};
+  const site = env.NEXT_PUBLIC_SITE_URL;
   return {
     title: project.metaTitle ?? project.title,
     description: project.metaDescription ?? undefined,
-    alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/travaux/${slug}` },
+    alternates: {
+      canonical: `${site}${localizedPath(`/travaux/${slug}`, locale)}`,
+      languages: {
+        fr: `${site}/travaux/${slug}`,
+        en: `${site}/en/travaux/${slug}`,
+      },
+    },
   };
 }
 
 export default async function CaseStudyPage({ params }: Params) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale).caseStudy;
+  const project = await loadProject(slug, locale);
   if (!project) notFound();
 
   const paragraphs = bodyParagraphs(project.body);
@@ -66,6 +90,7 @@ export default async function CaseStudyPage({ params }: Params) {
     name: project.title,
     about: project.sector ?? undefined,
     keywords: project.stack.join(", "),
+    inLanguage: locale,
   };
 
   return (
@@ -85,13 +110,13 @@ export default async function CaseStudyPage({ params }: Params) {
           <dl className="case-facts mono tiny">
             {project.clientName && (
               <div>
-                <dt>Client</dt>
+                <dt>{t.client}</dt>
                 <dd>{project.clientName}</dd>
               </div>
             )}
             {project.metricValue && (
               <div>
-                <dt>Résultat</dt>
+                <dt>{t.result}</dt>
                 <dd className="case-facts-metric">
                   <CountUp value={project.metricValue} />
                   {project.metricLabel ? ` ${project.metricLabel}` : ""}
@@ -100,7 +125,7 @@ export default async function CaseStudyPage({ params }: Params) {
             )}
             {project.stack.length > 0 && (
               <div>
-                <dt>Stack</dt>
+                <dt>{t.stack}</dt>
                 <dd>{project.stack.join(" · ")}</dd>
               </div>
             )}
@@ -124,20 +149,16 @@ export default async function CaseStudyPage({ params }: Params) {
           {paragraphs.length > 0 ? (
             paragraphs.map((p, i) => <p key={i}>{p}</p>)
           ) : (
-            <p className="dim">
-              Étude de cas détaillée en cours de rédaction. En attendant,
-              parlons de votre projet — je vous montre des exemples proches lors
-              de l’appel.
-            </p>
+            <p className="dim">{t.emptyBody}</p>
           )}
           <p style={{ marginTop: 36 }}>
-            <Link href="/realisations" className="btn ghost">
-              ← Toutes les réalisations
+            <Link href={localizedPath("/realisations", locale)} className="btn ghost">
+              {t.backToList}
             </Link>
           </p>
         </div>
       </article>
-      <ContactCta />
+      <ContactCta locale={locale} />
     </>
   );
 }

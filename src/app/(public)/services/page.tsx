@@ -2,29 +2,42 @@ import type { Metadata } from "next";
 import { Methode, Services } from "@/components/site/sections";
 import { ContactCta, PageHeader } from "@/components/site/subpage";
 import { env } from "@/lib/env";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { getRequestLocale } from "@/lib/i18n/locale";
+import { localizedPath } from "@/lib/i18n/urls";
 import {
   getProcessSteps,
   getSectionsMap,
   getServices,
 } from "@/server/queries/content";
 
-export const metadata: Metadata = {
-  title: "Services — sites, applications web & mobiles",
-  description:
-    "Sites vitrines et refontes, applications web métier sur mesure, applications mobiles iOS et Android. Une méthode en quatre étapes, un devis fixe.",
-  alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/services` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale).meta.services;
+  const site = env.NEXT_PUBLIC_SITE_URL;
+  return {
+    title: t.title,
+    description: t.description,
+    alternates: {
+      canonical: `${site}${localizedPath("/services", locale)}`,
+      languages: { fr: `${site}/services`, en: `${site}/en/services` },
+    },
+  };
+}
 
 export default async function ServicesPage() {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale);
   const [services, steps, sections] = await Promise.all([
-    getServices("fr"),
-    getProcessSteps("fr"),
-    getSectionsMap("fr"),
+    getServices(locale),
+    getProcessSteps(locale),
+    getSectionsMap(locale),
   ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
+    inLanguage: locale,
     itemListElement: services.map((s, i) => ({
       "@type": "ListItem",
       position: i + 1,
@@ -39,14 +52,14 @@ export default async function ServicesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <PageHeader
-        kicker="Services"
-        title="Ce qu’on fabrique, de bout en bout."
-        lede="Du site vitrine à l’application métier, un seul studio conçoit, développe et livre — avec un devis fixe et un calendrier daté."
+        kicker={t.pageHeaders.services.kicker}
+        title={t.pageHeaders.services.title}
+        lede={t.pageHeaders.services.lede}
         image="/images/terminal.jpg"
       />
-      <Services head={sections.services} items={services} hideHead />
-      <Methode head={sections.methode} steps={steps} />
-      <ContactCta />
+      <Services head={sections.services} items={services} hideHead locale={locale} />
+      <Methode head={sections.methode} steps={steps} locale={locale} />
+      <ContactCta locale={locale} />
     </>
   );
 }

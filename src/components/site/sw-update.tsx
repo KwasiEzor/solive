@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 
 const bar = {
   position: "fixed" as const,
@@ -22,7 +24,8 @@ const bar = {
  * Detects a waiting service worker and offers an explicit reload — never an
  * automatic skipWaiting that swaps content under the user (SLV-086).
  */
-export function SwUpdatePrompt() {
+export function SwUpdatePrompt({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale).swUpdate;
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const accepted = useRef(false);
@@ -63,7 +66,7 @@ export function SwUpdatePrompt() {
 
   return (
     <div role="alert" style={bar}>
-      <span>Une nouvelle version est disponible.</span>
+      <span>{t.available}</span>
       <button
         type="button"
         onClick={() => {
@@ -78,13 +81,13 @@ export function SwUpdatePrompt() {
           fontWeight: 600,
         }}
       >
-        Recharger
+        {t.reload}
       </button>
       <button
         type="button"
         onClick={() => setDismissed(true)}
-        aria-label="Plus tard"
-        title="Plus tard"
+        aria-label={t.later}
+        title={t.later}
         style={{
           background: "none",
           border: 0,

@@ -1,5 +1,7 @@
 "use client";
 import { type CSSProperties, useEffect, useState } from "react";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 
 function Cote({
   x1,
@@ -56,7 +58,7 @@ function Annot({
 
 const delay = (s: number): CSSProperties => ({ animationDelay: `${s}s` });
 
-function PlanVitrine() {
+function PlanVitrine({ cote, annot }: { cote: string; annot: string }) {
   return (
     <g>
       <rect className="pl-line d1" x="70" y="46" width="420" height="286" rx="8" />
@@ -81,13 +83,13 @@ function PlanVitrine() {
           style={delay(0.9 + i * 0.1)}
         />
       ))}
-      <Cote x1={70} x2={490} y={356} label="page d'accueil — 1,2 s de chargement" />
-      <Annot x={340} y={92} lx1={330} ly1={96} lx2={300} ly2={118} text="SEO technique" />
+      <Cote x1={70} x2={490} y={356} label={cote} />
+      <Annot x={340} y={92} lx1={330} ly1={96} lx2={300} ly2={118} text={annot} />
     </g>
   );
 }
 
-function PlanApp() {
+function PlanApp({ cote, annot }: { cote: string; annot: string }) {
   return (
     <g>
       <rect className="pl-line d1" x="70" y="46" width="420" height="286" rx="8" />
@@ -125,13 +127,13 @@ function PlanApp() {
           style={delay(1.05 + i * 0.07)}
         />
       ))}
-      <Cote x1={70} x2={490} y={356} label="tableau de bord — vos règles métier" />
-      <Annot x={370} y={92} lx1={362} ly1={96} lx2={330} ly2={112} text="comptes + rôles" />
+      <Cote x1={70} x2={490} y={356} label={cote} />
+      <Annot x={370} y={92} lx1={362} ly1={96} lx2={330} ly2={112} text={annot} />
     </g>
   );
 }
 
-function PlanMobile() {
+function PlanMobile({ cote, annot }: { cote: string; annot: string }) {
   return (
     <g>
       <rect className="pl-line d1" x="316" y="70" width="132" height="248" rx="18" style={delay(0.3)} opacity="0.45" />
@@ -157,35 +159,36 @@ function PlanMobile() {
           style={delay(1.05 + i * 0.07)}
         />
       ))}
-      <Cote x1={196} x2={448} y={356} label="iOS + Android — une seule base de code" />
-      <Annot x={120} y={140} lx1={168} ly1={136} lx2={196} ly2={150} text="hors-ligne" anchor="start" />
+      <Cote x1={196} x2={448} y={356} label={cote} />
+      <Annot x={120} y={140} lx1={168} ly1={136} lx2={196} ly2={150} text={annot} anchor="start" />
     </g>
   );
 }
 
-const PLANS = [
-  { key: "vitrine", label: "Site vitrine", el: <PlanVitrine /> },
-  { key: "app", label: "Application web", el: <PlanApp /> },
-  { key: "mobile", label: "Application mobile", el: <PlanMobile /> },
-] as const;
-
-export function PlanCycle() {
+export function PlanCycle({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale).planCycle;
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+
+  const PLANS = [
+    { key: "vitrine", label: t.plans.vitrine.label, el: <PlanVitrine cote={t.plans.vitrine.cote} annot={t.plans.vitrine.annot} /> },
+    { key: "app", label: t.plans.app.label, el: <PlanApp cote={t.plans.app.cote} annot={t.plans.app.annot} /> },
+    { key: "mobile", label: t.plans.mobile.label, el: <PlanMobile cote={t.plans.mobile.cote} annot={t.plans.mobile.annot} /> },
+  ] as const;
+
   useEffect(() => {
     if (paused) return;
-    const t = setTimeout(() => setI((v) => (v + 1) % PLANS.length), 5200);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setI((v) => (v + 1) % PLANS.length), 5200);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i, paused]);
 
   const plan = PLANS[i]!;
   return (
     <div className="plan-wrap">
       <div className="plan-head">
-        <span className="mono tiny dim">
-          PLAN {String(i + 1).padStart(2, "0")}/03
-        </span>
-        <div className="plan-tabs" role="tablist" aria-label="Type de projet">
+        <span className="mono tiny dim">{t.planLabel(i + 1)}</span>
+        <div className="plan-tabs" role="tablist" aria-label={t.typeAria}>
           {PLANS.map((p, k) => (
             <button
               key={p.key}
@@ -207,7 +210,7 @@ export function PlanCycle() {
         viewBox="0 0 560 380"
         className="plan-svg"
         role="img"
-        aria-label={`Schéma : ${plan.label}`}
+        aria-label={t.schemaAria(plan.label)}
       >
         <g key={plan.key}>{plan.el}</g>
       </svg>

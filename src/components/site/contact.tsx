@@ -1,8 +1,10 @@
 "use client";
 import { type FormEvent, useEffect, useRef, useState } from "react";
+import { getDictionary } from "@/lib/i18n/dictionary";
 import { flushContactQueue } from "@/lib/offline/flush";
 import { submitContact } from "@/lib/offline/submit";
 import { PROJECT_TYPES } from "@/lib/schemas/contact";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 import { SecHead } from "./sections";
 
 interface TurnstileApi {
@@ -24,11 +26,14 @@ export function Contact({
   head,
   email = "bonjour@solive.pro",
   hideHead,
+  locale,
 }: {
   head?: { kicker: string | null; heading: string | null };
   email?: string;
   hideHead?: boolean;
+  locale: Locale;
 }) {
+  const t = getDictionary(locale).contact;
   const [sel, setSel] = useState<string[]>([]);
   const [f, setF] = useState({ nom: "", email: "", societe: "", msg: "" });
   const [website, setWebsite] = useState(""); // honeypot
@@ -84,18 +89,15 @@ export function Contact({
     }
   }, []);
 
-  const toggle = (t: string) =>
-    setSel((s) => (s.includes(t) ? s.filter((x) => x !== t) : [...s, t]));
+  const toggle = (pt: string) =>
+    setSel((s) => (s.includes(pt) ? s.filter((x) => x !== pt) : [...s, pt]));
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!f.nom.trim()) return setErr("Il manque votre nom.");
-    if (!/^\S+@\S+\.\S+$/.test(f.email))
-      return setErr("Cette adresse e-mail n'a pas l'air valide.");
-    if (f.msg.trim().length < 10)
-      return setErr("Décrivez le projet en une phrase ou deux.");
-    if (SITE_KEY && !turnstileToken.current)
-      return setErr("Merci de valider la vérification anti-spam.");
+    if (!f.nom.trim()) return setErr(t.errors.nameRequired);
+    if (!/^\S+@\S+\.\S+$/.test(f.email)) return setErr(t.errors.emailInvalid);
+    if (f.msg.trim().length < 10) return setErr(t.errors.messageTooShort);
+    if (SITE_KEY && !turnstileToken.current) return setErr(t.errors.turnstileMissing);
 
     setErr("");
     setPending(true);
@@ -103,13 +105,19 @@ export function Contact({
       name: f.nom,
       email: f.email,
       company: f.societe || undefined,
+      // The stored/emailed values stay the canonical French PROJECT_TYPES
+      // strings regardless of the visitor's locale — only the chip labels
+      // shown on screen are translated (see t.projectTypeLabels).
       projectTypes: sel,
       message: f.msg,
-      locale: "fr" as const,
+      locale,
       clientId: clientId.current,
       clientSubmittedAt: new Date().toISOString(),
       turnstileToken: turnstileToken.current || "dev",
       website,
+      // Inside the submit event handler, not render — safe. The purity rule
+      // misfires here once getDictionary() is called earlier in the component.
+      // eslint-disable-next-line react-hooks/purity
       elapsedMs: Date.now() - mountedAt.current,
     };
     const r = await submitContact(clientId.current, payload);
@@ -117,14 +125,11 @@ export function Contact({
     if (r.status === "sent") return setSent(true);
     if (r.status === "queued") return setQueued(true);
     if (r.code === "rate_limited")
-      setErr(
-        `Trop de demandes. Réessayez dans ${Math.ceil((r.retryAfterSec ?? 3600) / 60)} min.`,
-      );
-    else if (r.code === "too_fast") setErr("Envoi trop rapide — réessayez.");
-    else if (r.code === "turnstile")
-      setErr("La vérification anti-spam a échoué. Réessayez.");
-    else if (r.code === "invalid") setErr("Vérifiez les champs et réessayez.");
-    else setErr("Une erreur est survenue. Réessayez ou écrivez-nous.");
+      setErr(t.errors.rateLimited(Math.ceil((r.retryAfterSec ?? 3600) / 60)));
+    else if (r.code === "too_fast") setErr(t.errors.tooFast);
+    else if (r.code === "turnstile") setErr(t.errors.turnstileFailed);
+    else if (r.code === "invalid") setErr(t.errors.invalid);
+    else setErr(t.errors.generic);
   }
 
   return (
@@ -132,25 +137,19 @@ export function Contact({
       <div className="wrap narrow">
         {!hideHead && (
           <SecHead
-            kicker={head?.kicker ?? "Contact"}
-            titre={head?.heading ?? "Dites-moi ce que vous voulez construire."}
+            kicker={head?.kicker ?? getDictionary(locale).pageHeaders.contact.kicker}
+            titre={head?.heading ?? getDictionary(locale).pageHeaders.contact.title}
           />
         )}
         {sent || queued ? (
           <div className="sent">
-            <p className="mono tiny dim">
-              {queued ? "DEMANDE ENREGISTRÉE — HORS LIGNE" : "DEMANDE ENREGISTRÉE"}
-            </p>
+            <p className="mono tiny dim">{queued ? t.sent.queuedBadge : t.sent.sentBadge}</p>
             <h3>
               {queued
-                ? `Merci ${f.nom.split(" ")[0]}. Votre demande partira dès que la connexion revient.`
-                : `Merci ${f.nom.split(" ")[0]}. Réponse sous 24 h ouvrées.`}
+                ? t.sent.queuedTitle(f.nom.split(" ")[0] ?? "")
+                : t.sent.sentTitle(f.nom.split(" ")[0] ?? "")}
             </h3>
-            <p>
-              {queued
-                ? "Elle est enregistrée sur votre appareil et s’enverra automatiquement au retour du réseau. Vous pouvez fermer la page."
-                : "Je reviens vers vous avec deux ou trois questions et une proposition de créneau."}
-            </p>
+            <p>{queued ? t.sent.queuedBody : t.sent.sentBody}</p>
             <button
               type="button"
               className="btn ghost"
@@ -164,7 +163,7 @@ export function Contact({
                 mountedAt.current = Date.now();
               }}
             >
-              Envoyer une autre demande
+              {t.sent.again}
             </button>
           </div>
         ) : (
@@ -172,76 +171,76 @@ export function Contact({
             <div className="row2">
               <div className="field">
                 <label className="mono tiny" htmlFor="nom">
-                  Votre nom
+                  {t.labels.name}
                 </label>
                 <input
                   id="nom"
                   value={f.nom}
                   onChange={(e) => setF({ ...f, nom: e.target.value })}
-                  placeholder="Camille Dupont"
+                  placeholder={t.placeholders.name}
                   autoComplete="name"
                 />
               </div>
               <div className="field">
                 <label className="mono tiny" htmlFor="email">
-                  E-mail
+                  {t.labels.email}
                 </label>
                 <input
                   id="email"
                   type="email"
                   value={f.email}
                   onChange={(e) => setF({ ...f, email: e.target.value })}
-                  placeholder="camille@entreprise.be"
+                  placeholder={t.placeholders.email}
                   autoComplete="email"
                 />
               </div>
             </div>
             <div className="field">
               <label className="mono tiny" htmlFor="societe">
-                Entreprise (facultatif)
+                {t.labels.company}
               </label>
               <input
                 id="societe"
                 value={f.societe}
                 onChange={(e) => setF({ ...f, societe: e.target.value })}
-                placeholder="Menuiserie Dupont"
+                placeholder={t.placeholders.company}
                 autoComplete="organization"
               />
             </div>
             <div className="field">
               <span className="mono tiny" id="types-label">
-                Type de projet
+                {t.labels.projectType}
               </span>
               <div className="chips" role="group" aria-labelledby="types-label">
-                {PROJECT_TYPES.map((t) => (
+                {PROJECT_TYPES.map((pt) => (
                   <button
-                    key={t}
+                    key={pt}
                     type="button"
-                    className={"chip" + (sel.includes(t) ? " on" : "")}
-                    onClick={() => toggle(t)}
-                    aria-pressed={sel.includes(t)}
+                    className={"chip" + (sel.includes(pt) ? " on" : "")}
+                    onClick={() => toggle(pt)}
+                    aria-pressed={sel.includes(pt)}
                   >
-                    {t}
+                    {t.projectTypeLabels[pt] ?? pt}
                   </button>
                 ))}
               </div>
             </div>
             <div className="field">
               <label className="mono tiny" htmlFor="msg">
-                Le projet en quelques lignes
+                {t.labels.message}
               </label>
               <textarea
                 id="msg"
                 rows={5}
                 value={f.msg}
                 onChange={(e) => setF({ ...f, msg: e.target.value })}
-                placeholder="Ce que vous faites, ce qui coince aujourd'hui, et pour quand vous en avez besoin."
+                placeholder={t.placeholders.message}
               />
             </div>
 
             {/* Honeypot — hidden from humans, tempting to bots (SLV-055). */}
             <div aria-hidden="true" style={{ position: "absolute", left: "-9999px" }}>
-              <label htmlFor="website">Ne pas remplir</label>
+              <label htmlFor="website">{t.labels.honeypot}</label>
               <input
                 id="website"
                 name="website"
@@ -258,10 +257,10 @@ export function Contact({
               {err}
             </p>
             <button type="submit" className="btn full" disabled={pending}>
-              {pending ? "Envoi…" : "Envoyer la demande"}
+              {pending ? t.sending : t.submit}
             </button>
             <p className="mono tiny dim center">
-              Ou directement : <a href={`mailto:${email}`}>{email}</a>
+              {t.orDirect} <a href={`mailto:${email}`}>{email}</a>
             </p>
           </form>
         )}

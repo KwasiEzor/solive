@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { localizedPath } from "@/lib/i18n/urls";
 import type {
   PricingPlan,
   ProcessStep,
@@ -9,8 +11,10 @@ import type {
   SiteSettings,
   Testimonial,
 } from "@/server/db/types";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 import { CountUp } from "./count-up";
 import { HeroStructure } from "./hero-structure";
+import { LangSwitch } from "./lang-switch";
 import { PlanCycle } from "./plan-cycle";
 import { Reveal } from "./reveal";
 import { TestimonialsWall } from "./testimonials-wall";
@@ -59,9 +63,8 @@ export function MediaBand({
   );
 }
 
-const BASELINE = "studio de développement";
-const VILLE = "Charleroi";
-const HL = "solide";
+const HL_FR = "solide";
+const HL_EN = "strong";
 
 export function SecHead({ kicker, titre }: { kicker: string; titre: string }) {
   return (
@@ -72,12 +75,14 @@ export function SecHead({ kicker, titre }: { kicker: string; titre: string }) {
   );
 }
 
-export function Hero({ section }: { section?: Section }) {
-  const heading = section?.heading ?? "On construit solide.";
-  const kicker = section?.kicker ?? `${BASELINE} — ${VILLE}`;
-  const idx = heading.indexOf(HL);
+export function Hero({ section, locale }: { section?: Section; locale: Locale }) {
+  const t = getDictionary(locale);
+  const hl = locale === "en" ? HL_EN : HL_FR;
+  const heading = section?.heading ?? (locale === "en" ? "We build strong." : "On construit solide.");
+  const kicker = section?.kicker ?? `${t.common.baseline} — ${t.common.ville}`;
+  const idx = heading.indexOf(hl);
   const before = idx >= 0 ? heading.slice(0, idx) : heading;
-  const after = idx >= 0 ? heading.slice(idx + HL.length) : "";
+  const after = idx >= 0 ? heading.slice(idx + hl.length) : "";
 
   return (
     <section id="top" className="hero">
@@ -88,57 +93,38 @@ export function Hero({ section }: { section?: Section }) {
         <div className="hero-copy">
           <div className="hero-tags">
             <span className="mono tiny eyebrow">{kicker.toUpperCase()}</span>
-            <span className="hero-tag mono tiny">BUILD STRONG</span>
+            <span className="hero-tag mono tiny">{t.hero.buildStrong}</span>
           </div>
           <h1>
             {before}
-            {idx >= 0 && <span className="hl">{HL}</span>}
+            {idx >= 0 && <span className="hl">{hl}</span>}
             {after}
           </h1>
-          <p className="lede">
-            Vitrines, outils métier, apps mobiles. Pour les artisans, les PME et
-            les startups en Belgique, en France et au Luxembourg. Devis fixe,
-            calendrier daté, code livré à votre nom.
-          </p>
+          <p className="lede">{t.hero.lede}</p>
           <div className="hero-cta">
-            <Link href="/contact" className="btn">
-              Prendre 20 minutes
+            <Link href={localizedPath("/contact", locale)} className="btn">
+              {t.hero.ctaPrimary}
             </Link>
-            <Link href="/services" className="btn ghost">
-              Voir comment on travaille
+            <Link href={localizedPath("/services", locale)} className="btn ghost">
+              {t.hero.ctaSecondary}
             </Link>
           </div>
           <ul className="hero-facts mono tiny">
-            <li>4 à 6 semaines pour un site</li>
-            <li>Prix fixe, pas de rallonge</li>
-            <li>Vous gardez le code</li>
+            {t.hero.facts.map((f) => (
+              <li key={f}>{f}</li>
+            ))}
           </ul>
         </div>
         <div className="hero-plan">
-          <PlanCycle />
+          <PlanCycle locale={locale} />
         </div>
       </div>
     </section>
   );
 }
 
-export function Ticker() {
-  const items = [
-    "Next.js",
-    "TypeScript",
-    "React Native",
-    "Supabase",
-    "Agents IA",
-    "RAG",
-    "Mistral / Llama",
-    "Évals & garde-fous",
-    "Stripe",
-    "Tailwind",
-    "Vercel",
-    "SEO technique",
-    "Facture électronique 2026",
-    "RGPD & AI Act",
-  ];
+export function Ticker({ locale }: { locale: Locale }) {
+  const items = getDictionary(locale).ticker.items;
   const row = [...items, ...items];
   return (
     <div className="ticker" aria-hidden="true">
@@ -158,18 +144,21 @@ export function Services({
   head,
   items,
   hideHead,
+  locale,
 }: {
   head?: Section;
   items: Service[];
   hideHead?: boolean;
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
   return (
     <section id="services" className="sec">
       <div className="wrap">
         {!hideHead && (
           <SecHead
-            kicker={head?.kicker ?? "Ce qu'on fabrique"}
-            titre={head?.heading ?? "Trois lots, un seul interlocuteur."}
+            kicker={head?.kicker ?? t.sectionsFallback.services.kicker}
+            titre={head?.heading ?? t.sectionsFallback.services.titre}
           />
         )}
         <div className="grid3">
@@ -207,18 +196,21 @@ export function Methode({
   head,
   steps,
   hideHead,
+  locale,
 }: {
   head?: Section;
   steps: ProcessStep[];
   hideHead?: boolean;
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
   return (
     <section id="methode" className="sec alt">
       <div className="wrap">
         {!hideHead && (
           <SecHead
-            kicker={head?.kicker ?? "La méthode"}
-            titre={head?.heading ?? "Quatre étapes. Vous savez toujours où on en est."}
+            kicker={head?.kicker ?? t.sectionsFallback.methode.kicker}
+            titre={head?.heading ?? t.sectionsFallback.methode.titre}
           />
         )}
         <ol className="steps">
@@ -242,28 +234,31 @@ export function Travaux({
   head,
   projects,
   hideHead,
+  locale,
 }: {
   head?: Section;
   projects: Project[];
   hideHead?: boolean;
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
   if (projects.length === 0) return null;
   return (
     <section id="travaux" className="sec">
       <div className="wrap">
         {!hideHead && (
           <SecHead
-            kicker={head?.kicker ?? "Travaux"}
-            titre={head?.heading ?? "Ce que ça donne une fois livré."}
+            kicker={head?.kicker ?? t.sectionsFallback.travaux.kicker}
+            titre={head?.heading ?? t.sectionsFallback.travaux.titre}
           />
         )}
         <div className="grid3">
           {projects.map((r, i) => (
             <Reveal key={r.id} as="article" className="case" delay={i * 90}>
               <Link
-                href={`/travaux/${r.slug}`}
+                href={localizedPath(`/travaux/${r.slug}`, locale)}
                 className="stretched-link"
-                aria-label={`Voir l’étude de cas : ${r.title}`}
+                aria-label={t.services.caseStudyAria(r.title)}
               />
               <div className="case-media">
                 <Image
@@ -297,36 +292,39 @@ export function Tarifs({
   head,
   plans,
   hideHead,
+  locale,
 }: {
   head?: Section;
   plans: PricingPlan[];
   hideHead?: boolean;
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
   return (
     <section id="tarifs" className="sec alt">
       <div className="wrap">
         {!hideHead && (
           <SecHead
-            kicker={head?.kicker ?? "Tarifs"}
-            titre={head?.heading ?? "Les ordres de grandeur, avant même de s'appeler."}
+            kicker={head?.kicker ?? t.sectionsFallback.tarifs.kicker}
+            titre={head?.heading ?? t.sectionsFallback.tarifs.titre}
           />
         )}
         <div className="grid3">
-          {plans.map((t, i) => (
+          {plans.map((p, i) => (
             <Reveal
-              key={t.id}
+              key={p.id}
               as="article"
-              className={"tarif" + (t.isHighlighted ? " vedette" : "")}
+              className={"tarif" + (p.isHighlighted ? " vedette" : "")}
               delay={i * 90}
             >
-              {t.isHighlighted && (
-                <span className="badge mono tiny">Le plus demandé</span>
+              {p.isHighlighted && (
+                <span className="badge mono tiny">{t.pricing.mostRequested}</span>
               )}
-              <h3>{t.name}</h3>
-              {t.priceNote && <p className="mono tiny dim">{t.priceNote}</p>}
-              {t.priceLabel && <p className="prix">{t.priceLabel}</p>}
+              <h3>{p.name}</h3>
+              {p.priceNote && <p className="mono tiny dim">{p.priceNote}</p>}
+              {p.priceLabel && <p className="prix">{p.priceLabel}</p>}
               <ul className="ticks">
-                {t.includes.map((x) => (
+                {p.includes.map((x) => (
                   <li key={x}>
                     <Tick />
                     {x}
@@ -334,18 +332,15 @@ export function Tarifs({
                 ))}
               </ul>
               <Link
-                href="/contact"
-                className={"btn full" + (t.isHighlighted ? "" : " ghost")}
+                href={localizedPath("/contact", locale)}
+                className={"btn full" + (p.isHighlighted ? "" : " ghost")}
               >
-                Demander un devis
+                {t.pricing.requestQuote}
               </Link>
             </Reveal>
           ))}
         </div>
-        <p className="note mono tiny">
-          Entretien, hébergement et petites évolutions : 90 € / mois, sans
-          engagement. Prix hors TVA.
-        </p>
+        <p className="note mono tiny">{t.pricing.maintenanceNote}</p>
       </div>
     </section>
   );
@@ -354,28 +349,39 @@ export function Tarifs({
 export function Testimonials({
   head,
   items,
+  locale,
 }: {
   head?: Section;
   items: Testimonial[];
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
   if (items.length === 0) return null;
   return (
     <section id="temoignages" className="sec">
       <div className="wrap">
         <SecHead
-          kicker={head?.kicker ?? "Ils en parlent"}
-          titre={head?.heading ?? "Ce que disent les gens pour qui j’ai livré."}
+          kicker={head?.kicker ?? t.sectionsFallback.temoignages.kicker}
+          titre={head?.heading ?? t.sectionsFallback.temoignages.titre}
         />
       </div>
-      <TestimonialsWall items={items} />
+      <TestimonialsWall items={items} locale={locale} />
     </section>
   );
 }
 
-export function Footer({ settings }: { settings: SiteSettings | null }) {
+export function Footer({
+  settings,
+  locale,
+}: {
+  settings: SiteSettings | null;
+  locale: Locale;
+}) {
+  const t = getDictionary(locale);
   const brand = settings?.name ?? "SOLIVE";
   const email = settings?.email ?? "bonjour@solive.pro";
   const vat = settings?.vat ?? "BE 0000.000.000";
+  const ville = t.common.ville;
   return (
     <footer className="foot">
       <div className="wrap foot-in">
@@ -387,32 +393,30 @@ export function Footer({ settings }: { settings: SiteSettings | null }) {
             <span>{brand.toUpperCase()}</span>
           </p>
           <p className="mono tiny dim">
-            {(settings?.baseline ?? BASELINE)} · {VILLE}, Belgique
+            {/* settings.baseline has no locale column — only trust it in fr,
+                or an admin edit in French would leak onto /en. */}
+            {(locale === "fr" ? settings?.baseline : null) ?? t.common.baseline} · {ville}, {t.footer.belgique}
           </p>
-          <p className="pourquoi">
-            Une solive, c&apos;est la poutre qu&apos;on ne voit jamais et sur
-            laquelle repose tout le plancher. On construit solide.
-          </p>
+          <p className="pourquoi">{t.footer.pourquoi}</p>
         </div>
         <div className="foot-cols mono tiny">
           <div>
-            <p className="dim">Contact</p>
+            <p className="dim">{t.footer.contact}</p>
             <a href={`mailto:${email}`}>{email}</a>
-            <a href="#contact">Formulaire</a>
+            <a href="#contact">{t.footer.formulaire}</a>
           </div>
           <div>
-            <p className="dim">Légal</p>
-            <a href="/mentions-legales">Mentions légales</a>
-            <a href="/confidentialite">Confidentialité</a>
-            <a href="/cookies">Cookies</a>
-            <span>TVA {vat}</span>
+            <p className="dim">{t.footer.legal}</p>
+            <a href={localizedPath("/mentions-legales", locale)}>{t.footer.mentionsLegales}</a>
+            <a href={localizedPath("/confidentialite", locale)}>{t.footer.confidentialite}</a>
+            <a href={localizedPath("/cookies", locale)}>{t.footer.cookies}</a>
+            <span>{t.footer.tva(vat)}</span>
           </div>
         </div>
+        <LangSwitch locale={locale} className="lang-switch footer" />
       </div>
       <div className="wrap">
-        <p className="mono tiny dim foot-end">
-          Fait à {VILLE}. Hébergé en Europe.
-        </p>
+        <p className="mono tiny dim foot-end">{t.footer.faitA(ville)}</p>
       </div>
     </footer>
   );

@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { getDictionary } from "@/lib/i18n/dictionary";
 import { flushContactQueue } from "@/lib/offline/flush";
 import { queuedCount } from "@/lib/offline/queue";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 
 const pill = {
   position: "fixed" as const,
@@ -31,7 +33,8 @@ function subscribeOnline(cb: () => void) {
 }
 
 /** Discreet, non-anxious network + pending-queue indicator (SLV-085). */
-export function NetworkStatus() {
+export function NetworkStatus({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale).networkStatus;
   const online = useSyncExternalStore(
     subscribeOnline,
     () => navigator.onLine,
@@ -72,9 +75,7 @@ export function NetworkStatus() {
           background: online ? "var(--acc)" : "#f59e0b",
         }}
       />
-      {!online
-        ? "Hors ligne — vos actions sont conservées"
-        : `${pending} demande${pending > 1 ? "s" : ""} en attente d’envoi`}
+      {!online ? t.offline : t.pending(pending)}
     </div>
   );
 }

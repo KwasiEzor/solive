@@ -2,6 +2,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { localizedPath } from "@/lib/i18n/urls";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 
 /**
  * Persistent floating call-to-action: appears past one viewport of scrolling
@@ -9,9 +12,11 @@ import { useEffect, useState } from "react";
  * gently to draw the eye without being obnoxious, and is hidden on /contact
  * itself (no point inviting someone to the page they're already on).
  */
-export function FloatCta() {
+export function FloatCta({ locale }: { locale: Locale }) {
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
+  const t = getDictionary(locale).floatCta;
+  const contactHref = localizedPath("/contact", locale);
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 600);
@@ -23,17 +28,17 @@ export function FloatCta() {
     };
   }, []);
 
-  if (pathname === "/contact") return null;
+  if (pathname === contactHref) return null;
 
   return (
     <Link
-      href="/contact"
+      href={contactHref}
       className={"float-cta" + (visible ? " in" : "")}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
     >
       <span className="float-cta-pulse" aria-hidden="true" />
-      <span className="float-cta-label">Prendre 20 minutes</span>
+      <span className="float-cta-label">{t.label}</span>
       <svg
         width="16"
         height="16"

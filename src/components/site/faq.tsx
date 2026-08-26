@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 import type { FaqItem } from "@/server/db/types";
 import { SecHead } from "./sections";
 
@@ -25,20 +27,20 @@ export function Faq({
   head,
   items,
   hideHead,
+  locale,
 }: {
   head?: { kicker: string | null; heading: string | null };
   items: FaqItem[];
   hideHead?: boolean;
+  locale: Locale;
 }) {
   const [open, setOpen] = useState(0);
+  const t = getDictionary(locale).sectionsFallback.faq;
   return (
     <section id="faq" className="sec">
       <div className="wrap narrow">
         {!hideHead && (
-          <SecHead
-            kicker={head?.kicker ?? "Questions"}
-            titre={head?.heading ?? "Ce qu'on nous demande avant de signer."}
-          />
+          <SecHead kicker={head?.kicker ?? t.kicker} titre={head?.heading ?? t.titre} />
         )}
         <div className="faq">
           {items.map((f, i) => {

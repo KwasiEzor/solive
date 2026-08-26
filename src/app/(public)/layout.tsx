@@ -7,6 +7,8 @@ import { NetworkStatus } from "@/components/site/network-status";
 import { ScrollTop } from "@/components/site/scroll-top";
 import { Footer } from "@/components/site/sections";
 import { SwUpdatePrompt } from "@/components/site/sw-update";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { getRequestLocale } from "@/lib/i18n/locale";
 import { getSiteSettings } from "@/server/queries/content";
 import "@/styles/site.css";
 
@@ -15,23 +17,24 @@ export default async function PublicLayout({
 }: {
   children: ReactNode;
 }) {
-  const settings = await getSiteSettings();
+  const [settings, locale] = await Promise.all([getSiteSettings(), getRequestLocale()]);
   const palette = settings?.activePalette ?? "ardoise";
   const brand = (settings?.name ?? "SOLIVE").toUpperCase();
+  const t = getDictionary(locale);
 
   return (
     <div className={`site t-${palette}`}>
       <a href="#main" className="skip">
-        Aller au contenu
+        {t.common.skipLink}
       </a>
-      <Nav brand={brand} />
+      <Nav brand={brand} locale={locale} />
       <main id="main">{children}</main>
-      <Footer settings={settings} />
-      <NetworkStatus />
-      <SwUpdatePrompt />
-      <ScrollTop />
-      <FloatCta />
-      <ConsentBanner />
+      <Footer settings={settings} locale={locale} />
+      <NetworkStatus locale={locale} />
+      <SwUpdatePrompt locale={locale} />
+      <ScrollTop locale={locale} />
+      <FloatCta locale={locale} />
+      <ConsentBanner locale={locale} />
       <AnalyticsBeacon />
     </div>
   );

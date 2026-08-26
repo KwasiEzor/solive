@@ -7,38 +7,50 @@ import {
   PricingReassurance,
 } from "@/components/site/subpage";
 import { env } from "@/lib/env";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { getRequestLocale } from "@/lib/i18n/locale";
+import { localizedPath } from "@/lib/i18n/urls";
 import {
   getFaqItems,
   getPricingPlans,
   getSectionsMap,
 } from "@/server/queries/content";
 
-export const metadata: Metadata = {
-  title: "Tarifs — devis fixe, calendrier daté",
-  description:
-    "Les ordres de grandeur avant même de s’appeler : site vitrine, application web, application mobile. Devis fixe, sans rallonge.",
-  alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/tarifs` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale).meta.tarifs;
+  const site = env.NEXT_PUBLIC_SITE_URL;
+  return {
+    title: t.title,
+    description: t.description,
+    alternates: {
+      canonical: `${site}${localizedPath("/tarifs", locale)}`,
+      languages: { fr: `${site}/tarifs`, en: `${site}/en/tarifs` },
+    },
+  };
+}
 
 export default async function TarifsPage() {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale);
   const [plans, faqs, sections] = await Promise.all([
-    getPricingPlans("fr"),
-    getFaqItems("fr"),
-    getSectionsMap("fr"),
+    getPricingPlans(locale),
+    getFaqItems(locale),
+    getSectionsMap(locale),
   ]);
 
   return (
     <>
       <PageHeader
-        kicker="Tarifs"
-        title="Les ordres de grandeur, avant même de s’appeler."
-        lede="Un devis fixe pour le périmètre écrit. Pas de rallonge surprise : tout ajout est chiffré à part, et vous décidez."
+        kicker={t.pageHeaders.tarifs.kicker}
+        title={t.pageHeaders.tarifs.title}
+        lede={t.pageHeaders.tarifs.lede}
         image="/images/circuit.jpg"
       />
-      <Tarifs head={sections.tarifs} plans={plans} hideHead />
-      <PricingReassurance />
-      <Faq head={sections.faq} items={faqs} />
-      <ContactCta />
+      <Tarifs head={sections.tarifs} plans={plans} hideHead locale={locale} />
+      <PricingReassurance locale={locale} />
+      <Faq head={sections.faq} items={faqs} locale={locale} />
+      <ContactCta locale={locale} />
     </>
   );
 }

@@ -10,23 +10,35 @@ import {
 import { MediaBand } from "@/components/site/sections";
 import { ContactCta, PageHeader } from "@/components/site/subpage";
 import { env } from "@/lib/env";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { getRequestLocale } from "@/lib/i18n/locale";
+import { localizedPath } from "@/lib/i18n/urls";
 
-export const metadata: Metadata = {
-  title: "IA & agents — assistants souverains, sans lock-in",
-  description:
-    "Assistants clients, agents de qualification et automatisations métier. Une IA hébergée en Europe, sourcée, mesurée, que vous possédez — pas un wrapper ChatGPT de plus.",
-  alternates: { canonical: `${env.NEXT_PUBLIC_SITE_URL}/ia` },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale).meta.ia;
+  const site = env.NEXT_PUBLIC_SITE_URL;
+  return {
+    title: t.title,
+    description: t.description,
+    alternates: {
+      canonical: `${site}${localizedPath("/ia", locale)}`,
+      languages: { fr: `${site}/ia`, en: `${site}/en/ia` },
+    },
+  };
+}
 
-export default function IaPage() {
+export default async function IaPage() {
+  const locale = await getRequestLocale();
+  const t = getDictionary(locale);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    serviceType: "Intelligence artificielle — assistants et agents",
+    serviceType: t.ia.serviceType,
     provider: { "@type": "LocalBusiness", name: "Solive" },
     areaServed: ["BE", "FR", "LU"],
-    description:
-      "Assistants IA (RAG), agents de qualification, automatisations métier. Hébergé en Europe, sans lock-in, garde-fous et évals.",
+    description: t.ia.jsonLdDescription,
+    inLanguage: locale,
   };
   return (
     <>
@@ -35,25 +47,19 @@ export default function IaPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <PageHeader
-        kicker="Intelligence artificielle"
-        title="Une IA qui tient debout — pas un wrapper de plus."
-        lede="Assistants clients, agents de qualification, automatisations métier. Hébergée en Europe, sourcée, mesurée, sans lock-in. Vous la possédez."
+        kicker={t.pageHeaders.ia.kicker}
+        title={t.pageHeaders.ia.title}
+        lede={t.pageHeaders.ia.lede}
         image="/images/terminal.jpg"
       />
-      <IaDifferentiators />
-      <MediaBand
-        src="/images/ai-data.jpg"
-        caption="Des évals, pas de la magie. On mesure le taux d’erreur avant de livrer."
-      />
-      <IaUseCases />
-      <IaMethod />
-      <IaPricing />
-      <IaAssistantTeaser />
-      <IaFaq />
-      <ContactCta
-        title="Un cas d’usage IA en tête ?"
-        text="On commence par un audit court : ce qui est automatisable chez vous, le ROI, la feuille de route. Puis un devis fixe."
-      />
+      <IaDifferentiators locale={locale} />
+      <MediaBand src="/images/ai-data.jpg" caption={t.iaPage.mediaBandCaption} />
+      <IaUseCases locale={locale} />
+      <IaMethod locale={locale} />
+      <IaPricing locale={locale} />
+      <IaAssistantTeaser locale={locale} />
+      <IaFaq locale={locale} />
+      <ContactCta locale={locale} title={t.contactCta.ia.title} text={t.contactCta.ia.text} />
     </>
   );
 }

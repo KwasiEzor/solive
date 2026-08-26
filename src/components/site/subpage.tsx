@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { localizedPath } from "@/lib/i18n/urls";
+import type { SiteLocale as Locale } from "@/lib/i18n/locale";
 
 /** Compact hero for dedicated pages, with optional scrimmed backdrop. */
 export function PageHeader({
@@ -37,24 +40,19 @@ export function PageHeader({
 }
 
 /** What "prix fixe" actually guarantees — reassurance around the pricing. */
-export function PricingReassurance() {
-  const points: [string, string][] = [
-    ["Périmètre écrit", "Ce qui est inclus est noté noir sur blanc avant de commencer. On sait tous les deux où on va."],
-    ["Pas de rallonge surprise", "Le prix ne bouge pas pour le périmètre convenu. Tout ajout est chiffré à part, et c’est vous qui décidez."],
-    ["Calendrier daté", "Une date de livraison, des jalons visibles. Vous savez toujours où on en est."],
-    ["Le code est à vous", "Livré à votre nom, hébergé en Europe. Pas de dépendance, pas de rançon technique."],
-  ];
+export function PricingReassurance({ locale }: { locale: Locale }) {
+  const t = getDictionary(locale).pricingReassurance;
   return (
     <section className="sec alt">
       <div className="wrap">
         <div className="sec-head">
-          <span className="mono tiny eyebrow">CE QUE « PRIX FIXE » VEUT DIRE</span>
-          <h2>Un forfait, sans mauvaise surprise.</h2>
+          <span className="mono tiny eyebrow">{t.eyebrow}</span>
+          <h2>{t.h2}</h2>
         </div>
         <div className="grid2 reassure">
-          {points.map(([t, d]) => (
-            <div key={t} className="reassure-item">
-              <h3>{t}</h3>
+          {t.points.map(([h, d]) => (
+            <div key={h} className="reassure-item">
+              <h3>{h}</h3>
               <p>{d}</p>
             </div>
           ))}
@@ -66,22 +64,25 @@ export function PricingReassurance() {
 
 /** Accent call-to-action band, closing dedicated pages and the home. */
 export function ContactCta({
-  title = "Un projet en tête ?",
-  text = "Un appel de 20 minutes, un devis fixe et un calendrier daté. Sans engagement.",
+  locale,
+  title,
+  text,
 }: {
+  locale: Locale;
   title?: string;
   text?: string;
 }) {
+  const t = getDictionary(locale).contactCta;
   return (
     <section className="sec">
       <div className="wrap">
         <div className="cta-band">
           <div>
-            <h2>{title}</h2>
-            <p>{text}</p>
+            <h2>{title ?? t.defaultTitle}</h2>
+            <p>{text ?? t.defaultText}</p>
           </div>
-          <Link href="/contact" className="btn">
-            Parler du projet
+          <Link href={localizedPath("/contact", locale)} className="btn">
+            {t.button}
           </Link>
         </div>
       </div>

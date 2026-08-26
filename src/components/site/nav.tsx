@@ -63,7 +63,7 @@ export function Nav({ brand = "SOLIVE", locale }: { brand?: string; locale: Loca
             </Link>
           ))}
         </nav>
-        <Link href={localizedPath("/contact", locale)} className="btn-sm">
+        <Link href={localizedPath("/contact", locale)} className="btn-sm accent">
           {t.cta}
         </Link>
         <LangSwitch locale={locale} className="lang-switch" />

@@ -275,6 +275,21 @@
   border-color: var(--acc);
   color: var(--acc);
 }
+/* accent variant — used for the nav CTA so it reads at a glance, unlike the
+   neutral .btn-sm used elsewhere (e.g. the consent banner). */
+.btn-sm.accent {
+  background: linear-gradient(180deg, var(--acc), var(--acc-strong));
+  color: var(--on-acc);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  border-color: var(--acc);
+  font-weight: 600;
+}
+.btn-sm.accent:hover {
+  color: var(--on-acc);
+  border-color: var(--acc);
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
 
 /* language switch (FR/EN) */
 .lang-switch {

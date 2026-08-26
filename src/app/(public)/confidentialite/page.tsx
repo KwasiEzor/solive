@@ -4,7 +4,8 @@ import { env } from "@/lib/env";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { localizedPath } from "@/lib/i18n/urls";
-import { getSiteSettings } from "@/server/queries/content";
+import { renderTiptap } from "@/lib/tiptap/render";
+import { getLegalPage } from "@/server/queries/content";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
@@ -23,10 +24,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ConfidentialitePage() {
   const locale = await getRequestLocale();
   const t = getDictionary(locale);
-  const l = t.legalPages.confidentialite;
-  const s = await getSiteSettings();
-  const email = s?.email ?? "bonjour@solive.pro";
-  const name = s?.name ?? "Solive";
+  const [intro, outro] = await Promise.all([
+    getLegalPage("confidentialite", locale),
+    getLegalPage("confidentialite-suite", locale),
+  ]);
 
   return (
     <>
@@ -37,33 +38,18 @@ export default async function ConfidentialitePage() {
       />
       <section className="sec">
         <div className="wrap narrow legal">
-          <p className="legal-updated mono tiny dim">{l.updated}</p>
+          {intro && (
+            <p className="legal-updated mono tiny dim">
+              {t.legal.updatedOn(
+                new Date(intro.updatedAt).toLocaleDateString(
+                  locale === "en" ? "en-GB" : "fr-BE",
+                ),
+              )}
+            </p>
+          )}
 
-          <h2>{l.responsableHeading}</h2>
-          <p>
-            {l.responsableText(name)}
-            <br />
-            {l.responsableContact} <a href={`mailto:${email}`}>{email}</a>.<br />
-            <em>{l.responsableLegal}</em>
-          </p>
+          {renderTiptap(intro?.body)}
 
-          <h2>{l.donneesHeading}</h2>
-          <ul>
-            <li>{l.donneesForm}</li>
-            <li>{l.donneesTech}</li>
-            <li>{l.donneesAudience}</li>
-          </ul>
-
-          <h2>{l.finalitesHeading}</h2>
-          <ul>
-            <li>{l.finalite1}</li>
-            <li>{l.finalite2}</li>
-            <li>{l.finalite3}</li>
-            <li>{l.finalite4}</li>
-          </ul>
-
-          <h2>{l.sousTraitantsHeading}</h2>
-          <p>{l.sousTraitantsIntro}</p>
           <div className="legal-table-wrap">
             <table className="legal-table">
               <thead>
@@ -85,32 +71,7 @@ export default async function ConfidentialitePage() {
             </table>
           </div>
 
-          <h2>{l.dureesHeading}</h2>
-          <ul>
-            <li>{l.duree1}</li>
-            <li>{l.duree2}</li>
-            <li>{l.duree3}</li>
-          </ul>
-
-          <h2>{l.droitsHeading}</h2>
-          <p>
-            {l.droitsIntro} <a href={`mailto:${email}`}>{email}</a>
-            {l.droitsMid}{" "}
-            <a
-              href="https://www.autoriteprotectiondonnees.be"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              autoriteprotectiondonnees.be
-            </a>
-            .
-          </p>
-
-          <h2>{l.transfertsHeading}</h2>
-          <p>{l.transfertsText}</p>
-
-          <h2>{l.securiteHeading}</h2>
-          <p>{l.securiteText}</p>
+          {renderTiptap(outro?.body)}
 
           <p className="legal-more">
             {t.legal.seeAlso}{" "}

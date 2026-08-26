@@ -533,6 +533,7 @@ export const en = {
       cookiesFull: "cookie policy",
       mentionsLegales: "legal notice",
     },
+    updatedOn: (date: string) => `Last updated: ${date}.`,
   },
   legalPages: {
     mentionsLegales: {
@@ -558,43 +559,6 @@ export const en = {
         "In the event of a dispute, an amicable solution will be sought first. The European online dispute resolution platform is available at",
       litigesOutro: ". Belgian law applies.",
     },
-    confidentialite: {
-      updated: "Last updated: August 20, 2026.",
-      responsableHeading: "1. Data controller",
-      responsableText: (name: string) => `${name}, a dev studio based in Charleroi (Belgium).`,
-      responsableContact: "Contact:",
-      responsableLegal: "Legal name, business registration number and registered office: [TO BE COMPLETED].",
-      donneesHeading: "2. Data we process",
-      donneesForm: "Contact form: name, email address, company (optional), project type and message.",
-      donneesTech:
-        "Anti-abuse technical data: a hashed fingerprint of your IP address and user agent, to limit spam. The plain IP address is not retained.",
-      donneesAudience:
-        "Anonymous audience measurement: page views, country, device, referrer and campaign parameters, aggregated and cookie-free. No IP address is retained (one-way fingerprint changed daily). No profiling, no advertising tracking.",
-      finalitesHeading: "3. Purposes and legal bases",
-      finalite1: "Responding to your request and preparing a quote — pre-contractual measures (GDPR art. 6.1.b).",
-      finalite2: "Protecting the form against abuse — legitimate interest (art. 6.1.f).",
-      finalite3:
-        "Anonymous audience measurement (no personal data) — legitimate interest (art. 6.1.f), with the option to opt out at any time via the banner or \"Do Not Track\" signals.",
-      finalite4: "AI assistant, where applicable — consent (art. 6.1.a), revocable at any time.",
-      sousTraitantsHeading: "4. Subprocessors",
-      sousTraitantsIntro:
-        "Your data is processed by providers based in the European Union, bound by a data processing agreement (DPA):",
-      dureesHeading: "5. Retention periods",
-      duree1: "Contact requests: up to 36 months after the last exchange, then anonymized or deleted.",
-      duree2: "Anti-abuse technical logs: 90 days maximum.",
-      duree3: "Administration audit log: retained for security purposes.",
-      droitsHeading: "6. Your rights",
-      droitsIntro:
-        "You have the right to access, rectify, erase, restrict, object to, and port your data. Write to us at",
-      droitsMid:
-        "; we reply within 30 days. You can also file a complaint with the Belgian Data Protection Authority (APD) —",
-      transfertsHeading: "7. Transfers outside the EU",
-      transfertsText:
-        "No transfer of your personal data outside the European Union takes place in connection with the operation of the site.",
-      securiteHeading: "8. Security",
-      securiteText:
-        "Encryption in transit, database-level access-policy isolation (RLS), strong authentication (MFA), and an administration-side audit log.",
-    },
     cookies: {
       audienceHeading: "Anonymous, cookie-free audience measurement",
       audienceP1:
@@ -605,6 +569,81 @@ export const en = {
       revertHeading: "Changing your choice",
       revertText:
         "Your decision is stored locally (key solive-consent). To reset it, clear the site's data in your browser: the banner will reappear on the next load.",
+    },
+  },
+  admin: {
+    brandBadge: "Admin",
+    nav: {
+      aria: "Admin navigation",
+      groups: {
+        pilotage: "Overview",
+        contenu: "Content",
+        relationClient: "Client relations",
+        systeme: "System",
+      },
+      items: {
+        dashboard: "Dashboard",
+        statistiques: "Statistics",
+        sections: "Sections",
+        collections: "Collections",
+        confidentialite: "Privacy (GDPR)",
+        demandes: "Requests",
+        devis: "Quotes",
+        parametres: "Settings",
+        utilisateurs: "Users",
+        journal: "Log",
+        profil: "Profile",
+      },
+    },
+    topbar: {
+      openMenu: "Open menu",
+      closeMenu: "Close menu",
+      viewSite: "View site",
+      defaultTitle: "Administration",
+    },
+    account: {
+      signOut: "Sign out",
+      roleOwner: "Owner",
+      roleEditor: "Editor",
+    },
+    profile: {
+      title: "Profile",
+      accountHeading: "Account",
+      fullNameLabel: "Full name",
+      emailLabel: "Email",
+      roleLabel: "Role",
+      mfaLabel: "Two-factor authentication",
+      mfaEnabled: "Enabled",
+      mfaDisabled: "Not enabled",
+      lastSeenLabel: "Last seen",
+      never: "Never",
+      saveButton: "Save",
+      saving: "Saving…",
+      saved: "Changes saved.",
+      saveError: "Something went wrong.",
+      passwordHeading: "Password",
+      passwordText: "Get an email link to set a new password.",
+      passwordButton: "Send reset link",
+      passwordSending: "Sending…",
+      passwordSent: "Link sent. Check your inbox.",
+      languageHeading: "Dashboard language",
+      languageText: "Choose the language used for the admin interface.",
+    },
+    legalEditor: {
+      title: "Privacy (GDPR)",
+      description: "Content of the public /confidentialite page, in French and English.",
+      tabFr: "Français",
+      tabEn: "English",
+      introLabel: "Introduction — sections 1 to 4",
+      suiteLabel: "Continued — sections 5 to 8",
+      subprocessorsNotice:
+        "The subprocessors table is rendered publicly here, between the two blocks below. It isn't editable from this screen.",
+      saveButton: "Save",
+      saving: "Saving…",
+      saved: "Saved.",
+      saveError: "Failed — try again.",
+      unsavedChanges: "Unsaved changes.",
+      conflict: "This content was changed elsewhere in the meantime. Reload the page before continuing.",
     },
   },
 } satisfies typeof fr;

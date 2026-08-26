@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { AdminShell } from "@/components/admin/admin-shell";
+import { getAdminLocale } from "@/lib/i18n/admin-locale";
+import { getDictionary } from "@/lib/i18n/dictionary";
 import { getCurrentAdmin } from "@/server/auth/guards";
 import { createSupabaseServerClient } from "@/server/auth/supabase-server";
 
@@ -27,8 +29,16 @@ export default async function AdminLayout({
     redirect("/mfa");
   }
 
+  const locale = await getAdminLocale();
+  const t = getDictionary(locale).admin;
+
   return (
-    <AdminShell email={result.value.email ?? ""} role={data?.role ?? "editor"}>
+    <AdminShell
+      email={result.value.email ?? ""}
+      role={data?.role ?? "editor"}
+      locale={locale}
+      t={t}
+    >
       {children}
     </AdminShell>
   );

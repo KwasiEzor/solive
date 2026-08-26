@@ -541,6 +541,7 @@ export const fr = {
       cookiesFull: "politique cookies",
       mentionsLegales: "mentions légales",
     },
+    updatedOn: (date: string) => `Dernière mise à jour : ${date}.`,
   },
   legalPages: {
     mentionsLegales: {
@@ -567,46 +568,6 @@ export const fr = {
         "En cas de litige, une solution amiable sera recherchée en priorité. La plateforme européenne de règlement en ligne des litiges est accessible à",
       litigesOutro: ". Le droit belge est applicable.",
     },
-    confidentialite: {
-      updated: "Dernière mise à jour : 20 août 2026.",
-      responsableHeading: "1. Responsable du traitement",
-      responsableText: (name: string) =>
-        `${name}, studio de développement établi à Charleroi (Belgique).`,
-      responsableContact: "Contact :",
-      responsableLegal: "Dénomination légale, numéro BCE et siège social : [À COMPLÉTER].",
-      donneesHeading: "2. Données que nous traitons",
-      donneesForm:
-        "Formulaire de contact : nom, adresse e-mail, société (facultatif), type de projet et message.",
-      donneesTech:
-        "Données techniques anti-abus : une empreinte hachée de votre adresse IP et l’agent utilisateur, pour limiter le spam. L’IP en clair n’est pas conservée.",
-      donneesAudience:
-        "Mesure d’audience anonyme : page vue, pays, appareil, référent et paramètres de campagne, de façon agrégée et sans cookie. Aucune IP conservée (empreinte à sens unique changée chaque jour). Pas de profilage, pas de suivi publicitaire.",
-      finalitesHeading: "3. Finalités et bases légales",
-      finalite1:
-        "Répondre à votre demande et établir un devis — mesures précontractuelles (art. 6.1.b RGPD).",
-      finalite2: "Protéger le formulaire contre les abus — intérêt légitime (art. 6.1.f).",
-      finalite3:
-        "Mesure d’audience anonyme (sans donnée personnelle) — intérêt légitime (art. 6.1.f), avec opposition possible à tout moment via le bandeau ou les signaux « Do Not Track ».",
-      finalite4: "Assistant IA, le cas échéant — consentement (art. 6.1.a), révocable à tout moment.",
-      sousTraitantsHeading: "4. Sous-traitants",
-      sousTraitantsIntro:
-        "Vos données sont traitées par des prestataires établis dans l’Union européenne, liés par un accord de traitement (DPA) :",
-      dureesHeading: "5. Durées de conservation",
-      duree1: "Demandes de contact : jusqu’à 36 mois après le dernier échange, puis anonymisées ou supprimées.",
-      duree2: "Journaux techniques anti-abus : 90 jours au maximum.",
-      duree3: "Journal d’audit de l’administration : conservé pour la sécurité.",
-      droitsHeading: "6. Vos droits",
-      droitsIntro:
-        "Vous disposez des droits d’accès, de rectification, d’effacement, de limitation, d’opposition et de portabilité. Écrivez-nous à",
-      droitsMid:
-        "; nous répondons sous 30 jours. Vous pouvez aussi introduire une réclamation auprès de l’Autorité de protection des données (APD, Belgique) —",
-      transfertsHeading: "7. Transferts hors UE",
-      transfertsText:
-        "Aucun transfert de vos données personnelles en dehors de l’Union européenne n’est effectué dans le cadre du fonctionnement du site.",
-      securiteHeading: "8. Sécurité",
-      securiteText:
-        "Chiffrement en transit, cloisonnement par politiques d’accès au niveau de la base (RLS), authentification renforcée (MFA) et journal d’audit côté administration.",
-    },
     cookies: {
       audienceHeading: "Une mesure d’audience anonyme, sans cookie",
       audienceP1:
@@ -617,6 +578,82 @@ export const fr = {
       revertHeading: "Revenir sur votre choix",
       revertText:
         "Votre décision est conservée localement (clé solive-consent). Pour la réinitialiser, effacez les données du site dans votre navigateur : le bandeau réapparaîtra au prochain chargement.",
+    },
+  },
+  admin: {
+    brandBadge: "Admin",
+    nav: {
+      aria: "Navigation admin",
+      groups: {
+        pilotage: "Pilotage",
+        contenu: "Contenu",
+        relationClient: "Relation client",
+        systeme: "Système",
+      },
+      items: {
+        dashboard: "Tableau de bord",
+        statistiques: "Statistiques",
+        sections: "Sections",
+        collections: "Collections",
+        confidentialite: "Confidentialité (RGPD)",
+        demandes: "Demandes",
+        devis: "Devis",
+        parametres: "Paramètres",
+        utilisateurs: "Utilisateurs",
+        journal: "Journal",
+        profil: "Profil",
+      },
+    },
+    topbar: {
+      openMenu: "Ouvrir le menu",
+      closeMenu: "Fermer le menu",
+      viewSite: "Voir le site",
+      defaultTitle: "Administration",
+    },
+    account: {
+      signOut: "Déconnexion",
+      roleOwner: "Propriétaire",
+      roleEditor: "Éditeur",
+    },
+    profile: {
+      title: "Profil",
+      accountHeading: "Compte",
+      fullNameLabel: "Nom complet",
+      emailLabel: "E-mail",
+      roleLabel: "Rôle",
+      mfaLabel: "Authentification à deux facteurs",
+      mfaEnabled: "Activée",
+      mfaDisabled: "Non activée",
+      lastSeenLabel: "Dernière connexion",
+      never: "Jamais",
+      saveButton: "Enregistrer",
+      saving: "Enregistrement…",
+      saved: "Modifications enregistrées.",
+      saveError: "Une erreur est survenue.",
+      passwordHeading: "Mot de passe",
+      passwordText: "Recevez un lien par e-mail pour définir un nouveau mot de passe.",
+      passwordButton: "Envoyer le lien de réinitialisation",
+      passwordSending: "Envoi…",
+      passwordSent: "Lien envoyé. Vérifiez votre boîte mail.",
+      languageHeading: "Langue du tableau de bord",
+      languageText: "Choisissez la langue utilisée pour l’interface d’administration.",
+    },
+    legalEditor: {
+      title: "Confidentialité (RGPD)",
+      description: "Contenu de la page publique /confidentialite, en français et en anglais.",
+      tabFr: "Français",
+      tabEn: "English",
+      introLabel: "Introduction — sections 1 à 4",
+      suiteLabel: "Suite — sections 5 à 8",
+      subprocessorsNotice:
+        "Le tableau des sous-traitants s’affiche ici publiquement, entre les deux blocs ci-dessous. Il n’est pas éditable depuis cet écran.",
+      saveButton: "Enregistrer",
+      saving: "Enregistrement…",
+      saved: "Enregistré.",
+      saveError: "Échec — réessayer.",
+      unsavedChanges: "Modifications non enregistrées.",
+      conflict:
+        "Ce contenu a été modifié ailleurs entre-temps. Rechargez la page avant de continuer.",
     },
   },
 };

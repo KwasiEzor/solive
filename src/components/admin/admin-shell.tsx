@@ -11,6 +11,8 @@ import {
   Menu,
   ScrollText,
   Settings,
+  ShieldCheck,
+  UserCircle,
   Users,
   X,
 } from "lucide-react";
@@ -20,111 +22,130 @@ import { usePathname } from "next/navigation";
 import { type ReactNode, useState } from "react";
 import { signOutAction } from "@/server/actions/auth";
 import { Mark } from "@/components/site/icons";
+import { AdminLangSwitch } from "./admin-lang-switch";
+import type { Dictionary } from "@/lib/i18n/dictionary";
+import type { SiteLocale } from "@/lib/i18n/locale";
+import { localizedPath } from "@/lib/i18n/urls";
 
 type Item = { href: string; label: string; icon: LucideIcon; match?: string };
 
-const GROUPS: { label: string; items: Item[] }[] = [
-  {
-    label: "Pilotage",
-    items: [
-      { href: "/admin", label: "Tableau de bord", icon: LayoutDashboard },
-      {
-        href: "/admin/statistiques",
-        label: "Statistiques",
-        icon: BarChart3,
-        match: "/admin/statistiques",
-      },
-    ],
-  },
-  {
-    label: "Contenu",
-    items: [
-      {
-        href: "/admin/contenu/hero",
-        label: "Sections",
-        icon: LayoutPanelTop,
-        match: "/admin/contenu",
-      },
-      {
-        href: "/admin/collections",
-        label: "Collections",
-        icon: Boxes,
-        match: "/admin/collections",
-      },
-    ],
-  },
-  {
-    label: "Relation client",
-    items: [
-      {
-        href: "/admin/demandes",
-        label: "Demandes",
-        icon: Inbox,
-        match: "/admin/demandes",
-      },
-      {
-        href: "/admin/devis",
-        label: "Devis",
-        icon: FileText,
-        match: "/admin/devis",
-      },
-    ],
-  },
-  {
-    label: "Système",
-    items: [
-      {
-        href: "/admin/parametres",
-        label: "Paramètres",
-        icon: Settings,
-        match: "/admin/parametres",
-      },
-      {
-        href: "/admin/utilisateurs",
-        label: "Utilisateurs",
-        icon: Users,
-        match: "/admin/utilisateurs",
-      },
-      {
-        href: "/admin/journal",
-        label: "Journal",
-        icon: ScrollText,
-        match: "/admin/journal",
-      },
-    ],
-  },
-];
-
-const ALL = GROUPS.flatMap((g) => g.items);
+function groupsFor(t: Dictionary["admin"]): { label: string; items: Item[] }[] {
+  return [
+    {
+      label: t.nav.groups.pilotage,
+      items: [
+        { href: "/admin", label: t.nav.items.dashboard, icon: LayoutDashboard },
+        {
+          href: "/admin/statistiques",
+          label: t.nav.items.statistiques,
+          icon: BarChart3,
+          match: "/admin/statistiques",
+        },
+      ],
+    },
+    {
+      label: t.nav.groups.contenu,
+      items: [
+        {
+          href: "/admin/contenu/hero",
+          label: t.nav.items.sections,
+          icon: LayoutPanelTop,
+          match: "/admin/contenu",
+        },
+        {
+          href: "/admin/collections",
+          label: t.nav.items.collections,
+          icon: Boxes,
+          match: "/admin/collections",
+        },
+        {
+          href: "/admin/legal",
+          label: t.nav.items.confidentialite,
+          icon: ShieldCheck,
+          match: "/admin/legal",
+        },
+      ],
+    },
+    {
+      label: t.nav.groups.relationClient,
+      items: [
+        {
+          href: "/admin/demandes",
+          label: t.nav.items.demandes,
+          icon: Inbox,
+          match: "/admin/demandes",
+        },
+        {
+          href: "/admin/devis",
+          label: t.nav.items.devis,
+          icon: FileText,
+          match: "/admin/devis",
+        },
+      ],
+    },
+    {
+      label: t.nav.groups.systeme,
+      items: [
+        {
+          href: "/admin/parametres",
+          label: t.nav.items.parametres,
+          icon: Settings,
+          match: "/admin/parametres",
+        },
+        {
+          href: "/admin/utilisateurs",
+          label: t.nav.items.utilisateurs,
+          icon: Users,
+          match: "/admin/utilisateurs",
+        },
+        {
+          href: "/admin/journal",
+          label: t.nav.items.journal,
+          icon: ScrollText,
+          match: "/admin/journal",
+        },
+        {
+          href: "/admin/profil",
+          label: t.nav.items.profil,
+          icon: UserCircle,
+          match: "/admin/profil",
+        },
+      ],
+    },
+  ];
+}
 
 function isActive(pathname: string, it: Item) {
   return it.match ? pathname.startsWith(it.match) : pathname === it.href;
 }
 
-function titleFor(pathname: string) {
-  const hit = ALL.find((it) => isActive(pathname, it));
-  return hit?.label ?? "Administration";
-}
-
 export function AdminShell({
   email,
   role,
+  locale,
+  t,
   children,
 }: {
   email: string;
   role: string;
+  locale: SiteLocale;
+  t: Dictionary["admin"];
   children: ReactNode;
 }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const initials = email.slice(0, 2).toUpperCase();
+  const GROUPS = groupsFor(t);
+  const ALL = GROUPS.flatMap((g) => g.items);
+  const title = ALL.find((it) => isActive(pathname, it))?.label ?? t.topbar.defaultTitle;
+  const roleLabel = role === "owner" ? t.account.roleOwner : t.account.roleEditor;
 
   return (
     <div className="admin min-h-screen bg-[var(--bg)] text-[var(--fg)]">
       {open && (
         <button
           type="button"
-          aria-label="Fermer le menu"
+          aria-label={t.topbar.closeMenu}
           onClick={() => setOpen(false)}
           className="fixed inset-0 z-30 bg-black/50 lg:hidden"
         />
@@ -142,13 +163,13 @@ export function AdminShell({
           </span>
           <span className="font-extrabold tracking-tight">Solive</span>
           <span className="ml-1 rounded bg-[var(--bg3)] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[var(--dim)]">
-            Admin
+            {t.brandBadge}
           </span>
         </div>
 
         <nav
           className="flex-1 overflow-y-auto px-3 py-4"
-          aria-label="Navigation admin"
+          aria-label={t.nav.aria}
         >
           {GROUPS.map((g) => (
             <div key={g.label} className="mb-5">
@@ -194,7 +215,7 @@ export function AdminShell({
             <span className="min-w-0">
               <span className="block truncate text-xs font-medium">{email}</span>
               <span className="block font-mono text-[10px] uppercase tracking-wider text-[var(--dim)]">
-                {role}
+                {roleLabel}
               </span>
             </span>
           </div>
@@ -203,7 +224,7 @@ export function AdminShell({
               type="submit"
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm text-[var(--dim)] transition-colors hover:bg-[var(--bg3)] hover:text-[var(--fg)]"
             >
-              <LogOut size={16} /> Déconnexion
+              <LogOut size={16} /> {t.account.signOut}
             </button>
           </form>
         </div>
@@ -213,21 +234,27 @@ export function AdminShell({
         <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-[var(--line)] bg-[color-mix(in_srgb,var(--bg)_82%,transparent)] px-4 backdrop-blur lg:px-8">
           <button
             type="button"
-            aria-label="Ouvrir le menu"
+            aria-label={t.topbar.openMenu}
             onClick={() => setOpen(true)}
             className="rounded-lg p-1.5 hover:bg-[var(--bg3)] lg:hidden"
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
-          <h1 className="text-sm font-semibold">{titleFor(pathname)}</h1>
-          <Link
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-auto flex items-center gap-1.5 rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-xs text-[var(--dim)] transition-colors hover:border-acc hover:text-[var(--fg)]"
-          >
-            Voir le site <ExternalLink size={13} />
-          </Link>
+          <h1 className="text-sm font-semibold">{title}</h1>
+          <div className="ml-auto flex items-center gap-2">
+            <AdminLangSwitch
+              locale={locale}
+              className="rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-xs font-semibold text-[var(--dim)] transition-colors hover:border-acc hover:text-[var(--fg)]"
+            />
+            <Link
+              href={localizedPath("/", locale)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-lg border border-[var(--line)] px-2.5 py-1.5 text-xs text-[var(--dim)] transition-colors hover:border-acc hover:text-[var(--fg)]"
+            >
+              {t.topbar.viewSite} <ExternalLink size={13} />
+            </Link>
+          </div>
         </header>
 
         <main className="flex-1 p-5 lg:p-8">{children}</main>

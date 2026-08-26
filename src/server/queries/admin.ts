@@ -8,6 +8,7 @@ import {
   invitations,
   leadEvents,
   leads,
+  legalPages,
   quoteItems,
   quotes,
   sections,
@@ -16,6 +17,32 @@ import {
 export async function getAdminUsers() {
   const db = getDb();
   return db.select().from(adminUsers).orderBy(desc(adminUsers.createdAt));
+}
+
+export async function getAdminProfile(userId: string) {
+  const db = getDb();
+  const rows = await db
+    .select({
+      email: adminUsers.email,
+      fullName: adminUsers.fullName,
+      role: adminUsers.role,
+      mfaEnrolledAt: adminUsers.mfaEnrolledAt,
+      lastSeenAt: adminUsers.lastSeenAt,
+    })
+    .from(adminUsers)
+    .where(eq(adminUsers.id, userId))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getLegalPageForEdit(slug: string, locale: "fr" | "nl" | "en") {
+  const db = getDb();
+  const rows = await db
+    .select()
+    .from(legalPages)
+    .where(and(eq(legalPages.slug, slug), eq(legalPages.locale, locale)))
+    .limit(1);
+  return rows[0] ?? null;
 }
 
 export async function getPendingInvitations() {

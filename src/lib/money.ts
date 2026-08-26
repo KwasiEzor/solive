@@ -3,8 +3,12 @@ const eur = new Intl.NumberFormat("fr-BE", {
   currency: "EUR",
 });
 
+// fr-BE groups thousands with a narrow no-break space (U+202F) — outside the
+// WinAnsi encoding standard PDF fonts use, so react-pdf/pdfkit renders it as
+// a stray "/" instead of a space. Normalize every non-breaking/narrow space
+// variant to a plain space: safe everywhere, not just PDF output.
 export function formatCentsEUR(cents: number): string {
-  return eur.format(cents / 100);
+  return eur.format(cents / 100).replace(/[  ]/g, " ");
 }
 
 /** Round-half-up to the nearest cent (money must never carry float drift). */

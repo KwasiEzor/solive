@@ -86,4 +86,12 @@ describe("formatCentsEUR", () => {
     expect(formatted).toContain("331,00");
     expect(formatted).toContain("€");
   });
+
+  it("uses only plain spaces — no narrow/non-breaking spaces standard PDF fonts can't encode", () => {
+    // fr-BE groups thousands with U+202F by default; pdfkit's WinAnsi
+    // encoding doesn't have it and renders it as a stray "/" (SLV regression).
+    const formatted = formatCentsEUR(229000);
+    expect(formatted).toBe("2 290,00 €");
+    expect(formatted).not.toMatch(/[  ]/);
+  });
 });

@@ -44,6 +44,10 @@ test.describe("offline / PWA (SLV-080-088)", () => {
     await page.goto("/contact");
     await swActive(page);
 
+    // Booking (Cal.com iframe) is now the default tab — switch to the
+    // message form, which is what this test actually exercises.
+    await page.getByRole("tab", { name: "Écrire un message" }).click();
+
     const email = `offline-${Date.now()}@solive.test`;
     await context.setOffline(true);
     await page.getByLabel("Votre nom").fill("Offline Test");

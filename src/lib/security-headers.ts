@@ -2,6 +2,12 @@
  * Security headers (SLV-051). CSP uses a per-request nonce — no 'unsafe-inline'.
  * HSTS with preload, nosniff, strict referrer policy, minimal permissions
  * policy, X-Frame-Options DENY.
+ *
+ * cal.com in frame-src: the /contact booking tab embeds a plain <iframe> to
+ * the public Cal.com booking page (src/lib/cal.ts) — deliberately not
+ * @calcom/embed-react or their loader script, which would need a script-src
+ * addition and weaken the nonce/'strict-dynamic' trust model for no real UX
+ * gain here.
  */
 
 export function generateNonce(): string {
@@ -34,7 +40,7 @@ export function contentSecurityPolicy(nonce: string, isDev = false): string {
     // — no wildcard on this policy, error/perf events are silently blocked
     // until it's listed explicitly.
     "connect-src": ["'self'", "https://*.supabase.co", "https://api.pwnedpasswords.com"],
-    "frame-src": ["https://challenges.cloudflare.com"],
+    "frame-src": ["https://challenges.cloudflare.com", "https://cal.com"],
     "frame-ancestors": ["'none'"],
     "form-action": ["'self'"],
     "object-src": ["'none'"],

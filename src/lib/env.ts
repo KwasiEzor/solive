@@ -40,6 +40,11 @@ export const serverEnvSchema = z.object({
   KV_REST_API_TOKEN: z.string().min(1).optional(),
   // Phase 9 (observability): Sentry
   NEXT_PUBLIC_SENTRY_DSN: z.string().min(1).optional(),
+  // Booking (Cal.com). The public booking URL itself lives in src/lib/cal.ts
+  // (not a secret) — this key is reserved for a future server-side use
+  // (e.g. a webhook syncing completed bookings into `leads`), unused by the
+  // plain iframe embed itself.
+  CAL_API_KEY: z.string().min(1).optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

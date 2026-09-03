@@ -1732,6 +1732,33 @@ a.float-cta:hover {
 .contact {
   border-top: 1px solid var(--line2);
 }
+.contact-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.cal-embed-wrap {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--bg2);
+}
+.cal-embed-wrap iframe {
+  display: block;
+  width: 100%;
+  height: 700px;
+  border: 0;
+}
+.cal-embed-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--dim);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+}
 .form {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,6 @@
 "use client";
 import { type FormEvent, useEffect, useRef, useState } from "react";
+import { CAL_BOOKING_URL } from "@/lib/cal";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { flushContactQueue } from "@/lib/offline/flush";
 import { submitContact } from "@/lib/offline/submit";
@@ -34,6 +35,7 @@ export function Contact({
   locale: Locale;
 }) {
   const t = getDictionary(locale).contact;
+  const [tab, setTab] = useState<"book" | "message">("book");
   const [sel, setSel] = useState<string[]>([]);
   const [f, setF] = useState({ nom: "", email: "", societe: "", msg: "" });
   const [website, setWebsite] = useState(""); // honeypot
@@ -141,7 +143,37 @@ export function Contact({
             titre={head?.heading ?? getDictionary(locale).pageHeaders.contact.title}
           />
         )}
-        {sent || queued ? (
+        <div className="contact-tabs" role="tablist">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "book"}
+            className={"plan-tab" + (tab === "book" ? " on" : "")}
+            onClick={() => setTab("book")}
+          >
+            {t.booking.tabBook}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={tab === "message"}
+            className={"plan-tab" + (tab === "message" ? " on" : "")}
+            onClick={() => setTab("message")}
+          >
+            {t.booking.tabMessage}
+          </button>
+        </div>
+
+        {tab === "book" ? (
+          <div className="cal-embed-wrap">
+            <span className="cal-embed-loading">{t.booking.loading}</span>
+            <iframe
+              src={`${CAL_BOOKING_URL}?lang=${locale}`}
+              title={t.booking.ariaLabel}
+              loading="lazy"
+            />
+          </div>
+        ) : sent || queued ? (
           <div className="sent">
             <p className="mono tiny dim">{queued ? t.sent.queuedBadge : t.sent.sentBadge}</p>
             <h3>

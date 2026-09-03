@@ -377,6 +377,12 @@ export const fr = {
       "Application mobile": "Application mobile",
       "Je ne sais pas encore": "Je ne sais pas encore",
     } as Record<string, string>,
+    booking: {
+      tabBook: "Réserver un créneau",
+      tabMessage: "Écrire un message",
+      loading: "Chargement du calendrier…",
+      ariaLabel: "Réserver un appel de 20 minutes",
+    },
   },
   pageHeaders: {
     services: {

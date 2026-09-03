@@ -1,6 +1,6 @@
 "use server";
 import { eq } from "drizzle-orm";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { hashIp } from "@/lib/hash";
 import { clientIpFromHeaders } from "@/lib/request-ip";
@@ -36,7 +36,9 @@ export async function updatePaletteAction(formData: FormData): Promise<void> {
       env.IP_HASH_SALT ?? "dev-insecure-salt",
     ),
   });
-  revalidateTag("content:settings", "max");
+  // updateTag (not revalidateTag): the admin must see their own change
+  // immediately, not after a stale-while-revalidate window.
+  updateTag("content:settings");
   revalidatePath("/admin/parametres");
 }
 
@@ -65,7 +67,9 @@ export async function updateVisibilityAction(formData: FormData): Promise<void> 
       env.IP_HASH_SALT ?? "dev-insecure-salt",
     ),
   });
-  revalidateTag("content:settings", "max");
+  // updateTag (not revalidateTag): the admin must see their own change
+  // immediately, not after a stale-while-revalidate window.
+  updateTag("content:settings");
   revalidatePath("/admin/parametres");
 }
 
@@ -107,6 +111,8 @@ export async function updateCompanyInfoAction(formData: FormData): Promise<void>
       env.IP_HASH_SALT ?? "dev-insecure-salt",
     ),
   });
-  revalidateTag("content:settings", "max");
+  // updateTag (not revalidateTag): the admin must see their own change
+  // immediately, not after a stale-while-revalidate window.
+  updateTag("content:settings");
   revalidatePath("/admin/parametres");
 }

@@ -5,7 +5,9 @@ import { NextResponse } from "next/server";
 // that bypassed the normal admin Server Actions (which call revalidateTag
 // themselves on every mutation). Same Bearer-auth pattern as the retention
 // cron — not a public route, not wired to any Vercel Cron schedule.
-export const dynamic = "force-dynamic";
+// No route segment config needed under Cache Components (cacheComponents:
+// true, next.config.ts) — every route is dynamic by default, and this
+// config now errors at build time if left in place.
 
 const KNOWN_TAGS = new Set([
   "content:settings",

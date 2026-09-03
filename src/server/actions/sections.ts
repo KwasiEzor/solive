@@ -1,7 +1,7 @@
 "use server";
 import { and, eq, sql } from "drizzle-orm";
 import { headers } from "next/headers";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { hashIp } from "@/lib/hash";
 import { clientIpFromHeaders } from "@/lib/request-ip";
 import { err, ok, type Result } from "@/lib/result";
@@ -132,7 +132,11 @@ async function setStatus(
     diff: { status },
   });
   // Publishing/unpublishing changes public output → targeted invalidation only.
-  revalidateTag("content:sections", "max");
+  // updateTag (not revalidateTag): the admin must see the new status
+  // immediately, not after a stale-while-revalidate window (SLV, Cache
+  // Components migration — revalidateTag's 2nd arg is for background SWR,
+  // wrong fit for "I just published this, show it").
+  updateTag("content:sections");
   return ok({ updatedAt: updated!.updatedAt.toISOString() });
 }
 

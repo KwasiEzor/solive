@@ -1,6 +1,6 @@
 "use server";
 import { and, asc, desc, eq, gt, isNull, lt, sql } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { headers } from "next/headers";
 import { env } from "@/lib/env";
 import { hashIp } from "@/lib/hash";
@@ -138,7 +138,7 @@ export async function updateItem(
     entityId: id,
     ipHash: await ipHash(),
   });
-  if (current.status === "published") revalidateTag(cfg.contentTag, "max");
+  if (current.status === "published") updateTag(cfg.contentTag);
   return ok({ updatedAt: newUpdatedAt });
 }
 
@@ -164,7 +164,9 @@ export async function deleteItem(
     entityId: id,
     ipHash: await ipHash(),
   });
-  revalidateTag(cfg.contentTag, "max");
+  // updateTag (not revalidateTag): the admin must see their own change
+  // immediately, not after a stale-while-revalidate window.
+  updateTag(cfg.contentTag);
   return ok(null);
 }
 
@@ -194,7 +196,9 @@ export async function togglePublishItem(
     entityId: id,
     ipHash: await ipHash(),
   });
-  revalidateTag(cfg.contentTag, "max");
+  // updateTag (not revalidateTag): the admin must see their own change
+  // immediately, not after a stale-while-revalidate window.
+  updateTag(cfg.contentTag);
   return ok(null);
 }
 
@@ -251,6 +255,8 @@ export async function reorderItem(
     entityId: id,
     ipHash: await ipHash(),
   });
-  revalidateTag(cfg.contentTag, "max");
+  // updateTag (not revalidateTag): the admin must see their own change
+  // immediately, not after a stale-while-revalidate window.
+  updateTag(cfg.contentTag);
   return ok(null);
 }

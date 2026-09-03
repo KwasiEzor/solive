@@ -1,7 +1,7 @@
 "use server";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { hashIp } from "@/lib/hash";
 import { clientIpFromHeaders } from "@/lib/request-ip";
 import { err, ok, type Result } from "@/lib/result";
@@ -55,6 +55,12 @@ export async function saveLegalPageAction(
     diff: { slug: current.slug, locale: current.locale },
   });
 
+  // getLegalPage() (src/server/queries/content.ts) is a separately-tagged
+  // "use cache" function — revalidatePath alone doesn't bust it (pre-existing
+  // gap, predates the Cache Components migration: it wouldn't have busted
+  // the old unstable_cache entry either). updateTag is the one that matters
+  // here; revalidatePath still forces the route itself to re-render.
+  updateTag("content:legal_pages");
   revalidatePath("/confidentialite");
   revalidatePath("/en/confidentialite");
   return ok({ updatedAt: updated!.updatedAt.toISOString() });

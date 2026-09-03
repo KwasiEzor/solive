@@ -5,7 +5,18 @@ import type { NextConfig } from "next";
 import "./src/lib/env";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Cache Components (Next 16): "use cache"/cacheLife/cacheTag replace
+  // unstable_cache in src/server/queries/content.ts. Does NOT make this app's
+  // pages statically shell-able — the root layout's per-request CSP nonce
+  // (headers(), SLV-051) sits above every route and can't be wrapped in
+  // <Suspense> (it drives <html lang>, per Next's own guidance on this exact
+  // pattern), so every page stays fully dynamic by deliberate design. The
+  // instant-navigation validation this flag enables is dev-only (warning
+  // level, doesn't affect `next build`) — the dev overlay will flag this
+  // app's routes as non-instant, which is expected: pursuing a static shell
+  // here would mean dropping the per-request nonce CSP model, a separate,
+  // bigger decision this repo isn't making right now.
+  cacheComponents: true,
 };
 
 // PWA / offline (SLV-080-088). SW disabled in dev to avoid caching churn.

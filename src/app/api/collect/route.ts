@@ -7,7 +7,9 @@ import { getDb } from "@/server/db";
 import { checkCollectRateLimit } from "@/server/services/rate-limit";
 import { pageViews } from "../../../../drizzle/schema";
 
-export const dynamic = "force-dynamic";
+// No route segment config needed under Cache Components (cacheComponents:
+// true, next.config.ts) — every route is dynamic by default, and this
+// config now errors at build time if left in place.
 
 const schema = z.object({
   path: z.string().min(1).max(512),

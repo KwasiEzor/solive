@@ -10,7 +10,9 @@ import {
 // Data-retention job (SLV-124): anonymise old leads and prune technical logs,
 // enforcing storage limitation (art. 5.1.e RGPD). Triggered by Vercel Cron;
 // authenticated by CRON_SECRET (Vercel sends it as a Bearer token).
-export const dynamic = "force-dynamic";
+// No route segment config needed under Cache Components (cacheComponents:
+// true, next.config.ts) — every route is dynamic by default, and this
+// config now errors at build time if left in place.
 
 const DAY = 86_400_000;
 const ANON_EMAIL = "anonymise@solive.pro";

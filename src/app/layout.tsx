@@ -29,6 +29,14 @@ const mono = IBM_Plex_Mono({
   display: "swap",
 });
 
+// Cache Components (next.config.ts): every route sits under this layout's
+// unconditional headers() call below (the CSP nonce, SLV-051), which can't
+// be pushed into a <Suspense> boundary — it drives <html lang>, and this is
+// already the outermost boundary. No route in this app can ever produce a
+// static shell; `instant = false` here disables that build-time check
+// app-wide instead of leaving every route to fail it individually.
+export const instant = false;
+
 // /admin, /api, /connexion etc. never get the /en rewrite (proxy.ts only
 // matches literal /en paths), so this stays French for them — intentional,
 // matches the locked i18n scope (public site only).

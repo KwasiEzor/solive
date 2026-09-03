@@ -11,6 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_SITE_URL: https://solive.be
+      # E2E boots a real `next start` (via Playwright's webServer) that hits
+      # the actual Supabase project used locally — same one, not a separate
+      # CI-only project (decision: simplicity over isolation for now). Set
+      # these as repo secrets (Settings → Secrets and variables → Actions,
+      # or `gh secret set <NAME>`); values match .env.local.
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      IP_HASH_SALT: ${{ secrets.IP_HASH_SALT }}
     steps:
       - uses: actions/checkout@v4
 

@@ -29,6 +29,10 @@ export function contentSecurityPolicy(nonce: string, isDev = false): string {
     "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:", "https://res.cloudinary.com"],
     "font-src": ["'self'"],
+    // TODO(Sentry): once NEXT_PUBLIC_SENTRY_DSN is set for real, add this
+    // Sentry project's ingest origin here (e.g. https://o<org>.ingest.<region>.sentry.io)
+    // — no wildcard on this policy, error/perf events are silently blocked
+    // until it's listed explicitly.
     "connect-src": ["'self'", "https://*.supabase.co", "https://api.pwnedpasswords.com"],
     "frame-src": ["https://challenges.cloudflare.com"],
     "frame-ancestors": ["'none'"],

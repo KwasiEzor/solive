@@ -60,6 +60,13 @@ export default defineConfig({
         // OG image generation (satori/edge image response) — visual output,
         // no meaningful assertion in a unit test.
         "src/lib/og.tsx",
+        // Agent IA de qualification: DB reads/writes, email sends, audit
+        // logging, and model/tool wiring — same shape as
+        // leads-intake.ts/server/actions/** above (real I/O, no pure logic
+        // to isolate). Exercised manually via the Browser pane, not e2e (a
+        // deterministic test on live LLM output would be fragile).
+        "src/lib/agents/**",
+        "src/lib/tools/**",
       ],
       thresholds: {
         lines: 80,

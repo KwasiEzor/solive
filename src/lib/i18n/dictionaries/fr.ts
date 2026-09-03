@@ -329,6 +329,24 @@ export const fr = {
       cta: "Découvrir l’offre IA",
     },
   },
+  agentChat: {
+    launcherLabel: "Discuter avec l’assistant Solive",
+    panelTitle: "Assistant Solive",
+    consentTitle: "Activer l’assistant IA",
+    consentBody:
+      "Vos messages sont traités par un modèle de langage pour comprendre votre projet et, si vous le souhaitez, enregistrer votre demande. Révocable à tout moment — voir la",
+    consentPrivacyLink: "politique de confidentialité",
+    consentAccept: "Activer l’assistant",
+    consentDecline: "Pas maintenant",
+    placeholder: "Décrivez votre projet…",
+    send: "Envoyer",
+    thinking: "L’assistant réfléchit…",
+    leadCreatedTitle: "Demande enregistrée",
+    leadCreatedBody: "Réponse sous 24 h ouvrées.",
+    errorGeneric: "Une erreur est survenue. Réessayez, ou écrivez-nous directement.",
+    rateLimited: "Trop de messages. Réessayez dans quelques minutes.",
+    close: "Fermer",
+  },
   contact: {
     labels: {
       name: "Votre nom",

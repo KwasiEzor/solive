@@ -45,6 +45,10 @@ export const serverEnvSchema = z.object({
   // (e.g. a webhook syncing completed bookings into `leads`), unused by the
   // plain iframe embed itself.
   CAL_API_KEY: z.string().min(1).optional(),
+  // Agent IA de qualification (site public). Optionnelle : sur un
+  // déploiement Vercel réel, l'AI Gateway s'authentifie via OIDC sans clé —
+  // nécessaire seulement en local.
+  AI_GATEWAY_API_KEY: z.string().min(1).optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

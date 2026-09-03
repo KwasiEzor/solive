@@ -92,3 +92,58 @@ export async function checkCollectRateLimit(
   const r = await l.limit(identifier);
   return r.success;
 }
+
+/**
+ * AI qualification chat (SLV, agent). More generous than the contact form —
+ * a real conversation sends several messages — but bounded against
+ * abuse/cost blowout. Same fail-open behavior when Upstash isn't configured.
+ */
+let agentChatLimiters: { window: Ratelimit; daily: Ratelimit } | null | undefined;
+
+function getAgentChatLimiters() {
+  if (agentChatLimiters !== undefined) return agentChatLimiters;
+  if (!env.KV_REST_API_URL || !env.KV_REST_API_TOKEN) {
+    agentChatLimiters = null;
+    return null;
+  }
+  const redis = new Redis({
+    url: env.KV_REST_API_URL,
+    token: env.KV_REST_API_TOKEN,
+  });
+  agentChatLimiters = {
+    window: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(20, "10 m"),
+      prefix: "agent-chat:w",
+    }),
+    daily: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(80, "1 d"),
+      prefix: "agent-chat:d",
+    }),
+  };
+  return agentChatLimiters;
+}
+
+export async function checkAgentChatRateLimit(
+  identifier: string,
+): Promise<RateDecision> {
+  const l = getAgentChatLimiters();
+  if (!l) return { allowed: true };
+
+  const [window, day] = await Promise.all([
+    l.window.limit(identifier),
+    l.daily.limit(identifier),
+  ]);
+
+  if (window.success && day.success) return { allowed: true };
+
+  const reset = Math.max(
+    window.success ? 0 : window.reset,
+    day.success ? 0 : day.reset,
+  );
+  return {
+    allowed: false,
+    retryAfterSec: Math.max(0, Math.ceil((reset - Date.now()) / 1000)),
+  };
+}

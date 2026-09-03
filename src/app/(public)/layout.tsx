@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import type { ReactNode } from "react";
+import { AgentChat } from "@/components/site/agent-chat";
 import { AnalyticsBeacon } from "@/components/site/analytics-beacon";
 import { ConsentBanner } from "@/components/site/consent-banner";
 import { FloatCta } from "@/components/site/float-cta";
@@ -49,6 +50,7 @@ export default async function PublicLayout({
       )}
       <ConsentBanner locale={locale} />
       <AnalyticsBeacon />
+      <AgentChat locale={locale} />
     </div>
   );
 }

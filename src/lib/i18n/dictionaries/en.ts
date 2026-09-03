@@ -324,6 +324,24 @@ export const en = {
       cta: "Discover the AI offering",
     },
   },
+  agentChat: {
+    launcherLabel: "Chat with the Solive assistant",
+    panelTitle: "Solive Assistant",
+    consentTitle: "Enable the AI assistant",
+    consentBody:
+      "Your messages are processed by a language model to understand your project and, if you'd like, save your request. Revocable at any time — see the",
+    consentPrivacyLink: "privacy policy",
+    consentAccept: "Enable assistant",
+    consentDecline: "Not now",
+    placeholder: "Describe your project…",
+    send: "Send",
+    thinking: "The assistant is thinking…",
+    leadCreatedTitle: "Request saved",
+    leadCreatedBody: "Reply within 24 business hours.",
+    errorGeneric: "Something went wrong. Try again, or write to us directly.",
+    rateLimited: "Too many messages. Try again in a few minutes.",
+    close: "Close",
+  },
   contact: {
     labels: {
       name: "Your name",

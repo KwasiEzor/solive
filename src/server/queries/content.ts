@@ -14,7 +14,7 @@ import {
   testimonials,
 } from "../../../drizzle/schema";
 
-export type Locale = "fr" | "nl" | "en";
+export type Locale = "fr" | "en";
 
 /**
  * Public content reads (SLV-092). Cached with unstable_cache, tagged per entity

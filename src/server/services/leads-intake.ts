@@ -11,7 +11,7 @@ export interface LeadIntakeInput {
   projectTypes: string[];
   message: string;
   budgetRange?: string | null;
-  locale: "fr" | "nl" | "en";
+  locale: "fr" | "en";
   source: "web" | "offline_sync";
   ipHash: string | null;
   userAgent: string | null;

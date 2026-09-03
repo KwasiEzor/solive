@@ -8,7 +8,6 @@ import type { EmailMessage } from "./types";
 
 const ACK_SUBJECT: Record<AckLocale, string> = {
   fr: "Votre demande chez Solive",
-  nl: "Uw aanvraag bij Solive",
   en: "Your request to Solive",
 };
 

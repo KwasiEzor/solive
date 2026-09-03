@@ -35,7 +35,7 @@ export async function getAdminProfile(userId: string) {
   return rows[0] ?? null;
 }
 
-export async function getLegalPageForEdit(slug: string, locale: "fr" | "nl" | "en") {
+export async function getLegalPageForEdit(slug: string, locale: "fr" | "en") {
   const db = getDb();
   const rows = await db
     .select()
@@ -131,7 +131,7 @@ export async function getAuditLog(limit = 100) {
 /** Section for editing — any status, always fresh (no cache). */
 export async function getSectionForEdit(
   key: string,
-  locale: "fr" | "nl" | "en" = "fr",
+  locale: "fr" | "en" = "fr",
 ) {
   const db = getDb();
   const rows = await db

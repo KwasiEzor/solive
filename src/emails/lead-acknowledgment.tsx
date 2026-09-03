@@ -9,7 +9,7 @@ import {
   Text,
 } from "@react-email/components";
 
-export type AckLocale = "fr" | "nl" | "en";
+export type AckLocale = "fr" | "en";
 
 export interface LeadAcknowledgmentProps {
   firstName: string;
@@ -25,12 +25,6 @@ const COPY: Record<
     heading: (n) => `Merci ${n}.`,
     body: "Votre demande est bien arrivée. Je reviens vers vous sous 24 h ouvrées avec deux ou trois questions et une proposition de créneau.",
     sign: "Solive — studio de développement, Charleroi",
-  },
-  nl: {
-    preview: "We hebben uw aanvraag goed ontvangen",
-    heading: (n) => `Bedankt ${n}.`,
-    body: "Uw aanvraag is goed aangekomen. Ik neem binnen 24 werkuren contact met u op met enkele vragen en een voorstel voor een afspraak.",
-    sign: "Solive — ontwikkelingsstudio, Charleroi",
   },
   en: {
     preview: "We’ve received your request",

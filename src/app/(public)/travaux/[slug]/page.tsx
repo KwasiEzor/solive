@@ -50,7 +50,7 @@ function bodyParagraphs(body: unknown): string[] {
  * Not every project necessarily has an English case study yet — fall back to
  * the French row rather than 404ing an otherwise-real, published project.
  */
-async function loadProject(slug: string, locale: "fr" | "nl" | "en") {
+async function loadProject(slug: string, locale: "fr" | "en") {
   const project = await getProjectBySlug(slug, locale);
   if (project) return project;
   if (locale === "fr") return null;

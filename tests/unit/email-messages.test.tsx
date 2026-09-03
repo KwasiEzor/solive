@@ -42,12 +42,5 @@ describe("email messages (SLV-130/131/133)", () => {
     });
     expect(en.subject).toBe("Your request to Solive");
     expect(en.html).toContain("Thank you, Sam");
-
-    const nl = await buildLeadAcknowledgment({
-      email: "c@x.be",
-      name: "Jan",
-      locale: "nl",
-    });
-    expect(nl.html).toContain("Bedankt Jan");
   });
 });

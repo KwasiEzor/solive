@@ -27,7 +27,7 @@ export const contactSchema = z.object({
     .min(10, "Décrivez le projet en une phrase ou deux.")
     .max(5000),
   budgetRange: z.string().max(60).optional(),
-  locale: z.enum(["fr", "nl", "en"]).default("fr"),
+  locale: z.enum(["fr", "en"]).default("fr"),
   // Client-generated UUID for idempotent offline replays (SLV-084).
   clientId: z.string().uuid("Identifiant client invalide."),
   clientSubmittedAt: z.string().datetime().optional(),

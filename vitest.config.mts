@@ -44,6 +44,22 @@ export default defineConfig({
         "src/server/services/email/index.ts",
         "src/app/api/**",
         "**/*.types.ts",
+        // Thin wrappers around Next's request context (headers()/cookies()) —
+        // no meaningful logic to unit test in isolation ("node" env, no
+        // request). Behavior is exercised end-to-end by tests/e2e/i18n.spec.ts.
+        "src/lib/i18n/locale.ts",
+        "src/lib/i18n/admin-locale.ts",
+        "src/lib/i18n/dictionary.ts",
+        "src/lib/i18n/urls.ts",
+        // Pure content data (strings + trivial template functions), not logic
+        // under test — real content is asserted by tests/e2e/*.spec.ts.
+        "src/lib/i18n/dictionaries/**",
+        // localStorage-backed client helper — needs a real browser (jsdom
+        // would only fake it); behavior covered by tests/e2e/consent.spec.ts.
+        "src/lib/consent.ts",
+        // OG image generation (satori/edge image response) — visual output,
+        // no meaningful assertion in a unit test.
+        "src/lib/og.tsx",
       ],
       thresholds: {
         lines: 80,

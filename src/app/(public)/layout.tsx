@@ -13,7 +13,7 @@ import { SwUpdatePrompt } from "@/components/site/sw-update";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { getRequestLocale } from "@/lib/i18n/locale";
 import { isPalette, PALETTE_COOKIE } from "@/lib/palette";
-import { getSiteSettings } from "@/server/queries/content";
+import { getAgentEnabled, getSiteSettings } from "@/server/queries/content";
 import "@/styles/site.css";
 
 export default async function PublicLayout({
@@ -21,10 +21,11 @@ export default async function PublicLayout({
 }: {
   children: ReactNode;
 }) {
-  const [settings, locale, cookieStore] = await Promise.all([
+  const [settings, locale, cookieStore, agentEnabled] = await Promise.all([
     getSiteSettings(),
     getRequestLocale(),
     cookies(),
+    getAgentEnabled(),
   ]);
   // Per-visitor cookie overrides the admin-set default (SLV palette switcher).
   const cookiePalette = cookieStore.get(PALETTE_COOKIE)?.value;
@@ -50,7 +51,7 @@ export default async function PublicLayout({
       )}
       <ConsentBanner locale={locale} />
       <AnalyticsBeacon />
-      <AgentChat locale={locale} />
+      {agentEnabled && <AgentChat locale={locale} />}
     </div>
   );
 }

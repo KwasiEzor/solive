@@ -53,6 +53,12 @@ export const serverEnvSchema = z.object({
   // compte personnel plutôt qu'à un espace de travail) — l'API Anthropic
   // exige alors l'ID de l'espace de travail sur chaque requête.
   ANTHROPIC_WORKSPACE_ID: z.string().min(1).optional(),
+  // Clé de chiffrement au repos (AES-256-GCM) pour les identifiants tiers
+  // configurables depuis /admin/agent-ia (clé Anthropic, workspace id) —
+  // seule exception documentée à "secrets live only in env vars" ci-dessus,
+  // car ce sont des identifiants produit éditables sans redeploy, pas un
+  // secret d'infra. Générée une fois via `openssl rand -base64 32`.
+  SETTINGS_ENCRYPTION_KEY: z.string().min(32).optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

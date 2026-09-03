@@ -5,6 +5,7 @@ import { clientIpFromHeaders } from "@/lib/request-ip";
 import { env } from "@/lib/env";
 import { createQualificationAgent } from "@/lib/agents/qualification-agent";
 import { getRequestLocale } from "@/lib/i18n/locale";
+import { getAgentEnabled } from "@/server/queries/content";
 import { checkAgentChatRateLimit } from "@/server/services/rate-limit";
 
 /**
@@ -23,6 +24,12 @@ export async function POST(request: NextRequest) {
       { error: "rate_limited", retryAfterSec: rate.retryAfterSec },
       { status: 429 },
     );
+  }
+
+  // Defense in depth: the launcher is already hidden client-side when
+  // disabled (src/app/(public)/layout.tsx) — this blocks direct calls too.
+  if (!(await getAgentEnabled())) {
+    return NextResponse.json({ error: "agent_disabled" }, { status: 404 });
   }
 
   const { messages } = await request.json();

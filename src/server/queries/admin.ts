@@ -3,6 +3,7 @@ import { and, count, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/server/db";
 import {
   adminUsers,
+  agentSettings,
   auditLog,
   contentRevisions,
   invitations,
@@ -288,3 +289,25 @@ export const EDITABLE_SECTIONS = [
   ["faq", "FAQ"],
   ["contact", "Contact"],
 ] as const;
+
+/**
+ * Masked read for /admin/agent-ia — never decrypts (src/server/services/
+ * agent-settings.ts owns that, only for the chat route). *_last4 are the
+ * only credential-derived fields exposed to the admin UI.
+ */
+export async function getAgentSettingsForAdmin() {
+  const db = getDb();
+  const [row] = await db.select().from(agentSettings).limit(1);
+  if (!row) return null;
+  return {
+    enabled: row.enabled,
+    model: row.model,
+    instructionsFr: row.instructionsFr,
+    instructionsEn: row.instructionsEn,
+    hasApiKey: Boolean(row.anthropicApiKeyEnc),
+    apiKeyLast4: row.anthropicApiKeyLast4,
+    hasWorkspaceId: Boolean(row.anthropicWorkspaceIdEnc),
+    workspaceIdLast4: row.anthropicWorkspaceIdLast4,
+    updatedAt: row.updatedAt,
+  };
+}

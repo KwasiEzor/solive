@@ -208,6 +208,25 @@ export const siteSettings = pgTable("site_settings", {
   ...timestamps,
 });
 
+// Agent IA de qualification — config editable from /admin/agent-ia without a
+// redeploy. Singleton row, same shape/convention as site_settings above.
+// anthropic*Enc columns hold AES-256-GCM blobs (src/server/services/secrets.ts),
+// never plaintext; *_last4 are plaintext solely for admin display ("does this
+// look like the right key"), never enough to reconstruct the secret.
+export const agentSettings = pgTable("agent_settings", {
+  ...pk,
+  enabled: boolean("enabled").notNull().default(true),
+  model: text("model").notNull().default("claude-haiku-4-5"),
+  instructionsFr: text("instructions_fr"),
+  instructionsEn: text("instructions_en"),
+  anthropicApiKeyEnc: text("anthropic_api_key_enc"),
+  anthropicApiKeyLast4: text("anthropic_api_key_last4"),
+  anthropicWorkspaceIdEnc: text("anthropic_workspace_id_enc"),
+  anthropicWorkspaceIdLast4: text("anthropic_workspace_id_last4"),
+  singleton: boolean("singleton").notNull().default(true),
+  ...timestamps,
+});
+
 // SLV-021
 export const sections = pgTable(
   "sections",

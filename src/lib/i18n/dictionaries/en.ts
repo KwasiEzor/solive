@@ -632,6 +632,7 @@ export const en = {
         demandes: "Requests",
         devis: "Quotes",
         parametres: "Settings",
+        agentIa: "AI agent",
         utilisateurs: "Users",
         journal: "Log",
         profil: "Profile",

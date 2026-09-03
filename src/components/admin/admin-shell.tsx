@@ -1,6 +1,7 @@
 "use client";
 import {
   BarChart3,
+  Bot,
   Boxes,
   ExternalLink,
   FileText,
@@ -91,6 +92,12 @@ function groupsFor(t: Dictionary["admin"]): { label: string; items: Item[] }[] {
           label: t.nav.items.parametres,
           icon: Settings,
           match: "/admin/parametres",
+        },
+        {
+          href: "/admin/agent-ia",
+          label: t.nav.items.agentIa,
+          icon: Bot,
+          match: "/admin/agent-ia",
         },
         {
           href: "/admin/utilisateurs",

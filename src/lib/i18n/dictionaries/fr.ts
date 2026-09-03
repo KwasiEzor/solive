@@ -641,6 +641,7 @@ export const fr = {
         demandes: "Demandes",
         devis: "Devis",
         parametres: "Paramètres",
+        agentIa: "Agent IA",
         utilisateurs: "Utilisateurs",
         journal: "Journal",
         profil: "Profil",

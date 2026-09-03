@@ -3,6 +3,7 @@ import { and, asc, eq, isNull } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { getDb } from "@/server/db";
 import {
+  agentSettings,
   faqItems,
   legalPages,
   pricingPlans,
@@ -33,6 +34,21 @@ export async function getSiteSettings() {
   const db = getDb();
   const rows = await db.select().from(siteSettings).limit(1);
   return rows[0] ?? null;
+}
+
+/**
+ * Whether the AI qualification agent's floating launcher should render.
+ * Only the boolean — never the credentials (src/server/services/agent-
+ * settings.ts owns those, uncached, decrypted on demand). Safe to cache
+ * like the rest of this file; the admin toggle busts it via updateTag.
+ */
+export async function getAgentEnabled(): Promise<boolean> {
+  "use cache";
+  cacheLife("max");
+  cacheTag("content:agent_settings");
+  const db = getDb();
+  const [row] = await db.select({ enabled: agentSettings.enabled }).from(agentSettings).limit(1);
+  return row?.enabled ?? true;
 }
 
 export async function getSections(locale: Locale = "fr") {

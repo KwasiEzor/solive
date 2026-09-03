@@ -22,7 +22,7 @@ jobs:
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
       IP_HASH_SALT: ${{ secrets.IP_HASH_SALT }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Version read from package.json's "packageManager" field — an explicit
       # `with: version:` here conflicts with it (ERR_PNPM_BAD_PM_VERSION).

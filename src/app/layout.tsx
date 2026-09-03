@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { headers } from "next/headers";
+import type { ReactNode } from "react";
 import { env } from "@/lib/env";
 import { getDictionary } from "@/lib/i18n/dictionary";
 import { getRequestLocale } from "@/lib/i18n/locale";
@@ -39,7 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
   // Read a request header so pages render per-request: the proxy's CSP
   // nonce is then applied to Next's scripts (SLV-051). A per-request nonce is
   // incompatible with static prerendering — see ADR-0006. This also lets us

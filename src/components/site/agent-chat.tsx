@@ -27,6 +27,10 @@ export function AgentChat({ locale }: { locale: Locale }) {
   const { messages, sendMessage, status, error } = useChat<QualificationAgentUIMessage>({
     transport: new DefaultChatTransport({ api: "/api/agent/chat" }),
   });
+  // Only block input while a response is actively in flight — `status`
+  // stays "error" after a failed request with no automatic reset, so
+  // gating on `!== "ready"` would brick the input forever after one error.
+  const busy = status === "submitted" || status === "streaming";
 
   useEffect(() => {
     bodyRef.current?.scrollTo({ top: bodyRef.current.scrollHeight });
@@ -39,7 +43,7 @@ export function AgentChat({ locale }: { locale: Locale }) {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!input.trim() || status !== "ready") return;
+    if (!input.trim() || busy) return;
     sendMessage({ text: input });
     setInput("");
   }
@@ -152,10 +156,10 @@ export function AgentChat({ locale }: { locale: Locale }) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={t.placeholder}
-                  disabled={status !== "ready"}
+                  disabled={busy}
                   autoFocus
                 />
-                <button type="submit" disabled={status !== "ready" || !input.trim()}>
+                <button type="submit" disabled={busy || !input.trim()}>
                   {t.send}
                 </button>
               </form>

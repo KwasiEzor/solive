@@ -1,5 +1,7 @@
 import "server-only";
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { stepCountIs, ToolLoopAgent, type InferAgentUIMessage } from "ai";
+import { env } from "@/lib/env";
 import { tiptapToText } from "@/lib/tiptap/render";
 import { createLeadTool } from "@/lib/tools/create-lead-tool";
 import {
@@ -9,7 +11,18 @@ import {
   getServices,
 } from "@/server/queries/content";
 
-const MODEL = "anthropic/claude-haiku-4.5";
+// Direct Anthropic call (@ai-sdk/anthropic), not the AI Gateway — this
+// project's Vercel account doesn't have paid Gateway credits unlocked for
+// this model on the free tier. The configured key is identity-linked
+// (tied to a personal Anthropic account rather than a workspace), which
+// the API requires an explicit workspace id header for.
+const anthropicProvider = createAnthropic({
+  apiKey: env.ANTHROPIC_API_KEY,
+  headers: env.ANTHROPIC_WORKSPACE_ID
+    ? { "anthropic-workspace-id": env.ANTHROPIC_WORKSPACE_ID }
+    : undefined,
+});
+const MODEL = anthropicProvider("claude-haiku-4-5");
 
 async function buildSiteContext(locale: "fr" | "en"): Promise<string> {
   const [services, plans, steps, faq] = await Promise.all([

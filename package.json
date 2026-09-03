@@ -22,6 +22,7 @@
     "vercel:deploy": "vercel deploy --prod"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.49",
     "@ai-sdk/react": "^4.0.94",
     "@node-rs/argon2": "^2.1.0",
     "@react-email/components": "^1.0.12",

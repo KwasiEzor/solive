@@ -45,10 +45,14 @@ export const serverEnvSchema = z.object({
   // (e.g. a webhook syncing completed bookings into `leads`), unused by the
   // plain iframe embed itself.
   CAL_API_KEY: z.string().min(1).optional(),
-  // Agent IA de qualification (site public). Optionnelle : sur un
-  // déploiement Vercel réel, l'AI Gateway s'authentifie via OIDC sans clé —
-  // nécessaire seulement en local.
-  AI_GATEWAY_API_KEY: z.string().min(1).optional(),
+  // Agent IA de qualification (site public). Appel direct à l'API Anthropic
+  // (@ai-sdk/anthropic), pas via l'AI Gateway — le compte Vercel de ce
+  // projet n'a pas de crédits payés débloqués pour ce modèle en free tier.
+  ANTHROPIC_API_KEY: z.string().min(1).optional(),
+  // Requis uniquement si la clé ci-dessus est "identity-linked" (liée au
+  // compte personnel plutôt qu'à un espace de travail) — l'API Anthropic
+  // exige alors l'ID de l'espace de travail sur chaque requête.
+  ANTHROPIC_WORKSPACE_ID: z.string().min(1).optional(),
 });
 
 export type ServerEnv = z.infer<typeof serverEnvSchema>;

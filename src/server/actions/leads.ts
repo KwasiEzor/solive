@@ -1,10 +1,11 @@
 "use server";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { hashIp } from "@/lib/hash";
 import { clientIpFromHeaders } from "@/lib/request-ip";
 import { env } from "@/lib/env";
+import { err, ok, type Result } from "@/lib/result";
 import { requireAdmin } from "@/server/auth/guards";
 import { getDb } from "@/server/db";
 import { writeAudit } from "@/server/services/audit";
@@ -74,4 +75,61 @@ export async function addLeadNoteAction(formData: FormData): Promise<void> {
     diff: { note: true },
   });
   revalidatePath(`/admin/demandes/${id}`);
+}
+
+/**
+ * Hard delete — `leads` carries no soft-delete column (unlike sections/
+ * collections). `lead_events` cascades (schema FK onDelete:"cascade");
+ * `quotes.leadId` is onDelete:"set null" so any quote already generated from
+ * this lead survives with its own snapshot (clientName/clientEmail), just
+ * loses the back-reference.
+ */
+export async function deleteLeadAction(id: string): Promise<Result<null, "not_found">> {
+  const admin = await requireAdmin();
+  const db = getDb();
+  const [deleted] = await db
+    .delete(leads)
+    .where(eq(leads.id, id))
+    .returning({ id: leads.id, name: leads.name, email: leads.email });
+  if (!deleted) return err("not_found");
+
+  await writeAudit({
+    actorId: admin.userId,
+    action: "delete",
+    entityType: "lead",
+    entityId: deleted.id,
+    diff: { name: deleted.name, email: deleted.email },
+    ipHash: await ipHash(),
+  });
+  revalidatePath("/admin/demandes");
+  return ok(null);
+}
+
+export async function bulkDeleteLeadsAction(
+  ids: string[],
+): Promise<Result<{ count: number }, "invalid">> {
+  if (ids.length === 0) return err("invalid");
+  const admin = await requireAdmin();
+  const db = getDb();
+  const deleted = await db
+    .delete(leads)
+    .where(inArray(leads.id, ids))
+    .returning({ id: leads.id, name: leads.name, email: leads.email });
+  if (deleted.length === 0) return err("invalid");
+
+  const hash = await ipHash();
+  await Promise.all(
+    deleted.map((d) =>
+      writeAudit({
+        actorId: admin.userId,
+        action: "delete",
+        entityType: "lead",
+        entityId: d.id,
+        diff: { name: d.name, email: d.email },
+        ipHash: hash,
+      }),
+    ),
+  );
+  revalidatePath("/admin/demandes");
+  return ok({ count: deleted.length });
 }

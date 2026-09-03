@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { DeleteLeadButton } from "@/components/admin/delete-lead-button";
 import { Badge, type BadgeTone } from "@/components/admin/ui";
 import { formatCentsEUR } from "@/lib/money";
 import { addLeadNoteAction, updateLeadStatusAction } from "@/server/actions/leads";
@@ -46,14 +47,17 @@ export default async function LeadDetailPage({ params }: Params) {
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">{lead.name}</h1>
-        <p className="text-sm text-[var(--dim)]">
-          <a href={`mailto:${lead.email}`} className="hover:text-acc">
-            {lead.email}
-          </a>
-          {lead.company ? ` · ${lead.company}` : ""}
-        </p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight">{lead.name}</h1>
+          <p className="text-sm text-[var(--dim)]">
+            <a href={`mailto:${lead.email}`} className="hover:text-acc">
+              {lead.email}
+            </a>
+            {lead.company ? ` · ${lead.company}` : ""}
+          </p>
+        </div>
+        <DeleteLeadButton id={lead.id} name={lead.name} />
       </div>
 
       <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">

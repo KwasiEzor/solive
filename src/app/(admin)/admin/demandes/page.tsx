@@ -1,7 +1,8 @@
 import { Download } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Badge, type BadgeTone, PageHeader } from "@/components/admin/ui";
+import { LeadsTable } from "@/components/admin/leads-table";
+import { PageHeader } from "@/components/admin/ui";
 import { getLeads } from "@/server/queries/admin";
 
 export const metadata: Metadata = {
@@ -16,13 +17,6 @@ const LABEL: Record<string, string> = {
   quoted: "Devis",
   won: "Gagnée",
   lost: "Perdue",
-};
-const TONE: Record<string, BadgeTone> = {
-  new: "blue",
-  contacted: "amber",
-  quoted: "blue",
-  won: "green",
-  lost: "red",
 };
 
 type Search = { searchParams: Promise<{ status?: string }> };
@@ -77,48 +71,7 @@ export default async function DemandesPage({ searchParams }: Search) {
         ))}
       </nav>
 
-      <div className="adm-card overflow-x-auto">
-        <table className="adm-table">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>E-mail</th>
-              <th>Statut</th>
-              <th>Reçue</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((l) => (
-              <tr key={l.id}>
-                <td>
-                  <Link
-                    href={`/admin/demandes/${l.id}`}
-                    className="font-medium hover:text-acc"
-                  >
-                    {l.name}
-                  </Link>
-                </td>
-                <td className="text-[var(--dim)]">{l.email}</td>
-                <td>
-                  <Badge tone={TONE[l.status] ?? "neutral"}>
-                    {LABEL[l.status] ?? l.status}
-                  </Badge>
-                </td>
-                <td className="text-[var(--dim)]">
-                  {new Date(l.createdAt).toLocaleDateString("fr-BE")}
-                </td>
-              </tr>
-            ))}
-            {rows.length === 0 && (
-              <tr>
-                <td colSpan={4} className="text-[var(--dim)]">
-                  Aucune demande.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <LeadsTable rows={rows} />
     </div>
   );
 }

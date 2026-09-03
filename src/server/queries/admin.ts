@@ -1,5 +1,5 @@
 import "server-only";
-import { and, count, desc, eq, isNull } from "drizzle-orm";
+import { and, count, desc, eq, gte, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/server/db";
 import {
   adminUsers,
@@ -9,6 +9,7 @@ import {
   leadEvents,
   leads,
   legalPages,
+  pageViews,
   quoteItems,
   quotes,
   sections,
@@ -95,6 +96,83 @@ export async function getDashboardStats() {
     publishedSections: published?.n ?? 0,
     recentLeads,
     recentChanges,
+  };
+}
+
+const LEAD_STATUSES: LeadStatus[] = ["new", "contacted", "quoted", "won", "lost"];
+
+/**
+ * Conversion funnel for the dashboard (page views → leads → quotes → signed
+ * revenue), separate from getDashboardStats so that function's existing
+ * shape/callers stay untouched. Rates over a rolling 30-day window; the
+ * lead-status breakdown is the full current pipeline (not windowed) — more
+ * useful as "where things stand" than "what changed recently".
+ */
+export async function getFunnelStats() {
+  const db = getDb();
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+  const [views] = await db
+    .select({ n: count() })
+    .from(pageViews)
+    .where(gte(pageViews.createdAt, since));
+  const [newLeadsCount] = await db
+    .select({ n: count() })
+    .from(leads)
+    .where(gte(leads.createdAt, since));
+  const [quotesCreated] = await db
+    .select({ n: count() })
+    .from(quotes)
+    .where(and(gte(quotes.createdAt, since), isNull(quotes.deletedAt)));
+  const [quotesSent] = await db
+    .select({ n: count() })
+    .from(quotes)
+    .where(
+      and(
+        gte(quotes.createdAt, since),
+        isNull(quotes.deletedAt),
+        sql`${quotes.status} in ('sent', 'accepted', 'declined')`,
+      ),
+    );
+  const [accepted] = await db
+    .select({
+      n: count(),
+      revenueCents: sql<number>`coalesce(sum(${quotes.totalCents}), 0)`.mapWith(Number),
+    })
+    .from(quotes)
+    .where(
+      and(
+        gte(quotes.createdAt, since),
+        isNull(quotes.deletedAt),
+        eq(quotes.status, "accepted"),
+      ),
+    );
+
+  const byStatusRows = await db
+    .select({ status: leads.status, n: count() })
+    .from(leads)
+    .groupBy(leads.status);
+  const byStatus = Object.fromEntries(
+    LEAD_STATUSES.map((s) => [s, byStatusRows.find((r) => r.status === s)?.n ?? 0]),
+  ) as Record<LeadStatus, number>;
+
+  const pageViewsCount = views?.n ?? 0;
+  const leadsCount = newLeadsCount?.n ?? 0;
+  const quotesCreatedCount = quotesCreated?.n ?? 0;
+
+  return {
+    since,
+    pageViews: pageViewsCount,
+    leads: leadsCount,
+    viewToLeadRate: pageViewsCount > 0 ? leadsCount / pageViewsCount : 0,
+    quotesCreated: quotesCreatedCount,
+    leadToQuoteRate: leadsCount > 0 ? quotesCreatedCount / leadsCount : 0,
+    quotesSent: quotesSent?.n ?? 0,
+    quotesAccepted: accepted?.n ?? 0,
+    sentToAcceptedRate:
+      (quotesSent?.n ?? 0) > 0 ? (accepted?.n ?? 0) / (quotesSent?.n ?? 0) : 0,
+    revenueAcceptedCents: accepted?.revenueCents ?? 0,
+    leadsByStatus: byStatus,
   };
 }
 

@@ -8,8 +8,9 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { formatCentsEUR } from "@/lib/money";
 import { getCurrentAdmin } from "@/server/auth/guards";
-import { getDashboardStats } from "@/server/queries/admin";
+import { getDashboardStats, getFunnelStats } from "@/server/queries/admin";
 
 export const metadata: Metadata = {
   title: "Tableau de bord",
@@ -34,6 +35,47 @@ function fmt(ts: Date | string) {
     dateStyle: "short",
     timeStyle: "short",
   });
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  new: "Nouveau",
+  contacted: "Contacté",
+  quoted: "Devis envoyé",
+  won: "Gagné",
+  lost: "Perdu",
+};
+
+function pct(n: number): string {
+  return `${Math.round(n * 100)}%`;
+}
+
+function FunnelStage({
+  label,
+  value,
+  max,
+  rate,
+}: {
+  label: string;
+  value: number;
+  max: number;
+  rate?: number;
+}) {
+  const width = max > 0 ? Math.max((value / max) * 100, value > 0 ? 3 : 0) : 0;
+  return (
+    <div className="flex items-center gap-3">
+      <span className="w-32 flex-none text-xs text-[var(--dim)]">{label}</span>
+      <div className="h-6 flex-1 overflow-hidden rounded bg-[var(--bg3)]">
+        <div
+          className="h-full rounded bg-[var(--acc)] transition-[width]"
+          style={{ width: `${width}%` }}
+        />
+      </div>
+      <span className="w-10 flex-none text-right text-sm font-semibold">{value}</span>
+      <span className="w-10 flex-none text-right text-xs text-[var(--dim)]">
+        {rate !== undefined ? pct(rate) : ""}
+      </span>
+    </div>
+  );
 }
 
 function Kpi({
@@ -78,7 +120,11 @@ function Kpi({
 
 export default async function AdminDashboard() {
   const admin = await getCurrentAdmin();
-  const stats = await getDashboardStats();
+  const [stats, funnel] = await Promise.all([
+    getDashboardStats(),
+    getFunnelStats(),
+  ]);
+  const funnelMax = Math.max(funnel.pageViews, 1);
 
   return (
     <div className="flex flex-col gap-7">
@@ -118,6 +164,52 @@ export default async function AdminDashboard() {
           href="/admin/contenu/hero"
         />
       </div>
+
+      <section className="grid gap-5 lg:grid-cols-2">
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--bg2)] p-5">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="font-bold">Funnel — 30 derniers jours</h2>
+            <span className="text-xs text-[var(--dim)]">
+              CA signé : {formatCentsEUR(funnel.revenueAcceptedCents)}
+            </span>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <FunnelStage label="Visites" value={funnel.pageViews} max={funnelMax} />
+            <FunnelStage
+              label="Demandes"
+              value={funnel.leads}
+              max={funnelMax}
+              rate={funnel.viewToLeadRate}
+            />
+            <FunnelStage
+              label="Devis créés"
+              value={funnel.quotesCreated}
+              max={funnelMax}
+              rate={funnel.leadToQuoteRate}
+            />
+            <FunnelStage
+              label="Devis acceptés"
+              value={funnel.quotesAccepted}
+              max={funnelMax}
+              rate={funnel.sentToAcceptedRate}
+            />
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--bg2)] p-5">
+          <h2 className="mb-3 font-bold">Pipeline — toutes les demandes</h2>
+          <ul className="flex flex-col gap-2 text-sm">
+            {Object.entries(funnel.leadsByStatus).map(([status, n]) => (
+              <li key={status} className="flex items-center justify-between">
+                <span className="text-[var(--dim)]">
+                  {STATUS_LABEL[status] ?? status}
+                </span>
+                <span className="font-semibold">{n}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       <section className="grid gap-5 lg:grid-cols-2">
         <div className="rounded-xl border border-[var(--line)] bg-[var(--bg2)] p-5">

@@ -417,6 +417,18 @@ export const en = {
       lede: "Solive drops no advertising or third-party tracking cookies. Here's precisely what's stored on your device, and why.",
     },
   },
+  notFound: {
+    kicker: "404",
+    title: "This page doesn't exist — or not anymore.",
+    lede: "The link may be outdated, or the address mistyped. Here's where to go instead.",
+    cta: "Back to home",
+  },
+  errorPage: {
+    title: "Something went wrong.",
+    lede: "Something failed on our end. The team has been notified.",
+    retry: "Try again",
+    home: "Back to home",
+  },
   pricingReassurance: {
     eyebrow: "WHAT \"FIXED PRICE\" ACTUALLY MEANS",
     h2: "A flat fee, no bad surprises.",

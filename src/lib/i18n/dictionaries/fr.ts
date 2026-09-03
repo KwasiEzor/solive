@@ -425,6 +425,18 @@ export const fr = {
       lede: "Solive ne dépose aucun cookie publicitaire ni de suivi tiers. Voici précisément ce qui est stocké sur votre appareil, et pourquoi.",
     },
   },
+  notFound: {
+    kicker: "404",
+    title: "Cette page n’existe pas — ou plus.",
+    lede: "Le lien est peut-être obsolète, ou l’adresse mal orthographiée. Voici où repartir.",
+    cta: "Retour à l’accueil",
+  },
+  errorPage: {
+    title: "Une erreur est survenue.",
+    lede: "Quelque chose s’est mal passé de notre côté. L’équipe a été notifiée.",
+    retry: "Réessayer",
+    home: "Retour à l’accueil",
+  },
   pricingReassurance: {
     eyebrow: "CE QUE « PRIX FIXE » VEUT DIRE",
     h2: "Un forfait, sans mauvaise surprise.",
